@@ -18,15 +18,13 @@
 <body class="bg-gray-50 min-h-screen font-sans">
     <div class="flex h-screen bg-gray-100">
         <!-- Mobile Menu Toggle Button -->
-        <button class="fixed top-5 left-5 z-50 md:hidden w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-700 hover:from-blue-700 hover:to-purple-800 rounded-2xl shadow-xl transition-all duration-300 flex items-center justify-center group"
+        <button class="fixed top-4 left-4 z-50 md:hidden w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-gray-300"
                 onclick="toggleMobileSidebar()"
                 aria-label="Toggle navigation menu"
                 id="mobileMenuToggle">
-            <div class="relative">
-                <span class="block w-5 h-0.5 bg-white mb-1.5 transition-all duration-300 rounded-full transform group-hover:scale-110"></span>
-                <span class="block w-5 h-0.5 bg-white mb-1.5 transition-all duration-300 rounded-full transform group-hover:scale-110"></span>
-                <span class="block w-5 h-0.5 bg-white transition-all duration-300 rounded-full transform group-hover:scale-110"></span>
-            </div>
+            <svg class="w-6 h-6 text-gray-600 hover:text-gray-800 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
         </button>
 
         <!-- Mobile Overlay -->
@@ -39,8 +37,8 @@
              id="adminSidebar">
 
             <!-- Sidebar Header -->
-            <div class="relative px-8 py-10 text-center border-b border-gray-200 bg-gray-50">
-                <div class="flex flex-col items-center space-y-4">
+            <div class="relative px-8 py-10 border-b border-gray-200 bg-gray-50">
+                <div class="flex items-center space-x-4">
                     <!-- Logo Icon -->
                     <div class="w-16 h-16 bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-300">
                         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,15 +177,15 @@
             <!-- Mobile Sidebar Header -->
             <div class="relative px-6 py-8 border-b border-gray-200 bg-gray-50">
                 <!-- Close Button -->
-                <button class="absolute top-6 right-6 w-10 h-10 bg-gradient-to-br from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 rounded-xl transition-all duration-300 flex items-center justify-center shadow-lg group"
+                <button class="absolute top-4 right-4 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-gray-300"
                         onclick="closeMobileSidebar()"
                         aria-label="Close navigation menu">
-                    <svg class="w-5 h-5 text-white group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 text-gray-600 hover:text-gray-800 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
 
-                <div class="flex flex-col items-center space-y-4 pr-16">
+                <div class="flex items-center space-x-4 pr-16">
                     <!-- Logo Icon -->
                     <div class="w-14 h-14 bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
                         <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -195,7 +193,7 @@
                         </svg>
                     </div>
                     <!-- Platform Name -->
-                    <div class="text-center">
+                    <div>
                         <h1 class="text-xl font-black text-gray-800 tracking-tight">SuperMath</h1>
                         <div class="text-xs text-gray-500 font-medium tracking-wider uppercase mt-1">
                             Admin Dashboard
@@ -484,6 +482,12 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                         </svg>
                                         Edit Profile
+                                    </a>
+                                    <a href="{{ route('profile.edit-email') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                        <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                        </svg>
+                                        Edit Email
                                     </a>
                                     <a href="{{ route('profile.edit-password') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                                         <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
