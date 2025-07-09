@@ -33,7 +33,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/edit-email', [ProfileController::class, 'editEmail'])->name('profile.edit-email');
     Route::get('/profile/edit-password', [ProfileController::class, 'editPassword'])->name('profile.edit-password');
-    Route::get('/profile/edit-info', [ProfileController::class, 'editProfile'])->name('profile.edit-info');
+    Route::get('/profile/edit-info', [ProfileController::class, 'editInfo'])->name('profile.edit-info');
 
     // Profile Update Routes (you'll need to implement these methods)
     Route::put('/profile/update-email', [ProfileController::class, 'updateEmail'])->name('profile.update-email');

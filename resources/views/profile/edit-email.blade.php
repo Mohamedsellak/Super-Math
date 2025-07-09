@@ -91,34 +91,6 @@
                             @enderror
                         </div>
 
-                        <!-- Confirm Email Input -->
-                        <div class="group">
-                            <label for="email_confirmation" class="block text-sm font-bold text-gray-700 mb-3">
-                                Confirm New Email Address <span class="text-red-500">*</span>
-                            </label>
-                            <div class="relative">
-                                <input type="email"
-                                       id="email_confirmation"
-                                       name="email_confirmation"
-                                       value="{{ old('email_confirmation') }}"
-                                       class="form-input w-full px-4 py-4 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300 @error('email_confirmation') border-red-500 @enderror"
-                                       placeholder="Confirm your new email address"
-                                       required>
-                                <div class="absolute inset-y-0 right-0 flex items-center pr-4">
-                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                            @error('email_confirmation')
-                                <p class="mt-2 text-sm text-red-600 flex items-center">
-                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                                    </svg>
-                                    {{ $message }}
-                                </p>
-                            @enderror
-                        </div>
 
                         <!-- Password Verification -->
                         <div class="mt-8">
@@ -136,6 +108,7 @@
                                             :type="showPassword ? 'text' : 'password'"
                                             id="current_password"
                                             name="current_password"
+                                            value="{{ old('current_password') }}"
                                             class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300 @error('current_password') border-red-500 @enderror"
                                             placeholder="Enter your current password"
                                             required>

@@ -27,6 +27,25 @@ class ProfileController extends Controller
         ]);
     }
 
+    // update email
+    public function updateEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|max:255|unique:users',
+            'current_password' => 'required',
+        ]);
+
+        $user = auth()->user();
+        if (!password_verify($request->current_password, $user->password)) {
+            return redirect()->back()->withInput()->withErrors(['current_password' => 'The provided password is incorrect.']);
+        }
+
+        $user->email = $request->email;
+        $user->save();
+
+        return redirect()->route('profile.index')->with('success', 'Email updated successfully.');
+    }
+
     // edit password
     public function editPassword()
     {
@@ -37,10 +56,29 @@ class ProfileController extends Controller
 
 
     // edit profile name and other details
-    public function editProfile()
+    public function editInfo()
     {
         return view('profile.edit-info', [
             'user' => auth()->user()
         ]);
+    }
+
+    public function updateInfo(Request $request){
+        $request->validate([
+            "first_name"=>"required|string|max:255",
+            "last_name"=>"required|string|max:255",
+            "phone"=>"required|string|max:15",
+            "institution"=>"nullable|string|max:15",
+
+            
+        ]);
+
+        $user = auth()->user();
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->phone = $request->phone;
+        $user->institution = $request->institution;
+        $user->save();
+        return redirect()->route('profile.index')->with('success', 'Profile updated successfully.');
     }
 }
