@@ -73,7 +73,7 @@ class AuthController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'email_confirmation' => ['required', 'same:email'],
             'institution' => ['nullable', 'string', 'max:255'],
-            'password' => ['required', 'confirmed', Password::defaults()],
+            'password' => ['required','min:6', 'confirmed'],
         ]);
 
         if ($validator->fails()) {
@@ -91,9 +91,10 @@ class AuthController extends Controller
             'institution' => $request->institution,
         ]);
 
+
         Auth::login($user);
 
-        return redirect('/dashboard')->with('status', 'Registration successful! Welcome to SuperMath.');
+        return to_route('user.dashboard');
     }
 
     /**

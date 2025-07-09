@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperMath - Questões com MathJax</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+
+    <!-- MathJax Library -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS Styling -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+        }
+
+        .question-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .question-header {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .question-text {
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        .math-formula {
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .alternatives {
+            margin-top: 20px;
+        }
+
+        .alternative {
+            margin: 8px 0;
+            padding: 8px 15px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            border-radius: 5px;
+        }
+
+        .alternative:hover {
+            background-color: #e9ecef;
+            transition: background-color 0.3s ease;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>SuperMath - Questões Matemáticas</h1>
+
+    <div class="question-container">
+        <div class="question-text">
+            \[\begin{array}{l}
+{\rm{1}}{\rm{.(Esa 2025) Uma das atividades previstas para comemorar o anivers\'a rio da ESA}}{\rm{, }}\\
+{\rm{foi uma competi\c{c}\~a o de tiro}}{\rm{. Essa competi\c{c}\~a o consistia em lan\c{c}ar um alvo m\'o vel e }}\\
+{\rm{o atirador efetuar um disparo para tentar acert\'a  - lo}}{\rm{. Em uma das rodadas}}{\rm{, a trajet\'o ria }}\\
+{\rm{do alvo foi dada por }}f(t) =  - \frac{2}{9}{t^2} + \frac{4}{3}t,\;em{\rm{ }}que{\rm{ }}t{\rm{ }}\'e {\rm{ }}o{\rm{ }}tempo,{\rm{ }}em{\rm{ }}segundos,{\rm{ }}ap\'o s{\rm{ }}o{\rm{ }}disparo.{\rm{ }}\\
+A{\rm{ }}altura{\rm{ }}do{\rm{ }}alvo{\rm{ }}\'e {\rm{ }}representada,{\rm{ }}em{\rm{ }}km,{\rm{ }}por{\rm{ }}f\left( t \right).{\rm{ }}Ap\'o s{\rm{ }}um{\rm{ }}segundo,{\rm{ }}e{\rm{ }}do{\rm{ }}mesmo{\rm{ }}local{\rm{ }}\\
+de{\rm{ }}onde{\rm{ }}o{\rm{ }}alvo{\rm{ }}foi{\rm{ }}lan\c{c}ado,{\rm{ }}o{\rm{ }}atirador{\rm{ }}inclinou{\rm{ }}sua{\rm{ }}arma{\rm{ }}45^\circ ,{\rm{ }}realizou{\rm{ }}um{\rm{ }}disparo{\rm{ }}retil\'i neo{\rm{ }}\\
+e{\rm{ }}acertou{\rm{ hell}}o{\rm{ }}alvo.{\rm{ }}Qual{\rm{ }}a{\rm{ }}altura{\rm{ }}do{\rm{ }}alvo{\rm{ }}quando{\rm{ }}ele{\rm{ }}foi{\rm{ }}atingido?\\
+\\
+\begin{array}{*{20}{l}}
+{{\rm{a) 1}}{\rm{,6 km\;\;}}}\\
+{{\rm{b) 1}}{\rm{,7 km\;\;}}}\\
+{{\rm{c) 1}}{\rm{,8 km\;\;}}}\\
+{{\rm{d) 1}}{\rm{,9 km\;\;}}}\\
+{{\rm{e) 2}}{\rm{,0 km\;\;}}}
+\end{array}
+\end{array}\]
+
+        </div>
+    </div>
+
+    <!-- Script to handle dynamic content loading -->
+    <script>
+        // Function to render new mathematical content
+        function renderMathContent(questionData) {
+            // This function can be used to dynamically add new questions
+            // questionData should contain the question text with LaTeX notation
+
+            const container = document.createElement('div');
+            container.className = 'question-container';
+            container.innerHTML = questionData;
+
+            document.body.appendChild(container);
+
+            // Re-render MathJax for the new content
+            MathJax.typesetPromise([container]).then(() => {
+                console.log('MathJax rendering complete for new content');
+            }).catch((err) => console.log('MathJax rendering error: ', err));
+        }
+
+        // Example of how to use the function with database data
+        // renderMathContent(`
+        //     <div class="question-header">2. (Example 2025)</div>
+        //     <div class="question-text">
+        //         Find the derivative of \\(f(x) = x^2 + 3x + 2\\)
+        //     </div>
+        // `);
+    </script>
+</body>
+</html>

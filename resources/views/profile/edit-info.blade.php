@@ -1,10 +1,4 @@
-@extends(Auth::user()-                <a href="{{ route('profile.index') }}"
-                   class="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex items-center space-x-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                    <span>Back to Profile</span>
-                </a>== 'admin' ? 'layouts.admin' : 'layouts.user')
+@extends('layouts.user')
 
 @section('title', 'Edit Profile - SuperMath')
 
