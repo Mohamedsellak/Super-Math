@@ -14,23 +14,22 @@
 
     <!-- Alpine.js CDN for dropdown functionality -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Additional head content -->
+    @stack('head')
 </head>
-<body class="bg-gray-50 min-h-screen font-sans">
+<body class="bg-gray-50 min-h-screen font-sans" x-data="{ mobileMenuOpen: false }">
     <div class="flex h-screen bg-gray-100">
         <!-- Mobile Menu Toggle Button -->
         <button class="fixed top-4 left-4 z-50 md:hidden w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-gray-300"
-                onclick="toggleMobileSidebar()"
-                aria-label="Toggle navigation menu"
-                id="mobileMenuToggle">
+                @click="mobileMenuOpen = true"
+                aria-label="Toggle navigation menu">
             <svg class="w-6 h-6 text-gray-600 hover:text-gray-800 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
         </button>
 
-        <!-- Mobile Overlay -->
-        <div class="fixed inset-0 bg-black bg-opacity-75 z-40 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden backdrop-blur-sm"
-             id="mobileOverlay"
-             onclick="closeMobileSidebar()"></div>
+
 
         <!-- Enhanced Desktop Sidebar -->
         <div class="hidden md:flex md:flex-col w-80 bg-white shadow-2xl border-r border-gray-200 flex-shrink-0 relative"
@@ -77,8 +76,8 @@
                 </a>
 
                 <!-- User Management -->
-                <a href="#"
-                   class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-emerald-50 hover:shadow-md">
+                <a href="{{ route('admin.users.index') }}"
+                   class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-emerald-50 hover:shadow-md {{ request()->routeIs('admin.users.*') ? 'bg-emerald-100 text-emerald-900 shadow-md border border-emerald-200' : '' }}">
                     <div class="flex items-center space-x-4 w-full">
                         <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,8 +94,8 @@
                 </a>
 
                 <!-- Questions -->
-                <a href="#"
-                   class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-amber-50 hover:shadow-md">
+                <a href="{{ route('admin.questions.index') }}"
+                   class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-amber-50 hover:shadow-md {{ request()->routeIs('admin.questions.*') ? 'bg-amber-100 text-amber-900 shadow-md border border-amber-200' : '' }}">
                     <div class="flex items-center space-x-4 w-full">
                         <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,7 +113,7 @@
 
                 <!-- Analytics -->
                 <a href="#"
-                   class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-rose-50 hover:shadow-md">
+                   class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-rose-50 hover:shadow-md {{ request()->routeIs('admin.analytics.*') ? 'bg-rose-100 text-rose-900 shadow-md border border-rose-200' : '' }}">
                     <div class="flex items-center space-x-4 w-full">
                         <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-rose-500 to-pink-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -132,7 +131,7 @@
 
                 <!-- Settings -->
                 <a href="#"
-                   class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-gray-50 hover:shadow-md">
+                   class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-gray-50 hover:shadow-md {{ request()->routeIs('admin.settings.*') ? 'bg-gray-100 text-gray-900 shadow-md border border-gray-200' : '' }}">
                     <div class="flex items-center space-x-4 w-full">
                         <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-slate-500 to-gray-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -171,14 +170,15 @@
         </div>
 
         <!-- Mobile Sidebar -->
-        <div class="md:hidden fixed left-0 top-0 z-50 h-screen w-80 bg-white shadow-2xl transform -translate-x-full transition-transform duration-300 border-r border-gray-200"
+        <div class="md:hidden fixed left-0 top-0 z-50 h-screen w-80 bg-white shadow-2xl transform transition-transform duration-300 border-r border-gray-200"
+             :class="{'translate-x-0': mobileMenuOpen, '-translate-x-full': !mobileMenuOpen}"
              id="mobileSidebar">
 
             <!-- Mobile Sidebar Header -->
             <div class="relative px-6 py-8 border-b border-gray-200 bg-gray-50">
                 <!-- Close Button -->
                 <button class="absolute top-4 right-4 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-gray-300"
-                        onclick="closeMobileSidebar()"
+                        @click="mobileMenuOpen = false"
                         aria-label="Close navigation menu">
                     <svg class="w-5 h-5 text-gray-600 hover:text-gray-800 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -219,8 +219,8 @@
                 </a>
 
                 <!-- User Management -->
-                <a href="#"
-                   class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-emerald-50 hover:shadow-md">
+                <a href="{{ route('admin.users.index') }}"
+                   class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-emerald-50 hover:shadow-md {{ request()->routeIs('admin.users.*') ? 'bg-emerald-100 text-emerald-900 shadow-md border border-emerald-200' : '' }}">
                     <div class="flex items-center space-x-4 w-full">
                         <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -232,8 +232,8 @@
                 </a>
 
                 <!-- Questions -->
-                <a href="#"
-                   class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-amber-50 hover:shadow-md">
+                <a href="{{ route('admin.questions.index') }}"
+                   class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-amber-50 hover:shadow-md {{ request()->routeIs('admin.questions.*') ? 'bg-amber-100 text-amber-900 shadow-md border border-amber-200' : '' }}">
                     <div class="flex items-center space-x-4 w-full">
                         <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -246,7 +246,7 @@
 
                 <!-- Analytics -->
                 <a href="#"
-                   class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-rose-50 hover:shadow-md">
+                   class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-rose-50 hover:shadow-md {{ request()->routeIs('admin.analytics.*') ? 'bg-rose-100 text-rose-900 shadow-md border border-rose-200' : '' }}">
                     <div class="flex items-center space-x-4 w-full">
                         <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-rose-500 to-pink-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -259,7 +259,7 @@
 
                 <!-- Settings -->
                 <a href="#"
-                   class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-gray-50 hover:shadow-md">
+                   class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-gray-50 hover:shadow-md {{ request()->routeIs('admin.settings.*') ? 'bg-gray-100 text-gray-900 shadow-md border border-gray-200' : '' }}">
                     <div class="flex items-center space-x-4 w-full">
                         <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-slate-500 to-gray-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -313,7 +313,7 @@
                         <!-- Page Title (visible on desktop) -->
                         <div class="hidden md:block">
                             <h1 class="text-2xl font-semibold text-gray-900">
-                                @if(request()->routeIs('dashboard') || request()->routeIs('admin.dashboard'))
+                                @if(request()->routeIs('admin.dashboard'))
                                     Dashboard
                                 @elseif(request()->routeIs('questions.*'))
                                     Question Management
@@ -514,110 +514,21 @@
 
             <!-- Main Content Area -->
             <div class="flex-1 overflow-y-auto">
-                <div class="p-6">
-                    <!-- Success Message -->
-                    @if (session('status'))
-                        <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl shadow-sm">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                {{ session('status') }}
-                            </div>
-                        </div>
-                    @endif
 
-                    <!-- Error Message -->
-                    @if (session('error'))
-                        <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl shadow-sm">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 mr-2 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                                </svg>
-                                {{ session('error') }}
-                            </div>
-                        </div>
-                    @endif
+                    <!-- Include Alert Component -->
+                    <x-alert 
+                        :type="session('success') ? 'success' : (session('error') ? 'error' : '')"
+                        :message="session('success') ?: session('error')"
+                    />
 
                     <!-- Dashboard Content -->
                     @yield('content')
 
-                </div>
             </div>
         </div>
     </div>
 
-    <script>
-        function toggleMobileSidebar() {
-            const sidebar = document.getElementById('mobileSidebar');
-            const overlay = document.getElementById('mobileOverlay');
-            const toggle = document.getElementById('mobileMenuToggle');
-
-            sidebar.classList.toggle('translate-x-0');
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('opacity-0');
-            overlay.classList.toggle('pointer-events-none');
-
-            // Enhanced hamburger animation
-            const spans = toggle.querySelectorAll('span');
-            if (sidebar.classList.contains('translate-x-0')) {
-                // Animate to X
-                spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-                spans[1].style.opacity = '0';
-                spans[1].style.transform = 'scale(0) translateX(20px)';
-                spans[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
-                toggle.style.transform = 'scale(1.1)';
-                document.body.style.overflow = 'hidden';
-            } else {
-                // Reset to hamburger
-                spans[0].style.transform = 'rotate(0) translate(0, 0)';
-                spans[1].style.opacity = '1';
-                spans[1].style.transform = 'scale(1) translateX(0)';
-                spans[2].style.transform = 'rotate(0) translate(0, 0)';
-                toggle.style.transform = 'scale(1)';
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        function closeMobileSidebar() {
-            const sidebar = document.getElementById('mobileSidebar');
-            const overlay = document.getElementById('mobileOverlay');
-            const toggle = document.getElementById('mobileMenuToggle');
-
-            sidebar.classList.add('-translate-x-full');
-            sidebar.classList.remove('translate-x-0');
-            overlay.classList.add('opacity-0');
-            overlay.classList.add('pointer-events-none');
-
-            // Reset hamburger menu with enhanced animation
-            const spans = toggle.querySelectorAll('span');
-            spans[0].style.transform = 'rotate(0) translate(0, 0)';
-            spans[1].style.opacity = '1';
-            spans[1].style.transform = 'scale(1) translateX(0)';
-            spans[2].style.transform = 'rotate(0) translate(0, 0)';
-            toggle.style.transform = 'scale(1)';
-            document.body.style.overflow = 'auto';
-        }
-
-        // Close sidebar when clicking on links (mobile only)
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarLinks = document.querySelectorAll('#mobileSidebar nav a');
-            sidebarLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth <= 768) {
-                        closeMobileSidebar();
-                    }
-                });
-            });
-
-            // Close sidebar on window resize if desktop
-            window.addEventListener('resize', function() {
-                if (window.innerWidth > 768) {
-                    closeMobileSidebar();
-                }
-            });
-        });
-    </script>
-
+    <!-- Additional scripts -->
+    @stack('scripts')
 </body>
 </html>

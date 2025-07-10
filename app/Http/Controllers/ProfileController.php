@@ -54,6 +54,31 @@ class ProfileController extends Controller
         ]);
     }
 
+    // update password
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'password' => [
+                'required',
+                'string',
+                'min:6',
+                'confirmed',          // Must match password_confirmation
+            ],
+        ]);
+
+        $user = auth()->user();
+
+        if (!password_verify($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'The current password is incorrect.']);
+        }
+
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        return redirect()->route('profile.index')->with('success', 'Password updated successfully.');
+    }
+
 
     // edit profile name and other details
     public function editInfo()

@@ -17,11 +17,7 @@
 </head>
 <body class="bg-gray-50 min-h-screen font-sans" x-data="{ mobileMenuOpen: false }">
     <div class="flex h-screen bg-gray-100">
-        <!-- Mobile Overlay -->
-        <div
-            class="fixed inset-0 bg-black bg-opacity-75 z-40 transition-opacity duration-300 md:hidden backdrop-blur-sm"
-            :class="{'opacity-0 pointer-events-none': !mobileMenuOpen, 'opacity-100': mobileMenuOpen}"
-            @click="mobileMenuOpen = false"></div>
+
 
         <!-- Enhanced Desktop Sidebar -->
         <div class="hidden md:flex md:w-80 md:flex-col md:fixed md:inset-y-0">
@@ -407,12 +403,7 @@
             <div
                 class="md:hidden fixed inset-0 flex z-40 transform transition-transform duration-300"
                 :class="{'translate-x-0': mobileMenuOpen, '-translate-x-full': !mobileMenuOpen}">
-                <!-- Mobile Menu Overlay -->
-                <div
-                    class="fixed inset-0 bg-gray-600 bg-opacity-75 backdrop-blur-sm transition-opacity duration-300"
-                    :class="{'opacity-100': mobileMenuOpen, 'opacity-0': !mobileMenuOpen}"
-                    @click="mobileMenuOpen = false">
-                </div>
+
 
                 <!-- Mobile Sidebar Content -->
                 <div class="relative flex-1 flex flex-col max-w-xs w-full bg-white shadow-xl transform transition-all duration-300">
@@ -536,30 +527,14 @@
             <!-- Main Content Area -->
             <div class="flex-1 overflow-y-auto">
                 <div class="p-6">
-                    <!-- Success Message -->
-                    @if (session('status'))
-                        <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl shadow-sm">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                {{ session('status') }}
-                            </div>
-                        </div>
-                    @endif
 
-                    <!-- Error Message -->
-                    @if (session('error'))
-                        <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl shadow-sm">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 mr-2 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                                </svg>
-                                {{ session('error') }}
-                            </div>
-                        </div>
-                    @endif
+                    <!-- Include Alert Component -->
+                    <x-alert 
+                        :type="session('success') ? 'success' : (session('error') ? 'error' : '')"
+                        :message="session('success') ?: session('error')"
+                    />
 
+                    
                     <!-- Dashboard Content -->
                     @yield('content')
 
@@ -568,25 +543,5 @@
         </div>
     </div>
 
-    <!-- Alpine.js initialization script -->
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('userData', () => ({
-                init() {
-                    const theme = localStorage.getItem('theme') || 'light';
-                    this.setTheme(theme);
-                },
-                setTheme(theme) {
-                    localStorage.setItem('theme', theme);
-
-                    if (theme === 'dark') {
-                        document.documentElement.classList.add('dark');
-                    } else {
-                        document.documentElement.classList.remove('dark');
-                    }
-                }
-            }));
-        });
-    </script>
 </body>
 </html>

@@ -1,13 +1,18 @@
-@extends('layouts.user')
+@extends(Auth::user()->role === 'admin' ? 'layouts.admin' : 'layouts.user')
 
 @section('title', 'Edit Profile - SuperMath')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
-    <!-- Header Section -->
+<!-- Alerts -->
+<x-alert type="success" :message="session('success')" />
+<x-alert type="error" :message="$errors->any() ? $errors->all() : ''" :timeout="7000" />
+
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8">
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Professional Header Section -->
     <div class="relative overflow-hidden mb-8">
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10"></div>
-        <div class="relative bg-white/90 backdrop-blur-sm border border-gray-200 rounded-2xl p-6 shadow-xl">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5"></div>
+        <div class="relative bg-white/95 backdrop-blur-sm border border-gray-200 rounded-2xl p-6 shadow-xl">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
                     <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
@@ -17,7 +22,7 @@
                     </div>
                     <div>
                         <h1 class="text-3xl font-bold text-gray-900">Edit Profile Information</h1>
-                        <p class="text-gray-600">Update your personal details and preferences</p>
+                        <p class="text-gray-600 mt-1">Update your personal details and preferences</p>
                     </div>
                 </div>
                 <a href="{{ route('profile.index') }}"
@@ -54,7 +59,7 @@
                                    id="first_name"
                                    name="first_name"
                                    value="{{ old('first_name', $user->first_name) }}"
-                                   class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('first_name') border-red-500 @enderror">
+                                   class="form-input w-full px-4 py-3 border-2 {{ $errors->has('first_name') ? 'border-red-500' : 'border-gray-200' }} rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300">
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -81,7 +86,7 @@
                                    id="phone"
                                    name="phone"
                                    value="{{ old('phone', $user->phone) }}"
-                                   class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('phone') border-red-500 @enderror"
+                                   class="form-input w-full px-4 py-3 border-2 {{ $errors->has('phone') ? 'border-red-500' : 'border-gray-200' }} rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                                    placeholder="e.g., +1 (555) 123-4567">
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,7 +117,7 @@
                                    id="last_name"
                                    name="last_name"
                                    value="{{ old('last_name', $user->last_name) }}"
-                                   class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('last_name') border-red-500 @enderror">
+                                   class="form-input w-full px-4 py-3 border-2 {{ $errors->has('last_name') ? 'border-red-500' : 'border-gray-200' }} rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300">
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -139,7 +144,7 @@
                                    id="institution"
                                    name="institution"
                                    value="{{ old('institution', $user->institution) }}"
-                                   class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('institution') border-red-500 @enderror"
+                                   class="form-input w-full px-4 py-3 border-2 {{ $errors->has('institution') ? 'border-red-500' : 'border-gray-200' }} rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                                    placeholder="e.g., University of Example">
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -175,7 +180,7 @@
                     </span>
                 </button>
             </div>
-        </form>
+        </form>        </div>
     </div>
 </div>
 @endsection

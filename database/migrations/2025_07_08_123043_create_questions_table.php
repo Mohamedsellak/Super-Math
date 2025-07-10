@@ -15,18 +15,17 @@ return new class extends Migration
             $table->id();
             $table->text('question');
             $table->string('image')->nullable(); // image path
-            $table->json('options'); // the possible options (stored as JSON)
+            $table->text('options'); // the possible options (stored as text)
             $table->string('answer'); // the correct answer
             $table->enum('difficulty', ['easy', 'medium', 'hard']);
             $table->enum('question_type', ['Multiple Choice', 'True/False', 'Open Ended', 'Fill in the Blank']);
             $table->enum('education_level', ['Elementary', 'Middle School', 'High School', 'University']);
-            $table->string('institution')->nullable();
-            $table->string('source')->nullable();
-            $table->year('year')->nullable();
-            $table->string('region')->nullable();
-            $table->string('uf', 2)->nullable(); // Brazilian state code
-            $table->string('doc')->nullable(); // document path
-
+            $table->string('institution');
+            $table->string('source');
+            $table->year('year');
+            $table->string('region');
+            $table->string('uf', 2); // Brazilian state code
+            $table->string('doc'); // document path
             $table->timestamps();
         });
     }

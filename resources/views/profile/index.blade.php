@@ -3,86 +3,95 @@
 @section('title', 'Profile - SuperMath')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-8">
+<!-- Alerts -->
+<x-alert type="success" :message="session('success')" />
+<x-alert type="error" :message="$errors->any() ? $errors->all() : ''" :timeout="7000" />
+
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8">
 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-    <!-- Creative Professional Header -->
-    <div class="relative overflow-hidden bg-white rounded-3xl shadow-2xl border border-blue-100">
-        <!-- Enhanced background patterns -->
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 opacity-60"></div>
-        <div class="absolute top-0 right-0 w-96 h-96 opacity-10">
+    <!-- Professional Profile Header -->
+    <div class="relative overflow-hidden bg-white rounded-2xl shadow-xl border border-slate-200">
+        <!-- Subtle background pattern -->
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-indigo-50/20 to-purple-50/30"></div>
+        <div class="absolute top-0 right-0 w-64 h-64 opacity-5">
             <svg viewBox="0 0 200 200" class="w-full h-full text-blue-600">
                 <defs>
-                    <pattern id="hexagons" width="40" height="35" patternUnits="userSpaceOnUse">
-                        <polygon points="20,5 35,15 35,30 20,40 5,30 5,15" fill="none" stroke="currentColor" stroke-width="1"/>
+                    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="currentColor" stroke-width="1"/>
                     </pattern>
                 </defs>
-                <rect width="100%" height="100%" fill="url(#hexagons)" />
+                <rect width="100%" height="100%" fill="url(#grid)" />
             </svg>
         </div>
         
-        <div class="relative p-10">
-            <div class="flex flex-col lg:flex-row items-center justify-between space-y-8 lg:space-y-0">
-                <!-- Enhanced Profile Information -->
-                <div class="flex flex-col sm:flex-row items-center space-y-6 sm:space-y-0 sm:space-x-10">
-                    <!-- Creative Avatar Section -->
+        <div class="relative p-8">
+            <div class="flex flex-col lg:flex-row items-center justify-between space-y-6 lg:space-y-0">
+                <!-- Profile Information -->
+                <div class="flex flex-col sm:flex-row items-center space-y-6 sm:space-y-0 sm:space-x-8">
+                    <!-- Professional Avatar -->
                     <div class="relative group">
-                        <div class="w-36 h-36 bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 rounded-3xl flex items-center justify-center shadow-2xl transform rotate-3 hover:rotate-0 transition-all duration-500 hover:scale-105">
-                            <span class="text-5xl font-bold text-white tracking-wider">
-                                {{ strtoupper(substr($user->first_name ?: $user->name, 0, 1)) }}
+                        <div class="w-28 h-28 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+                            <span class="text-3xl font-bold text-white tracking-wide">
+                                {{ strtoupper(substr($user->first_name ?: $user->name, 0, 1)) }}{{ strtoupper(substr($user->last_name ?: '', 0, 1)) }}
                             </span>
                         </div>
-                        <!-- Enhanced status indicator -->
-                        <div class="absolute -bottom-3 -right-3 w-12 h-12 bg-gradient-to-r from-emerald-400 to-green-500 rounded-2xl border-4 border-white shadow-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                            <div class="w-4 h-4 bg-emerald-200 rounded-full animate-pulse"></div>
+                        <!-- Status indicator -->
+                        <div class="absolute -bottom-2 -right-2 w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-500 rounded-full border-3 border-white shadow-lg flex items-center justify-center">
+                            <div class="w-3 h-3 bg-white rounded-full"></div>
                         </div>
-                        <!-- Floating decoration -->
-                        <div class="absolute -top-2 -left-2 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full shadow-lg opacity-75 animate-bounce"></div>
                     </div>
 
-                    <!-- Enhanced User Details -->
+                    <!-- User Details -->
                     <div class="text-center sm:text-left">
-                        <h1 class="text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-700 bg-clip-text text-transparent mb-4">
+                        <h1 class="text-4xl font-bold text-gray-900 mb-2">
                             {{ ($user->first_name && $user->last_name) ? $user->first_name . ' ' . $user->last_name : $user->name }}
                         </h1>
                         
-                        <div class="flex items-center justify-center sm:justify-start flex-wrap gap-4 mb-6">
-                            <div class="flex items-center px-5 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl border border-blue-300 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                                <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                        <div class="flex items-center justify-center sm:justify-start flex-wrap gap-3 mb-4">
+                            <div class="flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow-md">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="font-bold text-lg">{{ ucfirst($user->role) }}</span>
+                                <span class="text-sm font-medium">{{ ucfirst($user->role) }}</span>
                             </div>
                             
-                            <div class="flex items-center px-5 py-3 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 rounded-2xl border border-purple-200 shadow-md">
-                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            <div class="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                                 </svg>
-                                <span class="font-semibold">Since {{ $user->created_at->format('M Y') }}</span>
+                                <span class="text-sm">{{ $user->email }}</span>
                             </div>
                         </div>
 
                         @if($user->institution)
-                        <div class="bg-white/70 backdrop-blur-sm border border-slate-200 rounded-xl p-4 max-w-md">
-                            <p class="text-slate-600 font-medium">{{ $user->institution }}</p>
+                        <div class="inline-flex items-center px-3 py-1 bg-white border border-gray-200 rounded-full shadow-sm">
+                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                            <span class="text-sm font-medium text-gray-700">{{ $user->institution }}</span>
                         </div>
                         @endif
                     </div>
                 </div>
 
-                <!-- Credit Balance -->
+                <!-- Credit Balance (for non-admin users) -->
                 @if($user->role !== 'admin')
-                <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-6 shadow-xl text-white min-w-56">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                <div class="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-xl p-4 shadow-sm">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-xl flex items-center justify-center shadow-md">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"></path>
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"></path>
                             </svg>
                         </div>
                         <div>
-                            <p class="text-emerald-100 text-sm font-medium">Available Credits</p>
-                            <p class="text-3xl font-bold">{{ number_format($user->credit) }}</p>
+                            <div class="text-lg font-bold text-amber-800">{{ auth()->user()->credit ?? 0 }} Credits</div>
+                            <div class="text-sm text-amber-600">Available Balance</div>
                         </div>
                     </div>
+                    <button class="w-full mt-3 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md">
+                        Purchase Credits
+                    </button>
                 </div>
                 @endif
             </div>
@@ -234,20 +243,20 @@
                 <div class="p-6 space-y-6">
                     <!-- Email Management -->
                     <div class="group bg-slate-50 border border-slate-200 rounded-xl p-5 hover:bg-slate-100 transition-all duration-200">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-4">
-                                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center group-hover:bg-blue-200 transition-colors duration-200">
+                        <div class="flex items-center justify-between gap-4">
+                            <div class="flex items-center space-x-4 flex-1 min-w-0">
+                                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center group-hover:bg-blue-200 transition-colors duration-200 flex-shrink-0">
                                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                                     </svg>
                                 </div>
-                                <div>
+                                <div class="min-w-0 flex-1">
                                     <p class="font-semibold text-slate-800">Email Address</p>
-                                    <p class="text-sm text-slate-600 truncate max-w-36">{{ $user->email }}</p>
+                                    <p class="text-sm text-slate-600 truncate">{{ $user->email }}</p>
                                 </div>
                             </div>
                             <a href="{{ route('profile.edit-email') }}"
-                               class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                               class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex-shrink-0">
                                 Update
                             </a>
                         </div>
@@ -255,20 +264,20 @@
 
                     <!-- Password Management -->
                     <div class="group bg-slate-50 border border-slate-200 rounded-xl p-5 hover:bg-slate-100 transition-all duration-200">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-4">
-                                <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center group-hover:bg-indigo-200 transition-colors duration-200">
+                        <div class="flex items-center justify-between gap-4">
+                            <div class="flex items-center space-x-4 flex-1 min-w-0">
+                                <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center group-hover:bg-indigo-200 transition-colors duration-200 flex-shrink-0">
                                     <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 12H9v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.586l4.707-4.707C10.923 2.663 11.596 2 12.414 2h.172a2 2 0 012 2v4.586l3.707 3.707c.195.195.293.45.293.707z"></path>
                                     </svg>
                                 </div>
-                                <div>
+                                <div class="min-w-0 flex-1">
                                     <p class="font-semibold text-slate-800">Password</p>
                                     <p class="text-sm text-slate-600">••••••••••••••</p>
                                 </div>
                             </div>
                             <a href="{{ route('profile.edit-password') }}"
-                               class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 text-sm font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                               class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 text-sm font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex-shrink-0">
                                 Change
                             </a>
                         </div>

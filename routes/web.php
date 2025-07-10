@@ -1,11 +1,17 @@
 <?php
 
+use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\QuestionsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\AdminMiddleware;
 
+
+
+// Home Route
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
@@ -27,7 +33,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 
-
+//
 Route::middleware([AuthMiddleware::class])->group(function () {
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
@@ -37,7 +43,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
 
     // Profile Update Routes (you'll need to implement these methods)
     Route::put('/profile/update-email', [ProfileController::class, 'updateEmail'])->name('profile.update-email');
-    Route::put('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
     Route::put('/profile/update-info', [ProfileController::class, 'updateInfo'])->name('profile.update-info');
 
     // Dashboard Routes
@@ -48,11 +54,15 @@ Route::middleware([AuthMiddleware::class])->group(function () {
 });
 
 // Admin Routes
-Route::middleware([AuthMiddleware::class, AdminMiddleware::class])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
-    // Add more admin routes here
+Route::prefix('Dashboard')->name('admin.')->middleware([AuthMiddleware::class, AdminMiddleware::class])->group(function () {
+    Route::get('/',[AdminController::class, 'index'])->name('dashboard');
+    
+    // User Management Routes
+    Route::resource('users', UsersController::class);
+    
+    // Questions Management Routes
+    Route::resource('questions', QuestionsController::class);
+    Route::get('/questions/{question}/download-document', [QuestionsController::class, 'downloadDocument'])->name('questions.download-document');
 });
 
 

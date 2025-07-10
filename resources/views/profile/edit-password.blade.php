@@ -3,11 +3,16 @@
 @section('title', 'Change Password - SuperMath')
 
 @section('content')
-<div class="max-w-3xl mx-auto">
-    <!-- Header Section -->
+<!-- Alerts -->
+<x-alert type="success" :message="session('success')" />
+<x-alert type="error" :message="$errors->any() ? $errors->all() : ''" :timeout="7000" />
+
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8">
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Professional Header Section -->
     <div class="relative overflow-hidden mb-8">
-        <div class="absolute inset-0 bg-gradient-to-r from-rose-500/10 to-pink-500/10"></div>
-        <div class="relative bg-white/90 backdrop-blur-sm border border-gray-200 rounded-2xl p-6 shadow-xl">
+        <div class="absolute inset-0 bg-gradient-to-r from-rose-500/5 to-pink-500/5"></div>
+        <div class="relative bg-white/95 backdrop-blur-sm border border-gray-200 rounded-2xl p-6 shadow-xl">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
                     <div class="w-16 h-16 bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
@@ -17,7 +22,7 @@
                     </div>
                     <div>
                         <h1 class="text-3xl font-bold text-gray-900">Change Password</h1>
-                        <p class="text-gray-600">Update your password for better security</p>
+                        <p class="text-gray-600 mt-1">Update your password for enhanced security</p>
                     </div>
                 </div>
                 <a href="{{ route('profile.index') }}"
@@ -27,21 +32,6 @@
                     </svg>
                     <span>Back to Profile</span>
                 </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Security Tips -->
-    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 mb-8">
-        <div class="flex items-start space-x-3">
-            <div class="w-8 h-8 bg-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                </svg>
-            </div>
-            <div>
-                <h3 class="text-lg font-bold text-blue-800 mb-2">Security Best Practices</h3>
-                <p class="text-blue-700">Choose a strong password with a mix of uppercase, lowercase, numbers, and special characters. Avoid using personal information or common words.</p>
             </div>
         </div>
     </div>
@@ -56,98 +46,108 @@
             @csrf
             @method('PUT')
 
-            <div class="space-y-8">
-                <!-- Current Password -->
-                <div class="group">
-                    <label for="current_password" class="block text-sm font-bold text-gray-700 mb-3">
-                        Current Password <span class="text-red-500">*</span>
-                    </label>
-                    <div class="relative" x-data="{ showPassword: false }">
-                        <input :type="showPassword ? 'text' : 'password'"
-                               id="current_password"
-                               name="current_password"
-                               class="form-input w-full px-4 py-4 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all duration-300 @error('current_password') border-red-500 @enderror"
-                               placeholder="Enter your current password"
-                               required>
-                        <div class="absolute inset-y-0 right-0 flex items-center pr-4">
-                            <button type="button"
-                                    class="text-gray-400 hover:text-gray-600 focus:outline-none"
-                                    @click="showPassword = !showPassword">
-                                <svg x-show="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                </svg>
-                                <svg x-show="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
-                                </svg>
-                            </button>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Left Column -->
+                <div class="space-y-6">
+                    <!-- Current Password -->
+                    <div class="group">
+                        <label for="current_password" class="block text-sm font-bold text-gray-700 mb-2">
+                            Current Password <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative" x-data="{ showPassword: false }">
+                            <input :type="showPassword ? 'text' : 'password'"
+                                   id="current_password"
+                                   name="current_password"
+                                   class="form-input w-full px-4 py-3 border-2 {{ $errors->has('current_password') ? 'border-red-500' : 'border-gray-200' }} rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all duration-300"
+                                   placeholder="Enter your current password"
+                                   required>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                <button type="button"
+                                        class="text-gray-400 hover:text-gray-600 focus:outline-none"
+                                        @click="showPassword = !showPassword">
+                                    <svg x-show="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                    <svg x-show="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
+                        @error('current_password')
+                            <p class="mt-2 text-sm text-red-600 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ $message }}
+                            </p>
+                        @enderror
                     </div>
-                    @error('current_password')
-                        <p class="mt-2 text-sm text-red-600 flex items-center">
-                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                            </svg>
-                            {{ $message }}
-                        </p>
-                    @enderror
                 </div>
 
-                <!-- New Password -->
-                <div class="group">
-                    <label for="password" class="block text-sm font-bold text-gray-700 mb-3">
-                        New Password <span class="text-red-500">*</span>
-                    </label>
-                    <div class="relative" x-data="{ showPassword: false }">
-                        <input :type="showPassword ? 'text' : 'password'"
-                               id="password"
-                               name="password"
-                               class="form-input w-full px-4 py-4 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all duration-300 @error('password') border-red-500 @enderror"
-                               placeholder="Enter your new password"
-                               required>
-                        <div class="absolute inset-y-0 right-0 flex items-center pr-4">
-                            <button type="button"
-                                    class="text-gray-400 hover:text-gray-600 focus:outline-none"
-                                    @click="showPassword = !showPassword">
-                                <svg x-show="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                </svg>
-                                <svg x-show="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
-                                </svg>
-                            </button>
+                <!-- Right Column -->
+                <div class="space-y-6">
+                    <!-- New Password -->
+                    <div class="group">
+                        <label for="password" class="block text-sm font-bold text-gray-700 mb-2">
+                            New Password <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative" x-data="{ showPassword: false }">
+                            <input :type="showPassword ? 'text' : 'password'"
+                                   id="password"
+                                   name="password"
+                                   class="form-input w-full px-4 py-3 border-2 {{ $errors->has('password') ? 'border-red-500' : 'border-gray-200' }} rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all duration-300"
+                                   placeholder="Enter your new password"
+                                   required>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                <button type="button"
+                                        class="text-gray-400 hover:text-gray-600 focus:outline-none"
+                                        @click="showPassword = !showPassword">
+                                    <svg x-show="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                    <svg x-show="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
+                        @error('password')
+                            <p class="mt-2 text-sm text-red-600 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ $message }}
+                            </p>
+                        @enderror
                     </div>
-                    @error('password')
-                        <p class="mt-2 text-sm text-red-600 flex items-center">
-                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                            </svg>
-                            {{ $message }}
-                        </p>
-                    @enderror
                 </div>
+            </div>
 
-                <!-- Confirm New Password -->
+            <!-- Confirm Password (Full Width Below Grid) -->
+            <div class="mt-8">
                 <div class="group">
-                    <label for="password_confirmation" class="block text-sm font-bold text-gray-700 mb-3">
+                    <label for="password_confirmation" class="block text-sm font-bold text-gray-700 mb-2">
                         Confirm New Password <span class="text-red-500">*</span>
                     </label>
-                    <div class="relative" x-data="{ show: false }">
-                        <input :type="show ? 'text' : 'password'"
+                    <div class="relative" x-data="{ showPassword: false }">
+                        <input :type="showPassword ? 'text' : 'password'"
                                id="password_confirmation"
                                name="password_confirmation"
-                               class="form-input w-full px-4 py-4 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all duration-300 @error('password_confirmation') border-red-500 @enderror"
+                               class="form-input w-full px-4 py-3 border-2 {{ $errors->has('password_confirmation') ? 'border-red-500' : 'border-gray-200' }} rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all duration-300"
                                placeholder="Confirm your new password"
                                required>
-                        <div class="absolute inset-y-0 right-0 flex items-center pr-4">
-                            <button type="button" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" @click="show = !show">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="!show">
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                            <button type="button"
+                                    class="text-gray-400 hover:text-gray-600 focus:outline-none"
+                                    @click="showPassword = !showPassword">
+                                <svg x-show="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                 </svg>
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="show">
+                                <svg x-show="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
                                 </svg>
                             </button>
@@ -162,9 +162,10 @@
                         </p>
                     @enderror
                 </div>
+            </div>
 
-                <!-- Password Requirements -->
-                <div class="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-2xl p-6">
+            <!-- Password Requirements -->
+            <div class="mt-8 bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-2xl p-6">
                     <h4 class="text-lg font-bold text-indigo-800 mb-4 flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
@@ -228,6 +229,7 @@
             </div>
         </form>
     </div>
+</div>
 </div>
 
 @endsection
