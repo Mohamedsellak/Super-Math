@@ -3,6 +3,10 @@
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\QuestionsController;
+
+use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\User\UserQuestionsController;
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
@@ -46,20 +50,27 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
     Route::put('/profile/update-info', [ProfileController::class, 'updateInfo'])->name('profile.update-info');
 
-    // Dashboard Routes
-    Route::get('/dashboard', function () {
-        return view('user.dashboard');
-    })->name('user.dashboard');
+
+    // User Dashboard Routes
+    Route::prefix('dashboard')->name('user.')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('dashboard');
+
+        Route::get('/questions', [UserQuestionsController::class, 'index'])->name('questions.index');
+
+    });
 
 });
+
+
+
 
 // Admin Routes
 Route::prefix('Dashboard')->name('admin.')->middleware([AuthMiddleware::class, AdminMiddleware::class])->group(function () {
     Route::get('/',[AdminController::class, 'index'])->name('dashboard');
-    
+
     // User Management Routes
     Route::resource('users', UsersController::class);
-    
+
     // Questions Management Routes
     Route::resource('questions', QuestionsController::class);
     Route::get('/questions/{question}/download-document', [QuestionsController::class, 'downloadDocument'])->name('questions.download-document');

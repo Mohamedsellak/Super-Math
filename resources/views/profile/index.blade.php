@@ -3,12 +3,10 @@
 @section('title', 'Profile - SuperMath')
 
 @section('content')
-<!-- Alerts -->
-<x-alert type="success" :message="session('success')" />
-<x-alert type="error" :message="$errors->any() ? $errors->all() : ''" :timeout="7000" />
+
 
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8">
-<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+<div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
     <!-- Professional Profile Header -->
     <div class="relative overflow-hidden bg-white rounded-2xl shadow-xl border border-slate-200">
         <!-- Subtle background pattern -->
@@ -23,7 +21,7 @@
                 <rect width="100%" height="100%" fill="url(#grid)" />
             </svg>
         </div>
-        
+
         <div class="relative p-8">
             <div class="flex flex-col lg:flex-row items-center justify-between space-y-6 lg:space-y-0">
                 <!-- Profile Information -->
@@ -46,7 +44,7 @@
                         <h1 class="text-4xl font-bold text-gray-900 mb-2">
                             {{ ($user->first_name && $user->last_name) ? $user->first_name . ' ' . $user->last_name : $user->name }}
                         </h1>
-                        
+
                         <div class="flex items-center justify-center sm:justify-start flex-wrap gap-3 mb-4">
                             <div class="flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow-md">
                                 <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -54,7 +52,7 @@
                                 </svg>
                                 <span class="text-sm font-medium">{{ ucfirst($user->role) }}</span>
                             </div>
-                            
+
                             <div class="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
@@ -300,7 +298,7 @@
                 </div>
             </div>
 
-            
+
         </div>
     </div>
 

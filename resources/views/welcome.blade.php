@@ -10,88 +10,15 @@
     <meta property="og:description" content="Transform your classroom with 50,000+ AI-curated math questions and intelligent teaching tools.">
     <meta property="og:type" content="website">
     <title>SuperMath - Revolutionary Math Teaching Platform</title>
-    
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
+
     <!-- Enhanced Font Loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Custom Styles -->
-    <style>
-        @keyframes blob {
-            0% {
-                transform: translate(0px, 0px) scale(1);
-            }
-            33% {
-                transform: translate(30px, -50px) scale(1.1);
-            }
-            66% {
-                transform: translate(-20px, 20px) scale(0.9);
-            }
-            100% {
-                transform: translate(0px, 0px) scale(1);
-            }
-        }
-        
-        .animate-blob {
-            animation: blob 7s infinite;
-        }
-        
-        .animation-delay-2000 {
-            animation-delay: 2s;
-        }
-        
-        .animation-delay-4000 {
-            animation-delay: 4s;
-        }
-        
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-        
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes glow {
-            0%, 100% {
-                box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-            }
-            50% {
-                box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
-            }
-        }
-        
-        .animate-glow {
-            animation: glow 2s ease-in-out infinite;
-        }
-        
-        .gradient-border {
-            background: linear-gradient(white, white) padding-box,
-                        linear-gradient(45deg, #3b82f6, #8b5cf6) border-box;
-            border: 2px solid transparent;
-        }
-        
-        .text-shadow {
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .bg-mesh {
-            background-image: 
-                radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
-        }
-    </style>
+
+
 </head>
 <body class="font-inter antialiased overflow-x-hidden bg-gray-50">    <!-- Modern Navigation Bar -->
     <nav class="fixed w-full top-0 z-50 bg-white shadow-sm border-b border-gray-200" id="navbar">
@@ -146,9 +73,9 @@
     <section class="relative pt-20 pb-16 bg-gradient-to-br from-slate-50 via-white to-blue-50 overflow-hidden min-h-screen flex items-center">
         <!-- Background decorative elements -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div class="absolute top-20 left-10 w-32 h-32 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-            <div class="absolute top-40 right-20 w-32 h-32 bg-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-            <div class="absolute -bottom-8 left-20 w-32 h-32 bg-pink-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+            <div class="absolute top-20 left-10 w-32 h-32 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
+            <div class="absolute top-40 right-20 w-32 h-32 bg-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse delay-200"></div>
+            <div class="absolute -bottom-8 left-20 w-32 h-32 bg-pink-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse delay-400"></div>
         </div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
@@ -206,7 +133,7 @@
                     <div class="pt-10">
                         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
                             <p class="text-sm text-gray-500 mb-4 font-medium">Trusted by educators worldwide</p>
-                            
+
                             <!-- Stats Grid -->
                             <div class="grid grid-cols-3 gap-6 mb-6">
                                 <div class="text-center">
@@ -259,9 +186,9 @@
                 </div>
 
                 <!-- Enhanced Right Visual -->
-                <div class="relative">
+                <div class="relative animate-fade-in-up duration-700">
                     <!-- Main Dashboard Card -->
-                    <div class="bg-white rounded-3xl shadow-2xl p-6 border border-gray-100 backdrop-blur-sm bg-opacity-95">
+                    <div class="bg-white rounded-3xl shadow-2xl p-6 border border-gray-100 backdrop-blur-sm bg-opacity-95 animate-fade-in-up duration-700 delay-200">
                         <!-- Mock Dashboard Interface -->
                         <div class="space-y-4">
                             <!-- Enhanced Header -->
@@ -279,16 +206,16 @@
                                 </div>
                                 <div class="flex space-x-2">
                                     <div class="w-3 h-3 bg-red-400 rounded-full animate-pulse"></div>
-                                    <div class="w-3 h-3 bg-yellow-400 rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
-                                    <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse" style="animation-delay: 0.4s"></div>
+                                    <div class="w-3 h-3 bg-yellow-400 rounded-full animate-pulse delay-200"></div>
+                                    <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse delay-400"></div>
                                 </div>
                             </div>
 
                             <!-- Enhanced Search Bar -->
                             <div class="relative group">
                                 <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
-                                <input type="text" 
-                                       placeholder="Search 50,000+ math questions..." 
+                                <input type="text"
+                                       placeholder="Search 50,000+ math questions..."
                                        class="relative w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-lg text-gray-700 font-medium transition-all duration-300 text-sm"
                                        value="Find derivatives of trigonometric">
                                 <div class="absolute right-3 top-3">
@@ -314,7 +241,7 @@
                             <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-4 border-2 border-blue-100 relative overflow-hidden">
                                 <!-- Background Pattern -->
                                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full transform translate-x-12 -translate-y-12 opacity-20"></div>
-                                
+
                                 <div class="relative">
                                     <div class="flex items-center justify-between mb-3">
                                         <div class="flex items-center space-x-2">
@@ -329,9 +256,9 @@
                                             1,247 views
                                         </div>
                                     </div>
-                                    
+
                                     <p class="text-gray-800 mb-4 font-semibold text-sm">Find the derivative of f(x) = x² sin(3x)</p>
-                                    
+
                                     <div class="grid grid-cols-1 gap-2 text-xs mb-3">
                                         <div class="bg-white rounded-xl p-3 border-2 border-green-300 shadow-lg transition-transform cursor-pointer relative">
                                             <div class="absolute top-2 right-2 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
@@ -357,7 +284,7 @@
                                                 <span class="font-bold text-green-600">78%</span>
                                             </div>
                                             <div class="w-full bg-gray-200 rounded-full h-1.5">
-                                                <div class="bg-gradient-to-r from-green-400 to-green-500 h-1.5 rounded-full shadow-sm" style="width: 78%"></div>
+                                                <div class="bg-gradient-to-r from-green-400 to-green-500 h-1.5 rounded-full shadow-sm w-4/5"></div>
                                             </div>
                                         </div>
                                         <div class="bg-white rounded-xl p-2 shadow-md">
@@ -369,7 +296,7 @@
                                                 <span class="font-bold text-blue-600">2.3m</span>
                                             </div>
                                             <div class="w-full bg-gray-200 rounded-full h-1.5">
-                                                <div class="bg-gradient-to-r from-blue-400 to-blue-500 h-1.5 rounded-full shadow-sm" style="width: 60%"></div>
+                                                <div class="bg-gradient-to-r from-blue-400 to-blue-500 h-1.5 rounded-full shadow-sm w-3/5"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -390,14 +317,14 @@
                     </div>
 
                     <!-- Enhanced Floating Elements -->
-                    <div class="absolute -top-3 -right-3 bg-white rounded-2xl shadow-xl p-3 border border-gray-100 transition-transform duration-300">
+                    <div class="absolute -top-3 -right-3 bg-white rounded-2xl shadow-xl p-3 border border-gray-100 transition-transform animate-bounce">
                         <div class="flex items-center space-x-2">
                             <div class="w-2 h-2 bg-gradient-to-r from-green-400 to-green-500 rounded-full animate-pulse"></div>
                             <span class="text-xs font-bold text-gray-700">LaTeX Ready</span>
                         </div>
                     </div>
 
-                    <div class="absolute -bottom-3 -left-3 bg-white rounded-2xl shadow-xl p-3 border border-gray-100 transition-transform duration-300">
+                    <div class="absolute -bottom-3 -left-3 bg-white rounded-2xl shadow-xl p-3 border border-gray-100 transition-transform duration-300 animate-pulse">
                         <div class="flex items-center space-x-2">
                             <div class="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
                                 <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -613,13 +540,13 @@
                     </svg>
                     How It Works
                 </div>
-                
+
                 <h2 class="text-4xl lg:text-5xl font-black text-gray-900 mb-6 leading-tight">
-                    Get Started in 
+                    Get Started in
                     <br>
                     <span class="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">Three Simple Steps</span>
                 </h2>
-                
+
                 <p class="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                     Start using SuperMath in minutes with our streamlined onboarding process
                 </p>
@@ -629,7 +556,7 @@
             <div class="relative">
                 <!-- Connection Lines (Hidden on mobile) -->
                 <div class="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-blue-200 via-green-200 to-purple-200 transform -translate-y-1/2 z-0"></div>
-                
+
                 <!-- Steps Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
                     <!-- Step 1 -->
@@ -645,11 +572,11 @@
                                 </svg>
                             </div>
                         </div>
-                        
+
                         <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 group-hover:shadow-xl transition-all duration-300">
                             <h3 class="text-2xl font-bold text-gray-900 mb-4">Sign Up & Choose Plan</h3>
                             <p class="text-gray-600 leading-relaxed">Create your account and select the plan that fits your teaching needs. Start with our free trial and explore all features.</p>
-                            
+
                             <!-- Mini Features List -->
                             <div class="mt-4 space-y-2">
                                 <div class="flex items-center text-sm text-gray-500">
@@ -677,11 +604,11 @@
                                 </svg>
                             </div>
                         </div>
-                        
+
                         <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 group-hover:shadow-xl transition-all duration-300">
                             <h3 class="text-2xl font-bold text-gray-900 mb-4">Search & Select Questions</h3>
                             <p class="text-gray-600 leading-relaxed">Use our AI-powered search to find the perfect questions for your curriculum and learning objectives with instant results.</p>
-                            
+
                             <!-- Mini Features List -->
                             <div class="mt-4 space-y-2">
                                 <div class="flex items-center text-sm text-gray-500">
@@ -709,11 +636,11 @@
                                 </svg>
                             </div>
                         </div>
-                        
+
                         <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 group-hover:shadow-xl transition-all duration-300">
                             <h3 class="text-2xl font-bold text-gray-900 mb-4">Download & Teach</h3>
                             <p class="text-gray-600 leading-relaxed">Download your selected questions in multiple formats and start teaching with confidence using professional materials.</p>
-                            
+
                             <!-- Mini Features List -->
                             <div class="mt-4 space-y-2">
                                 <div class="flex items-center text-sm text-gray-500">
@@ -735,7 +662,7 @@
                 <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-3xl p-8 border border-gray-100">
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">Ready to get started?</h3>
                     <p class="text-gray-600 mb-8 max-w-md mx-auto">Join thousands of educators who are already transforming their teaching with SuperMath</p>
-                    
+
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
                         <a href="#" class="inline-flex items-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -743,7 +670,7 @@
                             </svg>
                             Start Your Free Trial Today
                         </a>
-                        
+
                         <a href="#" class="inline-flex items-center px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-2xl font-bold hover:border-blue-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M19 10a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -751,7 +678,7 @@
                             Watch Demo
                         </a>
                     </div>
-                    
+
                     <!-- Trust Indicators -->
                     <div class="flex items-center justify-center space-x-6 mt-6 text-sm text-gray-500">
                         <div class="flex items-center">
@@ -796,13 +723,13 @@
                     </svg>
                     Simple & Transparent Pricing
                 </div>
-                
+
                 <h2 class="text-4xl lg:text-5xl font-black text-gray-900 mb-6 leading-tight">
                     Choose Your
                     <br>
                     <span class="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">Perfect Plan</span>
                 </h2>
-                
+
                 <p class="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                     Flexible pricing designed for educators and institutions. Start free, upgrade anytime.
                 </p>
@@ -813,7 +740,7 @@
                 <!-- Starter Plan -->
                 <div class="group bg-white rounded-3xl p-8 border-2 border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full transform translate-x-16 -translate-y-16 opacity-50 group-hover:opacity-70 transition-opacity"></div>
-                    
+
                     <div class="relative">
                         <div class="text-center mb-8">
                             <div class="w-16 h-16 bg-gradient-to-r from-gray-500 to-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
@@ -871,11 +798,11 @@
                 <!-- Professional Plan (Popular) -->
                 <div class="group bg-white rounded-3xl p-8 border-2 border-blue-300 shadow-2xl hover:shadow-3xl transition-all duration-300 relative overflow-hidden transform scale-105">
                     <!-- Popular Badge -->
-                    
+
 
                     <!-- Background Pattern -->
                     <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full transform translate-x-16 -translate-y-16 opacity-50 group-hover:opacity-70 transition-opacity"></div>
-                    
+
                     <div class="relative pt-4">
                         <div class="text-center mb-8">
                             <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
@@ -942,7 +869,7 @@
                 <!-- Enterprise Plan -->
                 <div class="group bg-white rounded-3xl p-8 border-2 border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full transform translate-x-16 -translate-y-16 opacity-50 group-hover:opacity-70 transition-opacity"></div>
-                    
+
                     <div class="relative">
                         <div class="text-center mb-8">
                             <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
@@ -1011,7 +938,7 @@
                 <div class="bg-white rounded-3xl p-8 shadow-2xl border border-gray-100 max-w-4xl mx-auto">
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">All plans include a 30-day free trial</h3>
                     <p class="text-gray-600 mb-6">No credit card required. Cancel anytime. Upgrade or downgrade as needed.</p>
-                    
+
                     <!-- FAQ Quick Links -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
                         <div class="text-center">
@@ -1129,162 +1056,11 @@
         </div>
     </footer>
 
-    <!-- Modern JavaScript for Interactions -->
-    <script>
-        // Enhanced Hero Section Interactions
-        document.addEventListener('DOMContentLoaded', function() {
-            // Animated typing effect for search input
-            const searchInput = document.querySelector('input[placeholder*="Search 50,000+"]');
-            if (searchInput) {
-                const texts = [
-                    'Find derivatives of trigonometric',
-                    'Search integration by parts',
-                    'Explore linear algebra problems',
-                    'Discover calculus applications'
-                ];
-                let textIndex = 0;
-                let charIndex = 0;
-                let isDeleting = false;
-                
-                function typeEffect() {
-                    const currentText = texts[textIndex];
-                    
-                    if (!isDeleting) {
-                        searchInput.value = currentText.slice(0, charIndex++);
-                        if (charIndex > currentText.length) {
-                            isDeleting = true;
-                            setTimeout(typeEffect, 2000); // Pause before deleting
-                            return;
-                        }
-                    } else {
-                        searchInput.value = currentText.slice(0, charIndex--);
-                        if (charIndex < 0) {
-                            isDeleting = false;
-                            textIndex = (textIndex + 1) % texts.length;
-                        }
-                    }
-                    
-                    setTimeout(typeEffect, isDeleting ? 50 : 100);
-                }
-                
-                setTimeout(typeEffect, 3000); // Start after 3 seconds
-            }
-            
-            // Enhanced button hover effects
-            const ctaButtons = document.querySelectorAll('a[href="#"], button');
-            ctaButtons.forEach(button => {
-                button.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-1px)';
-                    this.style.transition = 'all 0.3s ease';
-                });
-                
-                button.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                });
-            });
-            
-            // Parallax effect for background elements
-            window.addEventListener('scroll', function() {
-                const scrolled = window.pageYOffset;
-                const rate = scrolled * -0.3;
-                
-                document.querySelectorAll('.animate-blob').forEach((blob, index) => {
-                    blob.style.transform = `translate3d(0, ${rate * (index + 1)}px, 0)`;
-                });
-            });
-            
-            // Interactive stats counter animation
-            const statsNumbers = document.querySelectorAll('.text-2xl.font-bold');
-            const observerOptions = {
-                threshold: 0.7,
-                rootMargin: '0px 0px -100px 0px'
-            };
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const target = entry.target;
-                        const text = target.textContent;
-                        const match = text.match(/(\d+)/);
-                        if (match) {
-                            const number = parseInt(match[1]);
-                            let current = 0;
-                            const increment = number / 50;
-                            
-                            const counter = setInterval(() => {
-                                current += increment;
-                                if (current >= number) {
-                                    current = number;
-                                    clearInterval(counter);
-                                }
-                                target.textContent = text.replace(/\d+/, Math.floor(current));
-                            }, 30);
-                            
-                            observer.unobserve(target);
-                        }
-                    }
-                });
-            }, observerOptions);
-            
-            statsNumbers.forEach(stat => observer.observe(stat));
-            
-            // Add floating animation to cards
-            const cards = document.querySelectorAll('.bg-white.rounded-2xl, .bg-white.rounded-3xl');
-            cards.forEach((card, index) => {
-                card.style.animation = `float 6s ease-in-out infinite`;
-                card.style.animationDelay = `${index * 0.5}s`;
-            });
-        });
-    </script>
+    <!-- Include Alert Component -->
+    <x-alert
+        :type="session('success') ? 'success' : (session('error') ? 'error' : '')"
+        :message="session('success') ?: session('error')"
+    />
 
-    <script>
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        mobileMenuButton?.addEventListener('click', () => {
-            mobileMenu?.classList.toggle('hidden');
-        });
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                    // Close mobile menu if open
-                    mobileMenu?.classList.add('hidden');
-                }
-            });
-        });
-
-        // Navbar background on scroll
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                navbar?.classList.add('shadow-lg');
-            } else {
-                navbar?.classList.remove('shadow-lg');
-            }
-        });
-
-        // Add loading state to CTA buttons
-        document.querySelectorAll('a[href="#"]').forEach(button => {
-            if (button.textContent.includes('Start Free Trial')) {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const originalText = this.innerHTML;
-                    this.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Starting...';
-                    setTimeout(() => {
-                        this.innerHTML = originalText;
-                    }, 2000);
-                });
-            }
-        });
-    </script>
 </body>
 </html>

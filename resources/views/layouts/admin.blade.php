@@ -14,7 +14,7 @@
 
     <!-- Alpine.js CDN for dropdown functionality -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
+
     <!-- Additional head content -->
     @stack('head')
 </head>
@@ -516,7 +516,7 @@
             <div class="flex-1 overflow-y-auto">
 
                     <!-- Include Alert Component -->
-                    <x-alert 
+                    <x-alert
                         :type="session('success') ? 'success' : (session('error') ? 'error' : '')"
                         :message="session('success') ?: session('error')"
                     />
@@ -530,5 +530,6 @@
 
     <!-- Additional scripts -->
     @stack('scripts')
+
 </body>
 </html>

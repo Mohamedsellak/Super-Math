@@ -14,6 +14,9 @@
 
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    @stack('head')
+
 </head>
 <body class="bg-gray-50 min-h-screen font-sans" x-data="{ mobileMenuOpen: false }">
     <div class="flex h-screen bg-gray-100">
@@ -25,7 +28,7 @@
                 <!-- Logo & Header -->
                 <div class="relative px-8 py-10 text-center border-b border-gray-200 bg-gray-50">
                     <div class="flex flex-col items-center space-y-4">
-                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-300">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-300">
                             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                             </svg>
@@ -56,7 +59,7 @@
                         </a>
 
                         <!-- Question Management -->
-                        <a href="#"
+                        <a href="{{ route('user.questions.index') }}"
                            class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-amber-50 hover:shadow-md {{ request()->routeIs('questions.*') ? 'bg-amber-100 text-amber-900 shadow-md border border-amber-200' : '' }}">
                             <div class="flex items-center space-x-4 w-full">
                                 <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
@@ -64,7 +67,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
                                 </div>
-                                <span class="font-semibold text-base tracking-wide">Question Management</span>
+                                <span class="font-semibold text-base tracking-wide">Browse Question</span>
                             </div>
                             <div class="absolute right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,7 +169,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                                 </svg>
                             </button>
-                            
+
                             <div class="flex items-center">
                                 <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-3">
                                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -431,7 +434,7 @@
                                 <p class="text-sm font-medium text-purple-600">User Portal</p>
                             </div>
                         </div>
-                        
+
                         <!-- Credits Section for Mobile Sidebar -->
                         <div class="mt-4 bg-white rounded-xl p-4 shadow-sm border border-gray-100">
                             <div class="flex items-center justify-between">
@@ -471,7 +474,7 @@
                             </a>
 
                             <!-- Question Management -->
-                            <a href="#"
+                            <a href="{{ route('user.questions.index') }}"
                                class="group flex items-center px-4 py-3 text-base font-medium rounded-xl transition-all duration-200 {{ request()->routeIs('questions.*') ? 'bg-amber-100 text-amber-800 shadow-sm' : 'text-gray-700 hover:bg-amber-50 hover:text-amber-700' }}">
                                 <div class="flex items-center">
                                     <div class="mr-4 w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center shadow-sm">
@@ -479,7 +482,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
                                     </div>
-                                    Question Management
+                                   Browse Question
                                 </div>
                             </a>
 
@@ -529,12 +532,12 @@
                 <div class="p-6">
 
                     <!-- Include Alert Component -->
-                    <x-alert 
+                    <x-alert
                         :type="session('success') ? 'success' : (session('error') ? 'error' : '')"
                         :message="session('success') ?: session('error')"
                     />
 
-                    
+
                     <!-- Dashboard Content -->
                     @yield('content')
 
@@ -542,6 +545,8 @@
             </div>
         </div>
     </div>
+
+    @stack('scripts')
 
 </body>
 </html>

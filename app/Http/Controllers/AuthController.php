@@ -41,10 +41,10 @@ class AuthController extends Controller
             // Role-based redirection
             switch ($user->role) {
                 case 'admin':
-                    return to_route('admin.dashboard');
+                    return to_route('admin.dashboard')->with('success', 'Welcome back, Admin!');
                 case 'user':
                 default:
-                    return to_route('user.dashboard');
+                    return to_route('user.dashboard')->with('success', 'Welcome back!');
             }
         }
 
@@ -94,7 +94,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return to_route('user.dashboard');
+        return to_route('user.dashboard')->with('success', 'Registration successful! Welcome to SuperMath!');
     }
 
     /**
@@ -113,7 +113,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        return to_route('login')->with('success', 'We will miss you! Come back soon!');
     }
 
     /**

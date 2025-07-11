@@ -95,7 +95,7 @@ class ProfileController extends Controller
             "phone"=>"required|string|max:15",
             "institution"=>"nullable|string|max:15",
 
-            
+
         ]);
 
         $user = auth()->user();

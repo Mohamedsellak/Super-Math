@@ -1,16 +1,16 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container mx-auto px-4 py-6">
+<div class="w-full px-2 sm:px-6 lg:px-12 py-6">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-900">Questions Management</h1>
-        <a href="{{ route('admin.questions.create') }}" 
+        <a href="{{ route('admin.questions.create') }}"
            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200">
             <i class="fas fa-plus mr-2"></i>Add New Question
         </a>
     </div>
 
-    <div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="bg-white rounded-lg shadow overflow-hidden w-full">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
@@ -33,7 +33,7 @@
                             <div class="text-sm text-gray-500">{{ $question->institution }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                 @if($question->difficulty == 'easy') bg-green-100 text-green-800
                                 @elseif($question->difficulty == 'medium') bg-yellow-100 text-yellow-800
                                 @else bg-red-100 text-red-800 @endif">
@@ -61,12 +61,12 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex space-x-2">
-                                <a href="{{ route('admin.questions.show', $question) }}" 
+                                <a href="{{ route('admin.questions.show', $question) }}"
                                    class="text-blue-600 hover:text-blue-900">View</a>
-                                <a href="{{ route('admin.questions.edit', $question) }}" 
+                                <a href="{{ route('admin.questions.edit', $question) }}"
                                    class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                <form action="{{ route('admin.questions.destroy', $question) }}" 
-                                      method="POST" class="inline" 
+                                <form action="{{ route('admin.questions.destroy', $question) }}"
+                                      method="POST" class="inline"
                                       onsubmit="return confirm('Are you sure you want to delete this question?')">
                                     @csrf
                                     @method('DELETE')

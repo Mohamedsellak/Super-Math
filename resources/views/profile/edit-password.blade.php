@@ -3,9 +3,7 @@
 @section('title', 'Change Password - SuperMath')
 
 @section('content')
-<!-- Alerts -->
-<x-alert type="success" :message="session('success')" />
-<x-alert type="error" :message="$errors->any() ? $errors->all() : ''" :timeout="7000" />
+
 
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8">
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -75,14 +73,7 @@
                                 </button>
                             </div>
                         </div>
-                        @error('current_password')
-                            <p class="mt-2 text-sm text-red-600 flex items-center">
-                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                </svg>
-                                {{ $message }}
-                            </p>
-                        @enderror
+
                     </div>
                 </div>
 
@@ -114,14 +105,6 @@
                                 </button>
                             </div>
                         </div>
-                        @error('password')
-                            <p class="mt-2 text-sm text-red-600 flex items-center">
-                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                </svg>
-                                {{ $message }}
-                            </p>
-                        @enderror
                     </div>
                 </div>
             </div>
@@ -153,14 +136,6 @@
                             </button>
                         </div>
                     </div>
-                    @error('password_confirmation')
-                        <p class="mt-2 text-sm text-red-600 flex items-center">
-                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                            </svg>
-                            {{ $message }}
-                        </p>
-                    @enderror
                 </div>
             </div>
 

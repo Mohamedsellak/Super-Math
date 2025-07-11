@@ -42,33 +42,6 @@
                     </p>
                 </div>
 
-                @if (session('status'))
-                    <div class="relative px-4 py-3 mb-4 border border-green-100 rounded-xl bg-green-50/50 backdrop-blur-xl">
-                        <div class="flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span class="text-sm font-medium text-green-800">
-                                {{ session('status') }}
-                            </span>
-                        </div>
-                    </div>
-                @endif
-
-                @if ($errors->any())
-                    <div class="relative px-4 py-3 mb-4 border border-red-100 rounded-xl bg-red-50/50 backdrop-blur-xl">
-                        <div class="flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <div class="text-sm font-medium text-red-800">
-                                @foreach ($errors->all() as $error)
-                                    <div>{{ $error }}</div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                @endif
 
                 <form class="space-y-6" action="{{ route('password.email') }}" method="POST">
                     @csrf
@@ -117,6 +90,12 @@
             </div>
         </div>
     </div>
+
+    <!-- Include Alert Component -->
+    <x-alert
+        :type="session('success') ? 'success' : (session('error') ? 'error' : '')"
+        :message="session('success') ?: session('error')"
+    />
 
 </body>
 </html>

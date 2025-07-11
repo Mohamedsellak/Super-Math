@@ -1,8 +1,8 @@
 @props(['type' => 'success', 'message' => '', 'timeout' => 5000])
 
-@if($message)
-<div x-data="{ show: true }" 
-     x-show="show" 
+@if($errors->any() || $message)
+<div x-data="{ show: true }"
+     x-show="show"
      x-init="setTimeout(() => show = false, {{ $timeout }})"
      x-transition:enter="transition ease-out duration-300"
      x-transition:enter-start="opacity-0 transform translate-x-6 scale-95"
@@ -24,9 +24,17 @@
             @endif
         </div>
         <div class="ml-3 {{ $type === 'error' ? 'flex-1' : '' }}">
-            @if($type === 'success')
+            @if ($errors->any())
+                <ul class="text-sm space-y-1">
+                    @foreach($errors->all() as $error)
+                        <li>• {{ $error }}</li>
+                    @endforeach
+                </ul>
+
+            @elseif($type === 'success')
                 <p class="text-sm font-semibold">{{ $message }}</p>
-            @else
+
+            @elseif ($type === 'error')
                 <p class="text-sm font-semibold mb-1">Please fix the following errors:</p>
                 @if(is_array($message))
                     <ul class="text-sm space-y-1">
