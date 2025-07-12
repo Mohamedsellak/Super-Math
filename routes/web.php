@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\QuestionsController;
 
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\UserQuestionsController;
+use App\Http\Controllers\User\CreditController;
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -57,9 +58,15 @@ Route::middleware([AuthMiddleware::class])->group(function () {
 
         Route::get('/questions', [UserQuestionsController::class, 'index'])->name('questions.index');
 
+        // Credit Routes
+        Route::get('/credits', [CreditController::class, 'index'])->name('credits.index');
+        Route::get('/credits/purchase', [CreditController::class, 'purchase'])->name('credit.purchase');
+
     });
 
 });
+
+
 
 
 

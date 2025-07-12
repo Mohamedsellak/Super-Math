@@ -17,7 +17,7 @@ class QuestionsController extends Controller
     {
         //
         return view('admin.questions.index', [
-            'questions' => Question::all(),
+            'questions' => Question::Paginate(10)->sortByDesc('created_at'),
         ]);
     }
 

@@ -312,25 +312,7 @@
 
                         <!-- Page Title (visible on desktop) -->
                         <div class="hidden md:block">
-                            <h1 class="text-2xl font-semibold text-gray-900">
-                                @if(request()->routeIs('admin.dashboard'))
-                                    Dashboard
-                                @elseif(request()->routeIs('questions.*'))
-                                    Question Management
-                                @elseif(request()->routeIs('users.*'))
-                                    User Management
-                                @elseif(request()->routeIs('payments.*'))
-                                    Payment History
-                                @elseif(request()->routeIs('downloads.*'))
-                                    Downloads History
-                                @elseif(request()->routeIs('analytics.*'))
-                                    Analytics
-                                @elseif(request()->routeIs('settings.*'))
-                                    Settings
-                                @else
-                                    SuperMath Admin
-                                @endif
-                            </h1>
+                        
                         </div>
 
                         <!-- Right side - User menu and notifications -->
