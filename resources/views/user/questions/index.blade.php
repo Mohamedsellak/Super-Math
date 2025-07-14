@@ -132,15 +132,15 @@
                         <i class="fas fa-filter text-indigo-600 text-xl mr-3"></i>
                         <h3 class="text-xl font-bold text-gray-800">Filter & Search</h3>
                     </div>
-                    
+
                     <div class="space-y-5">
                         <!-- Search Input -->
                         <div>
                             <label for="search-input" class="block text-sm font-semibold text-gray-700 mb-2">
                                 <i class="fas fa-search mr-2"></i>Search Questions
                             </label>
-                            <input type="text" id="search-input" 
-                                   class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                            <input type="text" id="search-input"
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                                    placeholder="Search by ID or content...">
                         </div>
 
@@ -185,11 +185,11 @@
 
                         <!-- Action Buttons -->
                         <div class="space-y-3 pt-4">
-                            <button type="button" id="applyFilters" 
+                            <button type="button" id="applyFilters"
                                     class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition-all duration-200 transform hover:scale-105">
                                 <i class="fas fa-filter mr-2"></i>Apply Filters
                             </button>
-                            <button type="button" id="clearFilters" 
+                            <button type="button" id="clearFilters"
                                     class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-semibold transition-all duration-200">
                                 <i class="fas fa-times mr-2"></i>Clear All
                             </button>
@@ -199,11 +199,11 @@
                         <div class="border-t pt-5 mt-6">
                             <h4 class="font-semibold text-gray-700 mb-3">Quick Actions</h4>
                             <div class="space-y-2">
-                                <button type="button" id="selectAll" 
+                                <button type="button" id="selectAll"
                                         class="w-full text-left px-3 py-2 rounded-lg text-sm text-blue-600 hover:bg-blue-50 transition-colors">
                                     <i class="fas fa-check-double mr-2"></i>Select All Visible
                                 </button>
-                                <button type="button" id="deselectAll" 
+                                <button type="button" id="deselectAll"
                                         class="w-full text-left px-3 py-2 rounded-lg text-sm text-red-600 hover:bg-red-50 transition-colors">
                                     <i class="fas fa-times-circle mr-2"></i>Deselect All
                                 </button>
@@ -221,44 +221,44 @@
                         <!-- Music Player Style Navigation -->
                         <div class="flex justify-center items-center space-x-1">
                             <!-- First Button -->
-                            <button type="button" id="firstBtn" 
-                                    class="bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-600 p-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md" 
+                            <button type="button" id="firstBtn"
+                                    class="bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-600 p-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md"
                                     title="First Question">
                                 <i class="fas fa-backward-step text-lg"></i>
                             </button>
-                            
+
                             <!-- Previous Button -->
-                            <button type="button" id="prevBtn" 
-                                    class="bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-600 p-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md ml-1" 
+                            <button type="button" id="prevBtn"
+                                    class="bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-600 p-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md ml-1"
                                     title="Previous Question">
                                 <i class="fas fa-caret-left text-lg"></i>
                             </button>
-                            
+
                             <!-- Question ID Selector -->
                             <div class="mx-6 flex items-center bg-gray-50 rounded-full px-4 py-2 border border-gray-200">
                                 <label for="gotoInput" class="text-sm font-medium text-gray-600 mr-2">Q:</label>
-                                <input type="number" id="gotoInput" min="1" 
-                                       class="w-16 bg-transparent text-center text-lg font-bold text-gray-800 focus:outline-none focus:ring-0 border-0 p-0" 
+                                <input type="number" id="gotoInput" min="1"
+                                       class="w-16 bg-transparent text-center text-lg font-bold text-gray-800 focus:outline-none focus:ring-0 border-0 p-0"
                                        placeholder="1">
                                 <span class="text-gray-400 mx-1">/</span>
                                 <span id="totalQuestionsNav" class="text-gray-600 font-medium">{{ count($questions) }}</span>
-                                <button type="button" id="gotoBtn" 
-                                        class="ml-2 text-blue-600 hover:text-blue-800 transition-colors" 
+                                <button type="button" id="gotoBtn"
+                                        class="ml-2 text-blue-600 hover:text-blue-800 transition-colors"
                                         title="Go to Question">
                                     <i class="fas fa-arrow-right"></i>
                                 </button>
                             </div>
-                            
+
                             <!-- Next Button -->
-                            <button type="button" id="nextBtn" 
-                                    class="bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-600 p-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md mr-1" 
+                            <button type="button" id="nextBtn"
+                                    class="bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-600 p-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md mr-1"
                                     title="Next Question">
                                 <i class="fas fa-caret-right text-lg"></i>
                             </button>
-                            
+
                             <!-- Last Button -->
-                            <button type="button" id="lastBtn" 
-                                    class="bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-600 p-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md" 
+                            <button type="button" id="lastBtn"
+                                    class="bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-600 p-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md"
                                     title="Last Question">
                                 <i class="fas fa-forward-step text-lg"></i>
                             </button>
@@ -313,7 +313,7 @@
                             </div>
                         </div>
 
-                        <form id="downloadForm" method="POST" action="#">
+                        <form id="downloadForm" method="POST" action="{{ route('user.questions.download') }}">
                             @csrf
                             <input type="hidden" name="selected_questions" id="selectedQuestionIds">
                             <button type="submit" id="downloadBtn" disabled
@@ -375,7 +375,7 @@
         const isSelected = selectedQuestions.has(question.id);
         const difficultyClass = difficultyColors[question.difficulty?.toLowerCase()] || 'bg-gray-100 text-gray-800';
         const typeClass = typeColors[question.question_type?.toLowerCase()] || 'bg-gray-100 text-gray-800';
-        
+
         // Image HTML if exists
         const imageHtml = question.image ? `
             <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
@@ -425,9 +425,9 @@
                 </div>
             </div>
         `;
-        
+
         return `
-            <div class="question-card bg-white rounded-2xl shadow-lg border border-gray-100 p-6 question-card-enter" 
+            <div class="question-card bg-white rounded-2xl shadow-lg border border-gray-100 p-6 question-card-enter"
                  data-question-id="${question.id}" data-index="${index}">
                 <!-- Question Header -->
                 <div class="flex items-start justify-between mb-6">
@@ -441,8 +441,8 @@
                         </div>
                     </div>
                     <div class="flex items-center">
-                        <input type="checkbox" id="checkbox-${question.id}" 
-                               class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 question-checkbox" 
+                        <input type="checkbox" id="checkbox-${question.id}"
+                               class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 question-checkbox"
                                data-question-id="${question.id}" ${isSelected ? 'checked' : ''}>
                         <label for="checkbox-${question.id}" class="ml-2 text-sm font-medium text-gray-700">Select</label>
                     </div>
@@ -524,7 +524,7 @@
     // Update display
     function updateDisplay() {
         questionContainer.innerHTML = '';
-        
+
         if (filteredQuestions.length === 0) {
             noQuestionsFound.classList.remove('hidden');
             questionContainer.classList.add('hidden');
@@ -563,13 +563,13 @@
     // Handle checkbox change
     function handleCheckboxChange(e) {
         const questionId = parseInt(e.target.dataset.questionId);
-        
+
         if (e.target.checked) {
             selectedQuestions.add(questionId);
         } else {
             selectedQuestions.delete(questionId);
         }
-        
+
         updateSelectionUI();
     }
 
@@ -577,18 +577,18 @@
     function updateSelectionUI() {
         const count = selectedQuestions.size;
         const credits = count;
-        
+
         selectedCount.textContent = count;
         selectedCountText.textContent = count;
         creditsNeeded.textContent = credits;
         totalCreditsNeeded.textContent = credits;
-        
+
         // Update download button
         downloadBtn.disabled = count === 0;
-        
+
         // Update hidden input
         selectedQuestionIds.value = JSON.stringify([...selectedQuestions]);
-        
+
         // Show/hide credit warning
         if (credits > userCredits && count > 0) {
             creditWarning.classList.remove('hidden');
@@ -615,10 +615,10 @@
         const difficultyFilter = document.getElementById('filter-difficulty').value;
 
         filteredQuestions = questionsData.filter(question => {
-            const matchesSearch = !searchTerm || 
+            const matchesSearch = !searchTerm ||
                 question.id.toString().includes(searchTerm) ||
                 (question.question && question.question.toLowerCase().includes(searchTerm));
-            
+
             const matchesEducation = !educationFilter || question.education_level === educationFilter;
             const matchesType = !typeFilter || question.question_type === typeFilter;
             const matchesDifficulty = !difficultyFilter || question.difficulty === difficultyFilter;

@@ -61,7 +61,7 @@
 
                         <!-- Question Management -->
                         <a href="{{ route('user.questions.index') }}"
-                           class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-amber-50 hover:shadow-md {{ request()->routeIs('questions.*') ? 'bg-amber-100 text-amber-900 shadow-md border border-amber-200' : '' }}">
+                           class="group relative flex items-center px-4 py-4 text-gray-600 hover:text-gray-900 rounded-xl transition-all duration-300 hover:bg-amber-50 hover:shadow-md {{ request()->routeIs('user.questions.*') ? 'bg-amber-100 text-amber-900 shadow-md border border-amber-200' : '' }}">
                             <div class="flex items-center space-x-4 w-full">
                                 <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
                                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -186,7 +186,7 @@
 
                         <!-- Page Title (visible on desktop) -->
                         <div class="hidden md:block">
-                            <h1 class="text-2xl font-semibold text-gray-900">
+                            <h1 class="text-2xl font-bold text-gray-900">
                                 @if(request()->routeIs('user.dashboard'))
                                     Dashboard
                                 @elseif(request()->routeIs('user.questions.*'))
@@ -476,7 +476,7 @@
 
                             <!-- Question Management -->
                             <a href="{{ route('user.questions.index') }}"
-                               class="group flex items-center px-4 py-3 text-base font-medium rounded-xl transition-all duration-200 {{ request()->routeIs('questions.*') ? 'bg-amber-100 text-amber-800 shadow-sm' : 'text-gray-700 hover:bg-amber-50 hover:text-amber-700' }}">
+                               class="group flex items-center px-4 py-3 text-base font-medium rounded-xl transition-all duration-200 {{ request()->routeIs('user.questions.*') ? 'bg-amber-100 text-amber-800 shadow-sm' : 'text-gray-700 hover:bg-amber-50 hover:text-amber-700' }}">
                                 <div class="flex items-center">
                                     <div class="mr-4 w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center shadow-sm">
                                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -530,7 +530,6 @@
 
             <!-- Main Content Area -->
             <div class="flex-1 overflow-y-auto">
-                <div class="p-6">
 
                     <!-- Include Alert Component -->
                     <x-alert
@@ -542,7 +541,6 @@
                     <!-- Dashboard Content -->
                     @yield('content')
 
-                </div>
             </div>
         </div>
     </div>

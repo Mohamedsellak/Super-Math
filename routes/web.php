@@ -57,6 +57,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('dashboard');
 
         Route::get('/questions', [UserQuestionsController::class, 'index'])->name('questions.index');
+        Route::post('/questions/download', [UserQuestionsController::class, 'download'])->name('questions.download');
 
         // Credit Routes
         Route::get('/credits', [CreditController::class, 'index'])->name('credits.index');
