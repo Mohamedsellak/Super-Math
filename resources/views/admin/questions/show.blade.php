@@ -25,7 +25,7 @@
 </script>
 
 <!-- MathJax Library -->
-<script type="text/javascript" id="MathJax-script" async 
+<script type="text/javascript" id="MathJax-script" async
         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 </script>
 @endpush
@@ -34,7 +34,7 @@
 <!-- Background with gradient -->
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-teal-100">
     <div class="container mx-auto px-8 py-8 lg:py-12 max-w-full">
-        
+
         <!-- Progress Bar -->
         <div class="mb-8">
             <div class="h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 rounded-full opacity-80"></div>
@@ -75,12 +75,12 @@
                         <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
                         <span class="text-sm font-medium text-gray-600">Viewing mode</span>
                     </div>
-                    <a href="{{ route('admin.questions.edit', $question) }}" 
+                    <a href="{{ route('admin.questions.edit', $question) }}"
                        class="group flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl font-medium transform hover:scale-105">
                         <i class="fas fa-edit group-hover:scale-110 transition-transform duration-200"></i>
                         <span>Edit Question</span>
                     </a>
-                    <a href="{{ route('admin.questions.index') }}" 
+                    <a href="{{ route('admin.questions.index') }}"
                        class="group flex items-center space-x-2 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 px-6 py-3 rounded-xl border border-gray-200 hover:border-gray-300 transition-all duration-300 shadow-sm hover:shadow-md font-medium">
                         <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform duration-200"></i>
                         <span>Back to List</span>
@@ -305,7 +305,7 @@
                                 <p class="font-semibold text-gray-800 mb-2">Question Document</p>
                                 <p class="text-sm text-gray-600 mb-4">Download the complete document file</p>
                             </div>
-                            <a href="{{ route('admin.questions.download-document', $question) }}" 
+                            <a href="{{ route('admin.questions.download-document', $question) }}"
                                class="group inline-flex items-center justify-center space-x-2 w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
                                 <i class="fas fa-download group-hover:scale-110 transition-transform duration-200"></i>
                                 <span>Download</span>
@@ -324,18 +324,18 @@
                         </h3>
                     </div>
                     <div class="p-6 space-y-4">
-                        <a href="{{ route('admin.questions.edit', $question) }}" 
+                        <a href="{{ route('admin.questions.edit', $question) }}"
                            class="group flex items-center justify-center space-x-2 w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105">
                             <i class="fas fa-edit group-hover:scale-110 transition-transform duration-200"></i>
                             <span>Edit Question</span>
                         </a>
-                        
-                        <form action="{{ route('admin.questions.destroy', $question) }}" 
-                              method="POST" 
+
+                        <form action="{{ route('admin.questions.destroy', $question) }}"
+                              method="POST"
                               onsubmit="return confirm('Are you sure you want to delete this question? This action cannot be undone.')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" 
+                            <button type="submit"
                                     class="group flex items-center justify-center space-x-2 w-full bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105">
                                 <i class="fas fa-trash group-hover:scale-110 transition-transform duration-200"></i>
                                 <span>Delete Question</span>

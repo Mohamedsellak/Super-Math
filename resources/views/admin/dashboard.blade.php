@@ -102,7 +102,7 @@
     </div>
 
     <!-- Total Revenue -->
-    <div class="group bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+    {{-- <div class="group bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         <div class="flex items-center justify-between">
             <div class="flex items-center space-x-4">
                 <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
@@ -110,7 +110,7 @@
                 </div>
                 <div>
                     <p class="text-xs font-bold text-gray-600 uppercase tracking-wide">Total Revenue</p>
-                    <p class="text-2xl font-black text-gray-900">${{ number_format(\App\Models\Payment::sum('amount'), 2) }}</p>
+                    <p class="text-2xl font-black text-gray-900">${{ number_format(\App\Models\CreditHistory::where('action', 'purchase')->sum('amount'), 2) }}</p>
                     <div class="flex items-center space-x-1 mt-1">
                         <i class="fas fa-arrow-up text-green-500 text-xs"></i>
                         <span class="text-xs font-semibold text-green-600">+15.7%</span>
@@ -119,7 +119,9 @@
                 </div>
             </div>
         </div>
-    </div>    </div>
+    </div>     --}}
+
+</div>
 
     <!-- Secondary Stats Row -->
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
@@ -174,15 +176,16 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-md p-3 border border-gray-100">
+    {{-- <div class="bg-white rounded-xl shadow-md p-3 border border-gray-100">
         <div class="text-center">
             <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <i class="fas fa-credit-card text-indigo-600 text-sm"></i>
             </div>
-            <p class="text-xs font-semibold text-gray-600 uppercase">Payments</p>
-            <p class="text-lg font-black text-gray-900">{{ \App\Models\Payment::count() }}</p>
+            <p class="text-xs font-semibold text-gray-600 uppercase">Purchases</p>
+            <p class="text-lg font-black text-gray-900">{{ \App\Models\CreditHistory::where('action', 'purchase')->count() }}</p>
         </div>
-    </div>    </div>
+    </div>     --}}
+</div>
 
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
@@ -333,14 +336,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update current time
     function updateTime() {
         const now = new Date();
-        const timeString = now.toLocaleTimeString('en-US', { 
-            hour12: false, 
-            hour: '2-digit', 
-            minute: '2-digit' 
+        const timeString = now.toLocaleTimeString('en-US', {
+            hour12: false,
+            hour: '2-digit',
+            minute: '2-digit'
         });
         document.getElementById('currentTime').textContent = timeString;
     }
-    
+
     updateTime();
     setInterval(updateTime, 60000); // Update every minute
 
@@ -444,7 +447,7 @@ document.addEventListener('DOMContentLoaded', function() {
         card.addEventListener('mouseenter', function() {
             this.style.transform = 'translateY(-4px) scale(1.02)';
         });
-        
+
         card.addEventListener('mouseleave', function() {
             this.style.transform = 'translateY(0) scale(1)';
         });

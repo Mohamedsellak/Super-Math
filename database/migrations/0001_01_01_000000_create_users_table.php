@@ -20,8 +20,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->integer('credit')->default(0);
             $table->string('role')->default('user'); // 'user', 'admin'
+            $table->integer('credit')->default(0);
+            $table->timestamp('credit_expires_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -11,6 +11,8 @@ class CreditHistory extends Model
         'user_id',
         'amount',
         'action',
+        'description',
+
     ];
 
     protected $casts = [

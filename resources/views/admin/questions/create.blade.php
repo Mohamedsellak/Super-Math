@@ -8,7 +8,7 @@
 <!-- Background with gradient -->
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
     <div class="container mx-auto px-8 py-8 lg:py-12 max-w-full">
-        
+
         <!-- Progress Bar -->
         <div class="mb-8">
             <div class="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full opacity-80"></div>
@@ -33,7 +33,7 @@
                         <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                         <span class="text-sm font-medium text-gray-600">Ready to create</span>
                     </div>
-                    <a href="{{ route('admin.questions.index') }}" 
+                    <a href="{{ route('admin.questions.index') }}"
                        class="group flex items-center space-x-2 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 px-6 py-3 rounded-xl border border-gray-200 hover:border-gray-300 transition-all duration-300 shadow-sm hover:shadow-md font-medium">
                         <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform duration-200"></i>
                         <span>Back to Questions</span>
@@ -56,7 +56,7 @@
             <div class="p-8 lg:p-10">
                 <form action="{{ route('admin.questions.store') }}" method="POST" enctype="multipart/form-data" class="space-y-10">
                     @csrf
-                
+
                 <!-- Question Content Section -->
                 <div class="group bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl p-8 border border-blue-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg">
                     <div class="flex items-center space-x-3 mb-8">
@@ -68,7 +68,7 @@
                             <p class="text-gray-600 text-sm">Enter the question text and answer options</p>
                         </div>
                     </div>
-                    
+
                     <div class="space-y-8">
                         <!-- Question Text -->
                         <div class="space-y-3">
@@ -78,7 +78,7 @@
                                 </div>
                                 Question Text *
                             </label>
-                            <textarea name="question" id="question" rows="5" 
+                            <textarea name="question" id="question" rows="5"
                                       class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 resize-y hover:border-gray-300 bg-white shadow-sm"
                                       placeholder="Enter the complete question text with proper formatting..." required>{{ old('question') }}</textarea>
                         </div>
@@ -91,7 +91,7 @@
                                 </div>
                                 Answer Options *
                             </label>
-                            <textarea name="options" id="options" rows="5" 
+                            <textarea name="options" id="options" rows="5"
                                       class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 resize-y hover:border-gray-300 bg-white shadow-sm"
                                       placeholder="Enter all possible answer options (A, B, C, D)..." required>{{ old('options') }}</textarea>
                             <div class="flex items-center space-x-2 text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
@@ -108,7 +108,7 @@
                                 </div>
                                 Correct Answer *
                             </label>
-                            <textarea name="answer" id="answer" rows="4" 
+                            <textarea name="answer" id="answer" rows="4"
                                       class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 resize-y hover:border-gray-300 bg-white shadow-sm"
                                       placeholder="Enter the complete correct answer with explanation..." required>{{ old('answer') }}</textarea>
                             <div class="flex items-center space-x-2 text-sm text-emerald-700 bg-emerald-50 p-3 rounded-lg">
@@ -130,7 +130,7 @@
                             <p class="text-gray-600 text-sm">Define the question characteristics and difficulty</p>
                         </div>
                     </div>
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                         <div class="space-y-3">
                             <label for="difficulty" class="flex items-center text-sm font-bold text-gray-800 uppercase tracking-wide">
@@ -139,7 +139,7 @@
                                 </div>
                                 Difficulty *
                             </label>
-                            <select name="difficulty" id="difficulty" 
+                            <select name="difficulty" id="difficulty"
                                     class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-gray-300 bg-white shadow-sm font-medium" required>
                                 <option value="">Choose difficulty level</option>
                                 <option value="easy" {{ old('difficulty') == 'easy' ? 'selected' : '' }} class="text-green-700">🟢 Easy - Basic concepts</option>
@@ -155,7 +155,7 @@
                                 </div>
                                 Question Type *
                             </label>
-                            <select name="question_type" id="question_type" 
+                            <select name="question_type" id="question_type"
                                     class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-gray-300 bg-white shadow-sm font-medium" required>
                                 <option value="">Select question format</option>
                                 <option value="Multiple Choice" {{ old('question_type') == 'Multiple Choice' ? 'selected' : '' }}>📝 Multiple Choice</option>
@@ -172,7 +172,7 @@
                                 </div>
                                 Education Level *
                             </label>
-                            <select name="education_level" id="education_level" 
+                            <select name="education_level" id="education_level"
                                     class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-gray-300 bg-white shadow-sm font-medium" required>
                                 <option value="">Choose education level</option>
                                 <option value="Elementary" {{ old('education_level') == 'Elementary' ? 'selected' : '' }}>🎒 Elementary School</option>
@@ -195,7 +195,7 @@
                             <p class="text-gray-600 text-sm">Provide attribution and source details</p>
                         </div>
                     </div>
-                    
+
                     <div class="space-y-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                             <div class="space-y-3">
@@ -205,7 +205,7 @@
                                     </div>
                                     Institution *
                                 </label>
-                                <input type="text" name="institution" id="institution" 
+                                <input type="text" name="institution" id="institution"
                                        class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-gray-300 bg-white shadow-sm font-medium"
                                        placeholder="University or institution name..." value="{{ old('institution') }}" required>
                             </div>
@@ -217,7 +217,7 @@
                                     </div>
                                     Source *
                                 </label>
-                                <input type="text" name="source" id="source" 
+                                <input type="text" name="source" id="source"
                                        class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-gray-300 bg-white shadow-sm font-medium"
                                        placeholder="Exam, textbook, or source name..." value="{{ old('source') }}" required>
                             </div>
@@ -243,7 +243,7 @@
                                     </div>
                                     Region *
                                 </label>
-                                <input type="text" name="region" id="region" 
+                                <input type="text" name="region" id="region"
                                        class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-gray-300 bg-white shadow-sm font-medium"
                                        placeholder="Geographic region or area..." value="{{ old('region') }}" required>
                             </div>
@@ -255,7 +255,7 @@
                                     </div>
                                     State Code (UF) *
                                 </label>
-                                <input type="text" name="uf" id="uf" maxlength="2" 
+                                <input type="text" name="uf" id="uf" maxlength="2"
                                        class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-gray-300 bg-white shadow-sm font-medium uppercase"
                                        placeholder="SP, RJ, MG..." value="{{ old('uf') }}" required>
                                 <div class="flex items-center space-x-2 text-sm text-yellow-700 bg-yellow-50 p-3 rounded-lg">
@@ -278,7 +278,7 @@
                             <p class="text-gray-600 text-sm">Upload supporting documents and images</p>
                         </div>
                     </div>
-                    
+
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <!-- Image Upload (Optional) -->
                         <div class="bg-white rounded-2xl p-6 border-2 border-dashed border-gray-200 hover:border-blue-300 transition-all duration-300 hover:bg-blue-50">
@@ -309,14 +309,35 @@
                                 </div>
                                 <div>
                                     <label for="doc" class="flex items-center justify-center text-sm font-bold text-gray-800 uppercase tracking-wide cursor-pointer">
-                                        Document Upload *
+                                        Question Document *
                                     </label>
-                                    <p class="text-sm text-gray-600 mt-2">Required Word document</p>
+                                    <p class="text-sm text-gray-600 mt-2">Required Word document with question</p>
                                 </div>
                                 <input type="file" name="doc" id="doc" accept=".doc,.docx" required
                                        class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-gray-300 bg-white shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
                                 <div class="flex items-center justify-center space-x-2 text-sm text-red-700 bg-red-50 p-3 rounded-lg">
                                     <i class="fas fa-exclamation-circle text-red-500"></i>
+                                    <span>DOC or DOCX files up to 10MB</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Answer Document Upload (Required) -->
+                        <div class="bg-white rounded-2xl p-6 border-2 border-dashed border-green-200 hover:border-green-300 transition-all duration-300 hover:bg-green-50">
+                            <div class="text-center space-y-4">
+                                <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto">
+                                    <i class="fas fa-file-check text-green-600 text-2xl"></i>
+                                </div>
+                                <div>
+                                    <label for="answer_doc" class="flex items-center justify-center text-sm font-bold text-gray-800 uppercase tracking-wide cursor-pointer">
+                                        Answer Document *
+                                    </label>
+                                    <p class="text-sm text-gray-600 mt-2">Required Word document with answer</p>
+                                </div>
+                                <input type="file" name="answer_doc" id="answer_doc" accept=".doc,.docx" required
+                                       class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-gray-300 bg-white shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                                <div class="flex items-center justify-center space-x-2 text-sm text-green-700 bg-green-50 p-3 rounded-lg">
+                                    <i class="fas fa-exclamation-circle text-green-500"></i>
                                     <span>DOC or DOCX files up to 10MB</span>
                                 </div>
                             </div>
@@ -336,14 +357,14 @@
                                 <p class="text-sm">All required fields must be completed</p>
                             </div>
                         </div>
-                        
+
                         <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-                            <a href="{{ route('admin.questions.index') }}" 
+                            <a href="{{ route('admin.questions.index') }}"
                                class="group flex items-center justify-center space-x-2 px-8 py-4 border-2 border-gray-300 rounded-xl text-gray-700 hover:text-gray-900 hover:border-gray-400 transition-all duration-300 font-semibold bg-white hover:bg-gray-50 shadow-sm hover:shadow-md">
                                 <i class="fas fa-times group-hover:rotate-90 transition-transform duration-200"></i>
                                 <span>Cancel</span>
                             </a>
-                            
+
                             <button type="submit" id="submitBtn"
                                     class="group flex items-center justify-center space-x-2 px-8 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 hover:from-blue-700 hover:via-purple-700 hover:to-blue-800 text-white rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-1">
                                 <i class="fas fa-plus group-hover:rotate-180 transition-transform duration-300"></i>
@@ -371,12 +392,12 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             return false;
         }
-        
+
         isSubmitting = true;
         submitBtn.disabled = true;
         submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i><span>Creating Question...</span>';
-        
+
         // Add progress indication
         const progressBar = document.createElement('div');
         progressBar.className = 'fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 z-50 animate-pulse';
@@ -388,11 +409,11 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('change', function(e) {
             const file = e.target.files[0];
             const container = input.closest('.bg-white');
-            
+
             if (file) {
                 const fileName = file.name;
                 const fileSize = (file.size / (1024 * 1024)).toFixed(2);
-                
+
                 // Create file info display
                 let fileInfo = container.querySelector('.file-info');
                 if (!fileInfo) {
@@ -400,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     fileInfo.className = 'file-info mt-3 p-3 bg-green-50 border border-green-200 rounded-lg';
                     container.appendChild(fileInfo);
                 }
-                
+
                 fileInfo.innerHTML = `
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-2">
@@ -410,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span class="text-xs text-green-600">${fileSize} MB</span>
                     </div>
                 `;
-                
+
                 // Add success animation
                 container.classList.add('ring-2', 'ring-green-300', 'border-green-300');
                 setTimeout(() => {

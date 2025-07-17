@@ -20,9 +20,10 @@ class Question extends Model
         'year',
         'region',
         'uf',
-        'doc'
+        'doc',
+        'answer_doc',
     ];
-    
+
 
     /**
      * Check if the question has an image

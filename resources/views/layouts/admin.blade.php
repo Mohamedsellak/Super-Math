@@ -312,7 +312,7 @@
 
                         <!-- Page Title (visible on desktop) -->
                         <div class="hidden md:block">
-                        
+
                         </div>
 
                         <!-- Right side - User menu and notifications -->

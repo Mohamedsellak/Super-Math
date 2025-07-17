@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('region');
             $table->string('uf', 2); // Brazilian state code
             $table->string('doc'); // document path
+            $table->string('answer_doc'); // type of document (e.g., PDF, DOCX)
             $table->timestamps();
         });
     }

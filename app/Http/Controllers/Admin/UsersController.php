@@ -13,7 +13,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        
+
         return view('admin.users.index', [
             'users' => User::paginate(10)
         ]);
@@ -41,8 +41,9 @@ class UsersController extends Controller
             'password' => 'required|string|min:6|confirmed',
             'phone' => 'required|string|max:20',
             'institution' => 'nullable|string|max:255',
-            'credit' => 'nullable|numeric|min:0',
             'role' => 'required|in:user,admin', // Assuming roles are user or admin
+            'credit' => 'nullable|numeric|min:0',
+            'credit_expires_at' => 'nullable|date',
         ]);
 
         User::create([
@@ -54,6 +55,7 @@ class UsersController extends Controller
             'credit' => $request->credit ?? 0,
             'password' => bcrypt($request->password),
             'role' => $request->role,
+            'credit_expires_at' => $request->credit_expires_at,
         ]);
 
         return redirect()->route('admin.users.index')->with('success', 'User created successfully.');
@@ -92,6 +94,7 @@ class UsersController extends Controller
             'password' => 'nullable|string|min:6|confirmed', // Password is optional for update
             'credit' => 'nullable|numeric|min:0',
             'role' => 'required|in:user,admin', // Assuming roles are user or admin
+            'credit_expires_at' => 'nullable|date',
         ]);
         $user->update([
             'first_name' => $request->first_name,
@@ -102,6 +105,7 @@ class UsersController extends Controller
             'credit' => $request->credit,
             'password' => $request->password ? bcrypt($request->password) : $user->password,
             'role' => $request->role,
+            'credit_expires_at' => $request->credit_expires_at,
         ]);
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');
     }

@@ -27,6 +27,8 @@ class User extends Authenticatable
         'institution',
         'role',
         'credit',
+        'credit_expires_at',
+
     ];
 
     /**

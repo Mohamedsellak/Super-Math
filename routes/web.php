@@ -80,8 +80,8 @@ Route::prefix('Dashboard')->name('admin.')->middleware([AuthMiddleware::class, A
     Route::resource('users', UsersController::class);
 
     // Questions Management Routes
-    Route::resource('questions', QuestionsController::class);
     Route::get('/questions/{question}/download-document', [QuestionsController::class, 'downloadDocument'])->name('questions.download-document');
+    Route::resource('questions', QuestionsController::class);
 });
 
 
