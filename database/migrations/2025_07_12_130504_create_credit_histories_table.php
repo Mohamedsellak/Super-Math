@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('credit_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('amount');
-            $table->string('action');
+            $table->string('amount'); // '-5','+100'
+            $table->string('action'); // 'Payment','Download'
+            $table->text('description');
             $table->timestamps();
         });
     }

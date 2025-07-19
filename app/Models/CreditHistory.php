@@ -15,10 +15,6 @@ class CreditHistory extends Model
 
     ];
 
-    protected $casts = [
-        'amount' => 'integer',
-    ];
-
     /**
      * Get the user that owns the credit history.
      */

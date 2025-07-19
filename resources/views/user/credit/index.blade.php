@@ -12,6 +12,9 @@
                 <div class="bg-blue-100 px-4 py-2 rounded-lg">
                     <span class="text-sm text-gray-600">Current Balance:</span>
                     <span class="text-xl font-bold text-blue-600">{{ $user->credit ?? 0 }} Credits</span>
+                    
+                    
+                    {{ $user->credit_expires_at ? 'Credit expire at ' . $user->credit_expires_at->format('Y-m-d') : '' }}
                 </div>
                 <a href="{{ route('user.credit.purchase') }}" 
                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 text-center">
@@ -20,67 +23,103 @@
             </div>
         </div>
 
-        <!-- Quick Stats -->
+        <!-- Enhanced Stats Dashboard -->
         @if($creditHistory->count() > 0)
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div class="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
-                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="text-sm text-green-600 font-medium">Total Earned</div>
-                            <div class="text-lg font-bold text-green-700">
-                                {{ $creditHistory->where('action', 'earned')->sum('amount') }}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Downloads Card -->
+                <div class="relative overflow-hidden bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 rounded-2xl border border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-300 rounded-full opacity-20 -translate-y-16 translate-x-16"></div>
+                    <div class="relative p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center shadow-lg">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 10v6m0 0l-4-4m4 4l4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-blue-700 uppercase tracking-wide">Downloads</p>
+                                    <p class="text-xs text-blue-600">Question packages</p>
+                                </div>
                             </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-blue-800">{{ $creditHistory->where('action', 'Download')->count() }}</p>
+                                <p class="text-xs text-blue-600 font-medium">Total Files</p>
+                            </div>
+                        </div>
+                        <div class="w-full bg-blue-200 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full transition-all duration-500" style="width: {{ $creditHistory->count() > 0 ? ($creditHistory->where('action', 'Download')->count() / $creditHistory->count()) * 100 : 0 }}%"></div>
                         </div>
                     </div>
                 </div>
-                <div class="bg-gradient-to-r from-red-50 to-red-100 p-4 rounded-lg border border-red-200">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-3">
-                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="text-sm text-red-600 font-medium">Total Spent</div>
-                            <div class="text-lg font-bold text-red-700">
-                                {{ $creditHistory->where('action', 'spent')->sum('amount') }}
+
+                <!-- Payments Card -->
+                <div class="relative overflow-hidden bg-gradient-to-br from-green-50 via-green-100 to-green-200 rounded-2xl border border-green-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-green-300 rounded-full opacity-20 -translate-y-16 translate-x-16"></div>
+                    <div class="relative p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center shadow-lg">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-green-700 uppercase tracking-wide">Payments</p>
+                                    <p class="text-xs text-green-600">Credit purchases</p>
+                                </div>
                             </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-green-800">{{ $creditHistory->where('action', 'Payment')->count() }}</p>
+                                <p class="text-xs text-green-600 font-medium">Transactions</p>
+                            </div>
+                        </div>
+                        <div class="w-full bg-green-200 rounded-full h-2">
+                            <div class="bg-green-500 h-2 rounded-full transition-all duration-500" style="width: {{ $creditHistory->count() > 0 ? ($creditHistory->where('action', 'Payment')->count() / $creditHistory->count()) * 100 : 0 }}%"></div>
                         </div>
                     </div>
                 </div>
-                <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
-                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="text-sm text-blue-600 font-medium">Transactions</div>
-                            <div class="text-lg font-bold text-blue-700">
-                                {{ $creditHistory->count() }}
+
+                <!-- Expired Card -->
+                <div class="relative overflow-hidden bg-gradient-to-br from-red-50 via-red-100 to-red-200 rounded-2xl border border-red-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-red-300 rounded-full opacity-20 -translate-y-16 translate-x-16"></div>
+                    <div class="relative p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center shadow-lg">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-red-700 uppercase tracking-wide">Expired</p>
+                                    <p class="text-xs text-red-600">Credit expiry</p>
+                                </div>
                             </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-red-800">{{ $creditHistory->where('action', 'Expired')->count() }}</p>
+                                <p class="text-xs text-red-600 font-medium">Instances</p>
+                            </div>
+                        </div>
+                        <div class="w-full bg-red-200 rounded-full h-2">
+                            <div class="bg-red-500 h-2 rounded-full transition-all duration-500" style="width: {{ $creditHistory->count() > 0 ? ($creditHistory->where('action', 'Expired')->count() / $creditHistory->count()) * 100 : 0 }}%"></div>
                         </div>
                     </div>
                 </div>
-                <div class="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center mr-3">
-                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
-                            </svg>
+            </div>
+
+            <!-- Quick Summary Bar -->
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-4 mb-6 border border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                            <span class="text-sm font-medium text-gray-700">Total Activity</span>
                         </div>
-                        <div>
-                            <div class="text-sm text-purple-600 font-medium">This Month</div>
-                            <div class="text-lg font-bold text-purple-700">
-                                {{ $creditHistory->where('created_at', '>=', now()->startOfMonth())->count() }}
-                            </div>
-                        </div>
+                        <span class="text-lg font-bold text-gray-800">{{ $creditHistory->count() }} transactions</span>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        Last activity: {{ $creditHistory->first()->created_at->diffForHumans() }}
                     </div>
                 </div>
             </div>
@@ -89,101 +128,143 @@
         <!-- Credit History Table -->
         @if($creditHistory->count() > 0)
             <!-- Filter Options -->
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <div>
-                    <h2 class="text-xl font-semibold text-gray-800">Recent Transactions</h2>
-                    <p class="text-sm text-gray-600">Your complete credit transaction history</p>
+                    <h2 class="text-2xl font-bold text-gray-900">Transaction History</h2>
+                    <p class="text-sm text-gray-600 mt-1">Track all your credit activities and downloads</p>
                 </div>
-                <div class="flex gap-2">
-                    <select class="border border-gray-300 rounded-md px-3 py-2 text-sm" onchange="filterTransactions(this.value)">
-                        <option value="all">All Actions</option>
-                        <option value="earned">Earned Only</option>
-                        <option value="spent">Spent Only</option>
-                        <option value="purchased">Purchased Only</option>
-                    </select>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="flex items-center gap-2 text-sm text-gray-500">
+                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                        <span>{{ $creditHistory->count() }} transactions</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                            {{ $creditHistory->where('action', 'Download')->count() }} Downloads
+                        </span>
+                        <span class="px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                            {{ $creditHistory->where('action', 'Payment')->count() }} Payments
+                        </span>
+                        <span class="px-3 py-1 bg-red-100 text-red-800 text-xs rounded-full">
+                            {{ $creditHistory->where('action', 'Expired')->count() }} Expired
+                        </span>
+                    </div>
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Date & Time
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Action
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Amount
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Description
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200" id="transactionTableBody">
-                        @foreach($creditHistory as $history)
-                            <tr class="hover:bg-gray-50 transaction-row" data-action="{{ $history->action }}">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">{{ $history->created_at->format('M d, Y') }}</div>
-                                    <div class="text-xs text-gray-500">{{ $history->created_at->format('g:i A') }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                        @if($history->action === 'earned') bg-green-100 text-green-800
-                                        @elseif($history->action === 'spent') bg-red-100 text-red-800
-                                        @elseif($history->action === 'purchased') bg-blue-100 text-blue-800
-                                        @else bg-gray-100 text-gray-800
-                                        @endif">
-                                        @if($history->action === 'earned')
-                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            <!-- Enhanced Table with Cards Design -->
+            <div class="space-y-4">
+                @foreach($creditHistory as $index => $history)
+                    <div class="transaction-card bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6" data-action="{{ $history->action }}">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <!-- Left Section: Action & Description -->
+                            <div class="flex items-start gap-4 flex-1">
+                                <!-- Action Icon & Badge -->
+                                <div class="flex-shrink-0">
+                                    @if($history->action === 'Download')
+                                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-4-4m4 4l4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                             </svg>
-                                        @elseif($history->action === 'spent')
-                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
+                                        </div>
+                                    @elseif($history->action === 'Payment')
+                                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                                             </svg>
-                                        @elseif($history->action === 'purchased')
-                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                                        </div>
+                                    @elseif($history->action === 'Expired')
+                                        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                             </svg>
-                                        @endif
-                                        {{ ucfirst($history->action) }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium
-                                        @if($history->action === 'earned') text-green-600
-                                        @elseif($history->action === 'spent') text-red-600
-                                        @elseif($history->action === 'purchased') text-blue-600
+                                        </div>
+                                    @else
+                                        <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <!-- Details -->
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <h3 class="text-lg font-semibold text-gray-900">
+                                            @if($history->action === 'Download')
+                                                Document Download
+                                            @elseif($history->action === 'Payment')
+                                                Credit Purchase
+                                            @elseif($history->action === 'Expired')
+                                                Credits Expired
+                                            @else
+                                                {{ ucfirst($history->action) }}
+                                            @endif
+                                        </h3>
+                                        
+                                        <!-- Action Badge -->
+                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                            @if($history->action === 'Download') bg-blue-50 text-blue-700 border border-blue-200
+                                            @elseif($history->action === 'Payment') bg-green-50 text-green-700 border border-green-200
+                                            @elseif($history->action === 'Expired') bg-red-50 text-red-700 border border-red-200
+                                            @else bg-gray-50 text-gray-700 border border-gray-200
+                                            @endif">
+                                            {{ $history->action }}
+                                        </span>
+                                    </div>
+                                    
+                                    <p class="text-sm text-gray-600 mb-2">
+                                        {{ $history->description }}
+                                    </p>
+                                    
+                                    <!-- Timestamp -->
+                                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <span>{{ $history->created_at->format('M d, Y \a\t g:i A') }}</span>
+                                        <span class="text-gray-300">•</span>
+                                        <span>{{ $history->created_at->diffForHumans() }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Section: Amount -->
+                            <div class="flex flex-col items-end gap-2 flex-shrink-0">
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold 
+                                        @if($history->action === 'Download' ) text-blue-500
+                                        @elseif ( $history->action === 'Expired') text-red-500
+                                        @elseif($history->action === 'Payment') text-green-500
                                         @else text-gray-600
                                         @endif">
-                                        @if($history->action === 'earned' || $history->action === 'purchased')
-                                            +{{ $history->amount }}
-                                        @elseif($history->action === 'spent')
-                                            -{{ $history->amount }}
-                                        @else
-                                            {{ $history->amount }}
-                                        @endif
-                                        <span class="text-xs text-gray-500 ml-1">Credits</span>
+                                        {{ $history->amount }}
                                     </div>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-500">
-                                    @if($history->action === 'earned')
-                                        Credits earned from completing math problems
-                                    @elseif($history->action === 'spent')
-                                        Credits used for premium features
-                                    @elseif($history->action === 'purchased')
-                                        Credits purchased from credit store
-                                    @else
-                                        {{ ucfirst($history->action) }} transaction
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                                    <div class="text-xs text-gray-500 font-medium">CREDITS</div>
+                                </div>
+                                
+                                <!-- Transaction ID -->
+                                <div class="text-xs text-gray-400 font-mono bg-gray-50 px-2 py-1 rounded">
+                                    #{{ str_pad($history->id, 6, '0', STR_PAD_LEFT) }}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Pagination would go here if needed -->
+            <div class="mt-8 flex justify-center">
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100">
+                    <p class="text-sm text-blue-700 text-center">
+                        <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                        </svg>
+                        Showing {{ $creditHistory->count() }} recent transactions
+                    </p>
+                </div>
             </div>
         @else
             <!-- Empty State -->
@@ -212,96 +293,9 @@
             </div>
         @endif
 
-        <!-- Information Panel -->
-        <div class="mt-8 bg-gradient-to-r from-blue-50 to-indigo-100 rounded-lg p-6 border border-blue-200">
-            <h3 class="text-xl font-semibold text-blue-800 mb-4">How Credits Work</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <h4 class="font-semibold text-blue-700 mb-2">Earning Credits</h4>
-                    <ul class="text-blue-600 text-sm space-y-1">
-                        <li class="flex items-center">
-                            <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                            </svg>
-                            Solve basic problems: 1-2 credits
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                            </svg>
-                            Solve advanced problems: 3-5 credits
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                            </svg>
-                            Complete daily challenges: 10+ credits
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-semibold text-blue-700 mb-2">Using Credits</h4>
-                    <ul class="text-blue-600 text-sm space-y-1">
-                        <li class="flex items-center">
-                            <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                            </svg>
-                            View detailed solutions: 2 credits
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                            </svg>
-                            Get step-by-step explanations: 3 credits
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                            </svg>
-                            Access premium problem sets: 5+ credits
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
-<script>
-function filterTransactions(action) {
-    const rows = document.querySelectorAll('.transaction-row');
-    
-    rows.forEach(row => {
-        const rowAction = row.getAttribute('data-action');
-        if (action === 'all' || rowAction === action) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-}
-
-// Add some animation to the stats cards
-document.addEventListener('DOMContentLoaded', function() {
-    const statsCards = document.querySelectorAll('.bg-gradient-to-r');
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    });
-    
-    statsCards.forEach((card) => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out';
-        observer.observe(card);
-    });
-});
-</script>
 @endsection
 
 @push('styles')
