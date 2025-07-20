@@ -62,15 +62,17 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         // Credit Routes
         Route::get('/credits', [CreditController::class, 'index'])->name('credits.index');
         Route::get('/credits/purchase', [CreditController::class, 'purchase'])->name('credit.purchase');
+        Route::post('/credits/create-payment', [CreditController::class, 'createPayment'])->name('credit.create-payment');
+        Route::get('/credits/payment/success', [CreditController::class, 'paymentSuccess'])->name('credit.payment.success');
+        Route::get('/credits/payment/failure', [CreditController::class, 'paymentFailure'])->name('credit.payment.failure');
+        Route::get('/credits/payment/pending', [CreditController::class, 'paymentPending'])->name('credit.payment.pending');
 
     });
 
 });
 
-
-
-
-
+// MercadoPago Webhook (outside authentication)
+Route::post('/mercadopago/webhook', [CreditController::class, 'webhook'])->name('credit.payment.webhook');
 
 // Admin Routes
 Route::prefix('Dashboard')->name('admin.')->middleware([AuthMiddleware::class, AdminMiddleware::class])->group(function () {

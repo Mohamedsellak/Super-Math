@@ -62,4 +62,12 @@ class User extends Authenticatable
         return $this->hasMany(CreditHistory::class);
     }
 
+    /**
+     * Get the user's full name.
+     */
+    public function getNameAttribute(): string
+    {
+        return trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));
+    }
+
 }
