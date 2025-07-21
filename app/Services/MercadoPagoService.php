@@ -15,22 +15,17 @@ class MercadoPagoService
 
     public function __construct()
     {
-        // Configure MercadoPago SDK - try multiple ways to get the token
-        $accessToken = config('services.mercadopago.access_token') ?: env('MERCADOPAGO_ACCESS_TOKEN');
-        
-        // Fallback to hardcoded test token if neither config nor env work
+        // Configure MercadoPago SDK - get from config
+        $accessToken = config('services.mercadopago.access_token');
+
         if (!$accessToken) {
-            $accessToken = 'TEST-4459971648031852-121312-c6b3f61e3aa2b4f4b46ed52ebff81c99-191703950';
-        }
-        
-        if (!$accessToken) {
-            throw new \Exception('MercadoPago access token not configured');
+            throw new \Exception('MercadoPago access token not configured in services.php');
         }
 
         MercadoPagoConfig::setAccessToken($accessToken);
-        
+
         // Set runtime environment using proper constants
-        $sandbox = config('services.mercadopago.sandbox') ?? env('MERCADOPAGO_SANDBOX', true);
+        $sandbox = config('services.mercadopago.sandbox', false);
         if ($sandbox) {
             MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
         } else {
@@ -81,7 +76,7 @@ class MercadoPagoService
                 'user_id' => $user->id,
                 'access_token_length' => strlen(config('services.mercadopago.access_token') ?: env('MERCADOPAGO_ACCESS_TOKEN')),
             ]);
-            
+
             throw new \Exception('MercadoPago API Error: ' . $e->getMessage());
         }
     }
@@ -93,7 +88,7 @@ class MercadoPagoService
     {
         // Base price per credit (you can adjust this)
         $pricePerCredit = 0.10; // $0.10 per credit
-        
+
         // Discount for longer periods
         $monthlyMultiplier = match($months) {
             1 => 1.0,

@@ -211,7 +211,11 @@
         </div>
     </div>
 
-
+        <!-- Include Alert Component -->
+    <x-alert
+        :type="session('success') ? 'success' : (session('error') ? 'error' : '')"
+        :message="session('success') ?: session('error')"
+    />
 
 </body>
 </html>
