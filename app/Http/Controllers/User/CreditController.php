@@ -52,8 +52,22 @@ class CreditController extends Controller
             $creditAmount = $request->credit_amount;
             $months = $request->months;
             
+            // Debug: Log what we're receiving from the form
+            Log::info('Credit purchase form data received', [
+                'user_id' => $user->id,
+                'credit_amount' => $creditAmount,
+                'months' => $months,
+                'all_request_data' => $request->all()
+            ]);
+            
             // Calculate price
             $price = $mercadoPagoService->calculatePrice($creditAmount, $months);
+            
+            Log::info('Calculated price', [
+                'credit_amount' => $creditAmount,
+                'months' => $months,
+                'calculated_price' => $price
+            ]);
             
             // Create payment preference
             $preference = $mercadoPagoService->createCreditPurchasePreference(
@@ -91,22 +105,83 @@ class CreditController extends Controller
         $status = $request->get('status');
         $externalReference = $request->get('external_reference');
 
-        if ($status === 'approved' && $paymentId) {
-            // Extract user ID from external reference
-            $parts = explode('_', $externalReference);
-            $userId = $parts[0] ?? null;
+        Log::info('Payment success callback received', [
+            'payment_id' => $paymentId,
+            'status' => $status,
+            'external_reference' => $externalReference,
+            'all_request_data' => $request->all()
+        ]);
 
-            if ($userId) {
+        if ($status === 'approved' && $paymentId && $externalReference) {
+            // Parse external reference: userId_creditAmount_months_timestamp
+            $parts = explode('_', $externalReference);
+            
+            Log::info('Parsing external reference', [
+                'external_reference' => $externalReference,
+                'parts' => $parts,
+                'parts_count' => count($parts)
+            ]);
+            
+            if (count($parts) >= 3) {
+                $userId = $parts[0];
+                $creditAmount = (int)$parts[1];
+                $months = (int)$parts[2];
+
                 $user = \App\Models\User::find($userId);
-                if ($user && $user->id === Auth::id()) {
-                    // You might want to verify the payment with MercadoPago API here
-                    // For now, we'll trust the callback
+                
+                Log::info('User verification', [
+                    'user_id_from_reference' => $userId,
+                    'authenticated_user_id' => Auth::id(),
+                    'user_found' => $user ? 'yes' : 'no',
+                    'credit_amount' => $creditAmount,
+                    'months' => $months,
+                    'user_match' => $user && $user->id === Auth::id() ? 'yes' : 'no'
+                ]);
+                
+                // Verify this is the authenticated user (for security)
+                if ($user && $user->id === Auth::id() && $creditAmount > 0) {
                     
-                    session()->flash('payment_success', 'Payment completed successfully! Your credits have been added to your account.');
-                    return redirect()->route('credits.index');
+                    // Check if this payment was already processed (prevent duplicates)
+                    $existingRecord = CreditHistory::where('description', 'LIKE', "%Payment ID: {$paymentId}%")->first();
+                    
+                    if (!$existingRecord) {
+                        // Process the payment using the service
+                        $mercadoPagoService = new MercadoPagoService();
+                        $paidAmount = $mercadoPagoService->calculatePrice($creditAmount, $months);
+                        
+                        // Use the service method to process the payment
+                        $mercadoPagoService->processSuccessfulPayment(
+                            $user, 
+                            $paymentId, 
+                            $creditAmount, 
+                            $months, 
+                            $paidAmount
+                        );
+
+                        Log::info('Payment processed successfully', [
+                            'user_id' => $user->id,
+                            'credits_added' => $creditAmount,
+                            'amount_paid' => $paidAmount,
+                            'payment_id' => $paymentId
+                        ]);
+
+                        session()->flash('payment_success', "🎉 Successfully purchased {$creditAmount} credits for {$months} months! Your account has been updated.");
+                    } else {
+                        session()->flash('payment_info', 'This payment has already been processed.');
+                        Log::info('Duplicate payment attempt detected', ['payment_id' => $paymentId]);
+                    }
+
+                    return redirect()->route('user.credits.index');
                 }
             }
         }
+
+        Log::warning('Payment success callback failed validation', [
+            'status' => $status,
+            'payment_id' => $paymentId,
+            'external_reference' => $externalReference,
+            'auth_user_id' => Auth::id()
+        ]);
 
         session()->flash('payment_error', 'Payment verification failed. Please contact support if you were charged.');
         return redirect()->route('user.credit.purchase');
@@ -117,6 +192,8 @@ class CreditController extends Controller
      */
     public function paymentFailure(Request $request): RedirectResponse
     {
+        Log::info('Payment failure callback received', $request->all());
+        
         session()->flash('payment_error', 'Payment was not completed. Please try again.');
         return redirect()->route('user.credit.purchase');
     }
@@ -126,8 +203,10 @@ class CreditController extends Controller
      */
     public function paymentPending(Request $request): RedirectResponse
     {
+        Log::info('Payment pending callback received', $request->all());
+        
         session()->flash('payment_pending', 'Your payment is being processed. You will receive your credits once the payment is confirmed.');
-        return redirect()->route('credits.index');
+        return redirect()->route('user.credits.index');
     }
 
     /**

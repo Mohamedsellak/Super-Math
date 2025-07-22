@@ -61,7 +61,7 @@
                         <button type="submit" id="purchaseBtn"
                                 class="flex-1 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                             <span id="purchaseBtnText">Complete Purchase</span>
-                            <span id="purchaseBtnPrice" class="ml-2 font-bold">($<span id="priceDisplay">5.00</span>)</span>
+                            <span id="purchaseBtnPrice" class="ml-2 font-bold">(ARS $<span id="priceDisplay">50.00</span>)</span>
                         </button>
                     </div>
                 </form>
@@ -132,9 +132,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const purchaseBtn = document.getElementById('purchaseBtn');
     const purchaseBtnText = document.getElementById('purchaseBtnText');
 
-    // Price calculation function (matches backend calculation)
+    // Price calculation function (matches backend calculation - ARS pricing)
     function calculatePrice(creditAmount, months) {
-        const pricePerCredit = 0.10;
+        const pricePerCredit = 1; // 1 ARS per credit for testing
         let monthlyMultiplier = 1.0;
         
         if (months >= 2 && months <= 3) monthlyMultiplier = 0.95;

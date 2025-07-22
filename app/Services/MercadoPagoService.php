@@ -15,17 +15,17 @@ class MercadoPagoService
 
     public function __construct()
     {
-        // Configure MercadoPago SDK - get from config
-        $accessToken = config('services.mercadopago.access_token');
-
+        // Configure MercadoPago SDK - try multiple ways to get the token
+        $accessToken = config('services.mercadopago.access_token') ?: env('MERCADOPAGO_ACCESS_TOKEN');
+        
         if (!$accessToken) {
-            throw new \Exception('MercadoPago access token not configured in services.php');
+            throw new \Exception('MercadoPago access token not configured');
         }
 
         MercadoPagoConfig::setAccessToken($accessToken);
-
+        
         // Set runtime environment using proper constants
-        $sandbox = config('services.mercadopago.sandbox', false);
+        $sandbox = config('services.mercadopago.sandbox') ?? env('MERCADOPAGO_SANDBOX', true);
         if ($sandbox) {
             MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
         } else {
@@ -43,38 +43,51 @@ class MercadoPagoService
         $preference = [
             'items' => [
                 [
-                    'id' => 'credits_' . $creditAmount,
                     'title' => $creditAmount . ' Credits for Super Math',
-                    'description' => "Purchase of {$creditAmount} credits valid for {$months} month(s)",
+                    'description' => "Purchase of {$creditAmount} credits for {$months} months",
                     'quantity' => 1,
                     'unit_price' => $price,
-                    'currency_id' => 'USD',
+                    'currency_id' => 'ARS',
                 ]
             ],
             'payer' => [
-                'name' => $user->name,
                 'email' => $user->email,
             ],
-            'back_urls' => [
-                'success' => route('user.credit.payment.success'),
-                'failure' => route('user.credit.payment.failure'),
-                'pending' => route('user.credit.payment.pending'),
-            ],
-            'auto_return' => 'approved',
-            'external_reference' => $user->id . '_' . time(),
-            'notification_url' => route('credit.payment.webhook'),
-            'statement_descriptor' => 'SuperMath Credits',
+            'external_reference' => $user->id . '_' . $creditAmount . '_' . $months . '_' . time(),
         ];
 
+        // Only add back URLs if not in local development or if we have a proper URL
+        if (!app()->environment('local') || env('NGROK_URL') || !config('services.mercadopago.sandbox')) {
+            $baseUrl = env('NGROK_URL') ?: config('app.url');
+            $preference['back_urls'] = [
+                'success' => $baseUrl . '/dashboard/credits/payment/success',
+                'failure' => $baseUrl . '/dashboard/credits/payment/failure',
+                'pending' => $baseUrl . '/dashboard/credits/payment/pending',
+            ];
+            $preference['auto_return'] = 'approved';
+        }
+
         try {
-            return $this->client->create($preference);
+            Log::info('Creating MercadoPago preference', [
+                'preference' => $preference,
+                'price_received' => $price,
+                'credit_amount' => $creditAmount,
+                'months' => $months
+            ]);
+            $result = $this->client->create($preference);
+            Log::info('MercadoPago preference created successfully', ['id' => $result->id ?? 'unknown']);
+            return $result;
         } catch (\Exception $e) {
-            // Log detailed error information
+            // Log detailed error information including the full exception
             Log::error('MercadoPago API Error', [
                 'error_message' => $e->getMessage(),
+                'error_code' => $e->getCode(),
+                'error_file' => $e->getFile(),
+                'error_line' => $e->getLine(),
                 'preference_data' => $preference,
                 'user_id' => $user->id,
                 'access_token_length' => strlen(config('services.mercadopago.access_token') ?: env('MERCADOPAGO_ACCESS_TOKEN')),
+                'full_trace' => $e->getTraceAsString(),
             ]);
 
             throw new \Exception('MercadoPago API Error: ' . $e->getMessage());
@@ -82,13 +95,13 @@ class MercadoPagoService
     }
 
     /**
-     * Calculate price based on credit amount and months
+     * Calculate price based on credit amount and months (in ARS)
      */
     public function calculatePrice(int $creditAmount, int $months): float
     {
-        // Base price per credit (you can adjust this)
-        $pricePerCredit = 0.10; // $0.10 per credit
-
+        // Base price per credit in ARS (much smaller for testing)
+        $pricePerCredit = 1; // 1 ARS per credit for testing
+        
         // Discount for longer periods
         $monthlyMultiplier = match($months) {
             1 => 1.0,
@@ -98,7 +111,21 @@ class MercadoPagoService
             default => 0.80, // 10+ months
         };
 
-        return round($creditAmount * $pricePerCredit * $monthlyMultiplier, 2);
+        $calculatedPrice = round($creditAmount * $pricePerCredit * $monthlyMultiplier, 2);
+        
+        // Debug logging to see what's happening
+        Log::info('Price calculation debug', [
+            'creditAmount' => $creditAmount,
+            'months' => $months,
+            'pricePerCredit' => $pricePerCredit,
+            'monthlyMultiplier' => $monthlyMultiplier,
+            'before_round' => $creditAmount * $pricePerCredit * $monthlyMultiplier,
+            'calculatedPrice' => $calculatedPrice,
+            'final_price' => max($calculatedPrice, 1.0)
+        ]);
+        
+        // Ensure price is never 0 (MercadoPago doesn't allow 0 prices)
+        return max($calculatedPrice, 1.0);
     }
 
     /**

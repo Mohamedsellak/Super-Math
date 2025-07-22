@@ -4,6 +4,35 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
+    <!-- Flash Messages -->
+    @if(session('payment_success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6" role="alert">
+            <strong class="font-bold">Success!</strong>
+            <span class="block sm:inline">{{ session('payment_success') }}</span>
+        </div>
+    @endif
+
+    @if(session('payment_error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6" role="alert">
+            <strong class="font-bold">Error!</strong>
+            <span class="block sm:inline">{{ session('payment_error') }}</span>
+        </div>
+    @endif
+
+    @if(session('payment_info'))
+        <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-6" role="alert">
+            <strong class="font-bold">Info!</strong>
+            <span class="block sm:inline">{{ session('payment_info') }}</span>
+        </div>
+    @endif
+
+    @if(session('payment_pending'))
+        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-6" role="alert">
+            <strong class="font-bold">Pending!</strong>
+            <span class="block sm:inline">{{ session('payment_pending') }}</span>
+        </div>
+    @endif
+
     <div class="bg-white rounded-lg shadow-lg p-6">
         <!-- Header Section -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
