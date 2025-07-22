@@ -14,6 +14,8 @@ use PhpOffice\PhpWord\Element\Section;
 
 class QuestionsController extends Controller
 {
+    private $fileRenameMap = []; // Track file renames during merge
+
     /**
      * Display a listing of the resource.
      */
@@ -319,76 +321,1079 @@ class QuestionsController extends Controller
         // Copy question document as base
         $this->copyDirectory($questionDir, $mergedDir);
 
-        // Read the main document XML from question
-        $questionDocXml = file_get_contents($mergedDir . '/word/document.xml');
+        // STEP 1: Merge all media and embedding files first and get rename mapping
+        $fileRenameMap = $this->mergeMediaFiles($answerDir, $mergedDir);
 
-        // Read the main document XML from answer
-        $answerDocXml = file_get_contents($answerDir . '/word/document.xml');
+        // STEP 2: Merge OLE relationship files to preserve editability
+        $this->mergeOleRelationshipFiles($answerDir, $mergedDir, $fileRenameMap);
 
-        // Parse XML to merge content
-        $mergedXml = $this->mergeDocumentXml($questionDocXml, $answerDocXml);
+        // STEP 3: Update relationships with proper ID mapping and file rename mapping
+        $relationshipMap = $this->updateRelationships($answerDir, $mergedDir, $fileRenameMap);
 
-        // Write merged XML
-        file_put_contents($mergedDir . '/word/document.xml', $mergedXml);
+        // STEP 4: Update content types
+        $this->updateContentTypes($answerDir, $mergedDir, $fileRenameMap);
 
-        // Merge media files (images, OLE objects, etc.)
-        $this->mergeMediaFiles($answerDir, $mergedDir);
+        // STEP 5: Merge document content with corrected relationship references
+        $this->mergeDocumentContent($questionDir, $answerDir, $mergedDir, $relationshipMap);
+    }    /**
+     * Merge media files (images, OLE objects, embeddings) with proper conflict resolution
+     */
+    private function mergeMediaFiles($answerDir, $mergedDir)
+    {
+        $fileRenameMap = []; // Track file renames: original -> new name
 
-        // Update relationships and content types
-        $this->updateRelationships($answerDir, $mergedDir);
+        // Merge media directory (images, etc.)
+        $fileRenameMap = array_merge($fileRenameMap,
+            $this->mergeDirectoryContentsWithMapping($answerDir . '/word/media', $mergedDir . '/word/media'));
+
+        // Merge embeddings directory (OLE objects like MathType) - MOST IMPORTANT
+        $embeddingRenameMap = $this->mergeDirectoryContentsWithMapping($answerDir . '/word/embeddings', $mergedDir . '/word/embeddings');
+        $fileRenameMap = array_merge($fileRenameMap, $embeddingRenameMap);
+
+        // Store the file rename map for later use in relationship updates
+        $this->fileRenameMap = $fileRenameMap;
+
+        // Merge any other OLE-related directories
+        $oleDirectories = [
+            '/word/charts',
+            '/word/drawings',
+            '/word/theme',
+            '/word/diagrams',
+            '/customXml'
+        ];
+
+        foreach ($oleDirectories as $dir) {
+            $answerPath = $answerDir . $dir;
+            $mergedPath = $mergedDir . $dir;
+
+            if (is_dir($answerPath)) {
+                $dirRenameMap = $this->mergeDirectoryContentsWithMapping($answerPath, $mergedPath);
+                $fileRenameMap = array_merge($fileRenameMap, $dirRenameMap);
+            }
+        }
+
+        // Copy any activeX directories (for embedded objects)
+        $answerActiveXDir = $answerDir . '/word/activeX';
+        $mergedActiveXDir = $mergedDir . '/word/activeX';
+
+        if (is_dir($answerActiveXDir)) {
+            if (!is_dir($mergedActiveXDir)) {
+                mkdir($mergedActiveXDir, 0755, true);
+            }
+            $this->copyDirectory($answerActiveXDir, $mergedActiveXDir);
+        }
+
+        // Copy any object binary files (objectX.bin)
+        $this->copyObjectBinaryFiles($answerDir, $mergedDir);
+
+        // Copy any math type specific files
+        $this->copyMathTypeFiles($answerDir, $mergedDir);
+
+        // Copy OLE object settings and metadata files
+        $this->copyOleMetadataFiles($answerDir, $mergedDir);
+
+        return $fileRenameMap;
     }
 
     /**
-     * Merge document XML content
+     * Copy OLE object metadata and settings files
      */
-    private function mergeDocumentXml($questionXml, $answerXml)
+    private function copyOleMetadataFiles($answerDir, $mergedDir)
     {
-        // Load XML documents
-        $questionDoc = new \DOMDocument();
-        $questionDoc->loadXML($questionXml);
+        // Copy app.xml which contains application metadata for OLE objects
+        $answerAppPath = $answerDir . '/docProps/app.xml';
+        $mergedAppPath = $mergedDir . '/docProps/app.xml';
 
+        if (file_exists($answerAppPath)) {
+            $this->mergeAppProperties($answerAppPath, $mergedAppPath);
+        }
+
+        // Copy core.xml which contains core document properties
+        $answerCorePath = $answerDir . '/docProps/core.xml';
+        $mergedCorePath = $mergedDir . '/docProps/core.xml';
+
+        if (file_exists($answerCorePath)) {
+            $this->mergeCoreProperties($answerCorePath, $mergedCorePath);
+        }
+
+        // Copy custom.xml if it exists (for custom OLE properties)
+        $answerCustomPath = $answerDir . '/docProps/custom.xml';
+        $mergedCustomPath = $mergedDir . '/docProps/custom.xml';
+
+        if (file_exists($answerCustomPath)) {
+            $this->mergeCustomProperties($answerCustomPath, $mergedCustomPath);
+        }
+
+        // Copy settings.xml which can contain OLE object settings
+        $answerSettingsPath = $answerDir . '/word/settings.xml';
+        $mergedSettingsPath = $mergedDir . '/word/settings.xml';
+
+        if (file_exists($answerSettingsPath)) {
+            $this->mergeSettings($answerSettingsPath, $mergedSettingsPath);
+        }
+    }
+
+    /**
+     * Merge app properties
+     */
+    private function mergeAppProperties($answerAppPath, $mergedAppPath)
+    {
+        if (!file_exists($mergedAppPath)) {
+            copy($answerAppPath, $mergedAppPath);
+            return;
+        }
+
+        try {
+            $answerApp = new \DOMDocument();
+            $answerApp->load($answerAppPath);
+
+            $mergedApp = new \DOMDocument();
+            $mergedApp->load($mergedAppPath);
+
+            // Update application name to indicate it contains merged content
+            $appElement = $mergedApp->getElementsByTagName('Application')->item(0);
+            if ($appElement) {
+                $appElement->textContent = 'Microsoft Office Word with MathType Objects';
+            }
+
+            file_put_contents($mergedAppPath, $mergedApp->saveXML());
+        } catch (\Exception $e) {
+            \Log::warning("Could not merge app properties: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Merge core properties
+     */
+    private function mergeCoreProperties($answerCorePath, $mergedCorePath)
+    {
+        if (!file_exists($mergedCorePath)) {
+            copy($answerCorePath, $mergedCorePath);
+            return;
+        }
+
+        try {
+            $mergedCore = new \DOMDocument();
+            $mergedCore->load($mergedCorePath);
+
+            // Update modified time
+            $modifiedElement = $mergedCore->getElementsByTagName('modified')->item(0);
+            if ($modifiedElement) {
+                $modifiedElement->textContent = date('c');
+            }
+
+            file_put_contents($mergedCorePath, $mergedCore->saveXML());
+        } catch (\Exception $e) {
+            \Log::warning("Could not merge core properties: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Merge custom properties (for OLE object custom data)
+     */
+    private function mergeCustomProperties($answerCustomPath, $mergedCustomPath)
+    {
+        if (!file_exists($mergedCustomPath)) {
+            copy($answerCustomPath, $mergedCustomPath);
+            return;
+        }
+
+        try {
+            $answerCustom = new \DOMDocument();
+            $answerCustom->load($answerCustomPath);
+
+            $mergedCustom = new \DOMDocument();
+            $mergedCustom->load($mergedCustomPath);
+
+            $mergedPropertiesElement = $mergedCustom->getElementsByTagName('Properties')->item(0);
+
+            // Get existing property names to avoid duplicates
+            $existingPropertyNames = [];
+            foreach ($mergedCustom->getElementsByTagName('property') as $property) {
+                $existingPropertyNames[] = $property->getAttribute('name');
+            }
+
+            // Add new custom properties from answer document
+            foreach ($answerCustom->getElementsByTagName('property') as $property) {
+                $propertyName = $property->getAttribute('name');
+                if (!in_array($propertyName, $existingPropertyNames)) {
+                    $importedProperty = $mergedCustom->importNode($property, true);
+                    $mergedPropertiesElement->appendChild($importedProperty);
+                    $existingPropertyNames[] = $propertyName;
+                }
+            }
+
+            file_put_contents($mergedCustomPath, $mergedCustom->saveXML());
+        } catch (\Exception $e) {
+            \Log::warning("Could not merge custom properties: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Merge settings (for OLE object settings)
+     */
+    private function mergeSettings($answerSettingsPath, $mergedSettingsPath)
+    {
+        if (!file_exists($mergedSettingsPath)) {
+            copy($answerSettingsPath, $mergedSettingsPath);
+            return;
+        }
+
+        try {
+            $answerSettings = new \DOMDocument();
+            $answerSettings->load($answerSettingsPath);
+
+            $mergedSettings = new \DOMDocument();
+            $mergedSettings->load($mergedSettingsPath);
+
+            $mergedSettingsElement = $mergedSettings->getElementsByTagName('settings')->item(0);
+
+            // Merge specific OLE-related settings
+            $oleSettings = [
+                'embedTrueTypeFonts',
+                'doNotPromptForConvert',
+                'defaultTableStyle',
+                'activeWritingStyle'
+            ];
+
+            foreach ($oleSettings as $settingName) {
+                $answerSetting = $answerSettings->getElementsByTagName($settingName)->item(0);
+                $mergedSetting = $mergedSettings->getElementsByTagName($settingName)->item(0);
+
+                if ($answerSetting && !$mergedSetting) {
+                    $importedSetting = $mergedSettings->importNode($answerSetting, true);
+                    $mergedSettingsElement->appendChild($importedSetting);
+                }
+            }
+
+            file_put_contents($mergedSettingsPath, $mergedSettings->saveXML());
+        } catch (\Exception $e) {
+            \Log::warning("Could not merge settings: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Copy MathType specific files that are needed for equation editability
+     */
+    private function copyMathTypeFiles($answerDir, $mergedDir)
+    {
+        // MathType files can be in various locations
+        $mathTypeLocations = [
+            '/word/media',
+            '/word/embeddings',
+            '/word',
+            '/customXml',
+            '/docProps'
+        ];
+
+        foreach ($mathTypeLocations as $location) {
+            $sourceDir = $answerDir . $location;
+            $targetDir = $mergedDir . $location;
+
+            if (is_dir($sourceDir)) {
+                $files = scandir($sourceDir);
+                foreach ($files as $file) {
+                    if ($file !== '.' && $file !== '..') {
+                        $sourcePath = $sourceDir . '/' . $file;
+
+                        // Look for MathType related files
+                        if (is_file($sourcePath) && (
+                            preg_match('/\.emf$/i', $file) ||
+                            preg_match('/\.wmf$/i', $file) ||
+                            preg_match('/oleObject\d*\.bin$/i', $file) ||
+                            preg_match('/mathtype/i', $file) ||
+                            preg_match('/equation/i', $file) ||
+                            strpos(strtolower($file), 'ole') !== false
+                        )) {
+                            if (!is_dir($targetDir)) {
+                                mkdir($targetDir, 0755, true);
+                            }
+
+                            $targetPath = $this->resolveFileNameConflict($targetDir . '/' . $file, $file);
+
+                            // Use binary-safe copy for OLE object files
+                            $this->copyOleFile($sourcePath, $targetPath);
+
+                            \Log::info("Copied MathType file: {$file} -> " . basename($targetPath));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Binary-safe copy for OLE object files
+     */
+    private function copyOleFile($sourcePath, $targetPath)
+    {
+        // Use binary mode to ensure OLE object data integrity
+        $sourceHandle = fopen($sourcePath, 'rb');
+        $targetHandle = fopen($targetPath, 'wb');
+
+        if ($sourceHandle && $targetHandle) {
+            while (!feof($sourceHandle)) {
+                $chunk = fread($sourceHandle, 8192); // Read in 8KB chunks
+                fwrite($targetHandle, $chunk);
+            }
+            fclose($sourceHandle);
+            fclose($targetHandle);
+
+            // Verify file integrity
+            if (filesize($sourcePath) !== filesize($targetPath)) {
+                \Log::error("OLE file copy size mismatch: " . basename($sourcePath));
+            }
+        } else {
+            // Fallback to regular copy
+            copy($sourcePath, $targetPath);
+        }
+    }
+
+    /**
+     * Merge OLE relationship files to preserve object editability
+     */
+    private function mergeOleRelationshipFiles($answerDir, $mergedDir, $fileRenameMap)
+    {
+        // Merge embedding relationship files (critical for OLE object editability)
+        $this->mergeEmbeddingRelationships($answerDir, $mergedDir, $fileRenameMap);
+
+        // Copy any OLE-specific files that maintain object links
+        $this->copyOleSpecificFiles($answerDir, $mergedDir);
+
+        // Merge font table and other supporting files
+        $this->mergeSupportingOleFiles($answerDir, $mergedDir);
+    }
+
+    /**
+     * Merge embedding relationship files (embeddings/_rels/*.rels)
+     */
+    private function mergeEmbeddingRelationships($answerDir, $mergedDir, $fileRenameMap)
+    {
+        $answerEmbeddingRelsDir = $answerDir . '/word/embeddings/_rels';
+        $mergedEmbeddingRelsDir = $mergedDir . '/word/embeddings/_rels';
+
+        if (!is_dir($answerEmbeddingRelsDir)) {
+            return;
+        }
+
+        if (!is_dir($mergedEmbeddingRelsDir)) {
+            mkdir($mergedEmbeddingRelsDir, 0755, true);
+        }
+
+        $files = scandir($answerEmbeddingRelsDir);
+        foreach ($files as $file) {
+            if ($file !== '.' && $file !== '..' && pathinfo($file, PATHINFO_EXTENSION) === 'rels') {
+                $sourceFile = $answerEmbeddingRelsDir . '/' . $file;
+                $targetFile = $mergedEmbeddingRelsDir . '/' . $file;
+
+                // Check if the corresponding embedding file was renamed
+                $embeddingFileName = str_replace('.rels', '', $file);
+                if (isset($fileRenameMap[$embeddingFileName])) {
+                    $newEmbeddingFileName = $fileRenameMap[$embeddingFileName];
+                    $targetFile = $mergedEmbeddingRelsDir . '/' . $newEmbeddingFileName . '.rels';
+                }
+
+                // Copy the relationship file
+                copy($sourceFile, $targetFile);
+
+                \Log::info("Copied OLE relationship file: {$file} -> " . basename($targetFile));
+            }
+        }
+    }
+
+    /**
+     * Copy OLE-specific files that maintain object editability
+     */
+    private function copyOleSpecificFiles($answerDir, $mergedDir)
+    {
+        // Copy font table files which are needed for proper OLE rendering
+        $answerFontTablePath = $answerDir . '/word/fontTable.xml';
+        $mergedFontTablePath = $mergedDir . '/word/fontTable.xml';
+
+        if (file_exists($answerFontTablePath)) {
+            // Merge font tables instead of overwriting
+            $this->mergeFontTables($answerFontTablePath, $mergedFontTablePath);
+        }
+
+        // Copy any .bin files in the word directory (OLE object data)
+        $answerWordDir = $answerDir . '/word';
+        $mergedWordDir = $mergedDir . '/word';
+
+        if (is_dir($answerWordDir)) {
+            $files = scandir($answerWordDir);
+            foreach ($files as $file) {
+                if (pathinfo($file, PATHINFO_EXTENSION) === 'bin') {
+                    $sourceFile = $answerWordDir . '/' . $file;
+                    $targetFile = $this->resolveFileNameConflict($mergedWordDir . '/' . $file, $file);
+                    $this->copyOleFile($sourceFile, $targetFile);
+                }
+            }
+        }
+    }
+
+    /**
+     * Merge supporting OLE files
+     */
+    private function mergeSupportingOleFiles($answerDir, $mergedDir)
+    {
+        // Copy styles.xml to ensure proper OLE object styling
+        $answerStylesPath = $answerDir . '/word/styles.xml';
+        $mergedStylesPath = $mergedDir . '/word/styles.xml';
+
+        if (file_exists($answerStylesPath)) {
+            $this->mergeStyles($answerStylesPath, $mergedStylesPath);
+        }
+
+        // Copy numbering.xml if it exists (for equation numbering)
+        $answerNumberingPath = $answerDir . '/word/numbering.xml';
+        $mergedNumberingPath = $mergedDir . '/word/numbering.xml';
+
+        if (file_exists($answerNumberingPath)) {
+            $this->mergeNumbering($answerNumberingPath, $mergedNumberingPath);
+        }
+    }
+
+    /**
+     * Merge font tables to include all fonts needed for OLE objects
+     */
+    private function mergeFontTables($answerFontTablePath, $mergedFontTablePath)
+    {
+        if (!file_exists($mergedFontTablePath)) {
+            copy($answerFontTablePath, $mergedFontTablePath);
+            return;
+        }
+
+        try {
+            $answerFontTable = new \DOMDocument();
+            $answerFontTable->load($answerFontTablePath);
+
+            $mergedFontTable = new \DOMDocument();
+            $mergedFontTable->load($mergedFontTablePath);
+
+            $mergedFontsElement = $mergedFontTable->getElementsByTagName('fonts')->item(0);
+
+            // Get existing font names to avoid duplicates
+            $existingFonts = [];
+            foreach ($mergedFontTable->getElementsByTagName('font') as $font) {
+                $existingFonts[] = $font->getAttribute('w:name');
+            }
+
+            // Add new fonts from answer document
+            foreach ($answerFontTable->getElementsByTagName('font') as $font) {
+                $fontName = $font->getAttribute('w:name');
+                if (!in_array($fontName, $existingFonts)) {
+                    $importedFont = $mergedFontTable->importNode($font, true);
+                    $mergedFontsElement->appendChild($importedFont);
+                    $existingFonts[] = $fontName;
+                }
+            }
+
+            file_put_contents($mergedFontTablePath, $mergedFontTable->saveXML());
+        } catch (\Exception $e) {
+            \Log::warning("Could not merge font tables: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Merge styles to ensure OLE objects render correctly
+     */
+    private function mergeStyles($answerStylesPath, $mergedStylesPath)
+    {
+        if (!file_exists($mergedStylesPath)) {
+            copy($answerStylesPath, $mergedStylesPath);
+            return;
+        }
+
+        try {
+            $answerStyles = new \DOMDocument();
+            $answerStyles->load($answerStylesPath);
+
+            $mergedStyles = new \DOMDocument();
+            $mergedStyles->load($mergedStylesPath);
+
+            $mergedStylesElement = $mergedStyles->getElementsByTagName('styles')->item(0);
+
+            // Get existing style IDs to avoid duplicates
+            $existingStyleIds = [];
+            foreach ($mergedStyles->getElementsByTagName('style') as $style) {
+                $existingStyleIds[] = $style->getAttribute('w:styleId');
+            }
+
+            // Add new styles from answer document
+            foreach ($answerStyles->getElementsByTagName('style') as $style) {
+                $styleId = $style->getAttribute('w:styleId');
+                if (!in_array($styleId, $existingStyleIds)) {
+                    $importedStyle = $mergedStyles->importNode($style, true);
+                    $mergedStylesElement->appendChild($importedStyle);
+                    $existingStyleIds[] = $styleId;
+                }
+            }
+
+            file_put_contents($mergedStylesPath, $mergedStyles->saveXML());
+        } catch (\Exception $e) {
+            \Log::warning("Could not merge styles: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Merge numbering files for equation numbering
+     */
+    private function mergeNumbering($answerNumberingPath, $mergedNumberingPath)
+    {
+        if (!file_exists($mergedNumberingPath)) {
+            copy($answerNumberingPath, $mergedNumberingPath);
+            return;
+        }
+
+        try {
+            $answerNumbering = new \DOMDocument();
+            $answerNumbering->load($answerNumberingPath);
+
+            $mergedNumbering = new \DOMDocument();
+            $mergedNumbering->load($mergedNumberingPath);
+
+            $mergedNumberingElement = $mergedNumbering->getElementsByTagName('numbering')->item(0);
+
+            // Get existing numbering IDs to avoid duplicates
+            $existingNumIds = [];
+            foreach ($mergedNumbering->getElementsByTagName('num') as $num) {
+                $existingNumIds[] = $num->getAttribute('w:numId');
+            }
+            foreach ($mergedNumbering->getElementsByTagName('abstractNum') as $abstractNum) {
+                $existingNumIds[] = 'abstract_' . $abstractNum->getAttribute('w:abstractNumId');
+            }
+
+            // Add new numbering from answer document with ID adjustments
+            $this->mergeNumberingDefinitions($answerNumbering, $mergedNumbering, $mergedNumberingElement, $existingNumIds);
+
+            file_put_contents($mergedNumberingPath, $mergedNumbering->saveXML());
+        } catch (\Exception $e) {
+            \Log::warning("Could not merge numbering: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Merge numbering definitions with proper ID management
+     */
+    private function mergeNumberingDefinitions($answerNumbering, $mergedNumbering, $mergedNumberingElement, $existingNumIds)
+    {
+        // Add abstract numbering definitions
+        foreach ($answerNumbering->getElementsByTagName('abstractNum') as $abstractNum) {
+            $abstractNumId = $abstractNum->getAttribute('w:abstractNumId');
+            if (!in_array('abstract_' . $abstractNumId, $existingNumIds)) {
+                $importedAbstractNum = $mergedNumbering->importNode($abstractNum, true);
+                $mergedNumberingElement->appendChild($importedAbstractNum);
+                $existingNumIds[] = 'abstract_' . $abstractNumId;
+            }
+        }
+
+        // Add numbering instances
+        foreach ($answerNumbering->getElementsByTagName('num') as $num) {
+            $numId = $num->getAttribute('w:numId');
+            if (!in_array($numId, $existingNumIds)) {
+                $importedNum = $mergedNumbering->importNode($num, true);
+                $mergedNumberingElement->appendChild($importedNum);
+                $existingNumIds[] = $numId;
+            }
+        }
+    }
+
+    /**
+     * Merge directory contents with proper naming conflict resolution and return rename mapping
+     */
+    private function mergeDirectoryContentsWithMapping($sourceDir, $targetDir)
+    {
+        $renameMap = [];
+
+        if (!is_dir($sourceDir)) {
+            return $renameMap;
+        }
+
+        if (!is_dir($targetDir)) {
+            mkdir($targetDir, 0755, true);
+        }
+
+        $files = scandir($sourceDir);
+        foreach ($files as $file) {
+            if ($file !== '.' && $file !== '..') {
+                $sourcePath = $sourceDir . '/' . $file;
+                $targetPath = $targetDir . '/' . $file;
+
+                if (is_dir($sourcePath)) {
+                    $subDirRenameMap = $this->mergeDirectoryContentsWithMapping($sourcePath, $targetPath);
+                    $renameMap = array_merge($renameMap, $subDirRenameMap);
+                } else {
+                    // Handle file naming conflicts
+                    $finalTargetPath = $this->resolveFileNameConflict($targetPath, $file);
+                    $finalFileName = basename($finalTargetPath);
+
+                    // Track if file was renamed
+                    if ($finalFileName !== $file) {
+                        $renameMap[$file] = $finalFileName;
+                    }
+
+                    copy($sourcePath, $finalTargetPath);
+                }
+            }
+        }
+
+        return $renameMap;
+    }
+
+    /**
+     * Resolve file naming conflicts by adding unique suffixes
+     */
+    private function resolveFileNameConflict($originalPath, $fileName)
+    {
+        $targetPath = $originalPath;
+        $counter = 1;
+
+        while (file_exists($targetPath)) {
+            $pathInfo = pathinfo($fileName);
+            $baseName = $pathInfo['filename'];
+            $extension = isset($pathInfo['extension']) ? '.' . $pathInfo['extension'] : '';
+
+            $newFileName = $baseName . '_ans_' . $counter . $extension;
+            $targetPath = dirname($originalPath) . '/' . $newFileName;
+            $counter++;
+        }
+
+        // Log the rename for debugging
+        if ($targetPath !== $originalPath) {
+            \Log::info("File renamed: {$fileName} -> " . basename($targetPath));
+        }
+
+        return $targetPath;
+    }
+
+    /**
+     * Copy object binary files (like objectX.bin) which contain OLE object data
+     */
+    private function copyObjectBinaryFiles($answerDir, $mergedDir)
+    {
+        // Look for object files in the word directory
+        $answerWordDir = $answerDir . '/word';
+        $mergedWordDir = $mergedDir . '/word';
+
+        if (!is_dir($answerWordDir)) {
+            return;
+        }
+
+        $files = scandir($answerWordDir);
+        foreach ($files as $file) {
+            // Copy any object*.bin files or similar OLE object files
+            if (preg_match('/^object\d+\.bin$/i', $file) ||
+                preg_match('/^oleObject\d+\.bin$/i', $file) ||
+                preg_match('/^.*\.emf$/i', $file) ||
+                preg_match('/^.*\.wmf$/i', $file)) {
+
+                $sourcePath = $answerWordDir . '/' . $file;
+                $targetPath = $mergedWordDir . '/' . $file;
+
+                // Resolve naming conflicts
+                $finalTargetPath = $this->resolveFileNameConflict($targetPath, $file);
+                $this->copyOleFile($sourcePath, $finalTargetPath);
+            }
+        }
+    }
+
+    /**
+     * Update relationships with proper ID mapping and return the mapping
+     */
+    private function updateRelationships($answerDir, $mergedDir, $fileRenameMap = [])
+    {
+        $answerRelsPath = $answerDir . '/word/_rels/document.xml.rels';
+        $mergedRelsPath = $mergedDir . '/word/_rels/document.xml.rels';
+
+        if (!file_exists($answerRelsPath) || !file_exists($mergedRelsPath)) {
+            return [];
+        }
+
+        $answerRels = new \DOMDocument();
+        $answerRels->load($answerRelsPath);
+
+        $mergedRels = new \DOMDocument();
+        $mergedRels->load($mergedRelsPath);
+
+        $mergedRelationshipsNode = $mergedRels->getElementsByTagName('Relationships')->item(0);
+
+        // Get existing relationship IDs to avoid conflicts
+        $existingIds = [];
+        foreach ($mergedRels->getElementsByTagName('Relationship') as $rel) {
+            $existingIds[] = $rel->getAttribute('Id');
+        }
+
+        $relationshipMap = [];
+        $counter = 100; // Start from a high number to avoid conflicts
+
+        // Process each relationship from answer document
+        foreach ($answerRels->getElementsByTagName('Relationship') as $rel) {
+            $oldId = $rel->getAttribute('Id');
+            $target = $rel->getAttribute('Target');
+            $type = $rel->getAttribute('Type');
+
+            // Generate new unique ID
+            do {
+                $newId = 'rId' . $counter;
+                $counter++;
+            } while (in_array($newId, $existingIds));
+
+            $existingIds[] = $newId;
+            $relationshipMap[$oldId] = $newId;
+
+            // Create new relationship element
+            $newRel = $mergedRels->createElement('Relationship');
+            $newRel->setAttribute('Id', $newId);
+            $newRel->setAttribute('Type', $type);
+
+            // Update target path for renamed files using the file rename map
+            $updatedTarget = $this->getUpdatedTargetPath($target, $answerDir, $mergedDir, $fileRenameMap);
+            $newRel->setAttribute('Target', $updatedTarget);
+
+            // For OLE object relationships, add additional attributes to maintain editability
+            if (strpos($type, 'oleObject') !== false ||
+                strpos($type, 'package') !== false ||
+                strpos($target, 'embeddings/') !== false) {
+
+                // Copy any additional attributes that maintain OLE object functionality
+                foreach ($rel->attributes as $attr) {
+                    if ($attr->name !== 'Id' && $attr->name !== 'Type' && $attr->name !== 'Target') {
+                        $newRel->setAttribute($attr->name, $attr->value);
+                    }
+                }
+
+                \Log::info("Added OLE relationship: {$oldId} -> {$newId} for target: {$updatedTarget}");
+            }
+
+            $mergedRelationshipsNode->appendChild($newRel);
+        }
+
+        // Save updated relationships
+        file_put_contents($mergedRelsPath, $mergedRels->saveXML());
+
+        return $relationshipMap;
+    }
+
+    /**
+     * Get updated target path for files that may have been renamed
+     */
+    private function getUpdatedTargetPath($originalTarget, $answerDir, $mergedDir, $fileRenameMap = [])
+    {
+        // Extract the file name from the target
+        $fileName = basename($originalTarget);
+
+        // Check if this file was renamed using our rename map
+        if (isset($fileRenameMap[$fileName])) {
+            $newFileName = $fileRenameMap[$fileName];
+            return dirname($originalTarget) . '/' . $newFileName;
+        }
+
+        // Handle media files
+        if (strpos($originalTarget, 'media/') === 0) {
+            $mediaDir = $mergedDir . '/word/media';
+
+            if (is_dir($mediaDir)) {
+                // Check if original file exists
+                if (file_exists($mediaDir . '/' . $fileName)) {
+                    return $originalTarget;
+                }
+
+                // Look for renamed version
+                $files = scandir($mediaDir);
+                foreach ($files as $file) {
+                    if (strpos($file, pathinfo($fileName, PATHINFO_FILENAME) . '_ans_') === 0) {
+                        return 'media/' . $file;
+                    }
+                }
+            }
+        }
+
+        // Handle embeddings files (OLE objects)
+        if (strpos($originalTarget, 'embeddings/') === 0) {
+            $embeddingsDir = $mergedDir . '/word/embeddings';
+
+            if (is_dir($embeddingsDir)) {
+                if (file_exists($embeddingsDir . '/' . $fileName)) {
+                    return $originalTarget;
+                }
+
+                $files = scandir($embeddingsDir);
+                foreach ($files as $file) {
+                    if (strpos($file, pathinfo($fileName, PATHINFO_FILENAME) . '_ans_') === 0) {
+                        return 'embeddings/' . $file;
+                    }
+                }
+            }
+        }
+
+        return $originalTarget;
+    }
+
+    /**
+     * Merge document content with proper relationship mapping
+     */
+    private function mergeDocumentContent($questionDir, $answerDir, $mergedDir, $relationshipMap)
+    {
+        // Read the answer document XML
+        $answerDocPath = $answerDir . '/word/document.xml';
+        if (!file_exists($answerDocPath)) {
+            return;
+        }
+
+        $answerDocXml = file_get_contents($answerDocPath);
+
+        // Update all relationship references in answer document
+        foreach ($relationshipMap as $oldId => $newId) {
+            $answerDocXml = str_replace('r:id="' . $oldId . '"', 'r:id="' . $newId . '"', $answerDocXml);
+            $answerDocXml = str_replace('r:embed="' . $oldId . '"', 'r:embed="' . $newId . '"', $answerDocXml);
+            $answerDocXml = str_replace('r:pict="' . $oldId . '"', 'r:pict="' . $newId . '"', $answerDocXml);
+            $answerDocXml = str_replace('r:link="' . $oldId . '"', 'r:link="' . $newId . '"', $answerDocXml);
+
+            // Additional OLE object relationship patterns
+            $answerDocXml = str_replace('r:objectId="' . $oldId . '"', 'r:objectId="' . $newId . '"', $answerDocXml);
+            $answerDocXml = str_replace('ole:ObjectID="' . $oldId . '"', 'ole:ObjectID="' . $newId . '"', $answerDocXml);
+        }
+
+        // Load the current merged document
+        $mergedDocPath = $mergedDir . '/word/document.xml';
+        $mergedDoc = new \DOMDocument();
+        $mergedDoc->preserveWhiteSpace = true; // Important for OLE objects
+        $mergedDoc->formatOutput = false; // Don't reformat OLE object XML
+        $mergedDoc->load($mergedDocPath);
+
+        // Load the updated answer document
         $answerDoc = new \DOMDocument();
-        $answerDoc->loadXML($answerXml);
+        $answerDoc->preserveWhiteSpace = true; // Important for OLE objects
+        $answerDoc->formatOutput = false; // Don't reformat OLE object XML
+        $answerDoc->loadXML($answerDocXml);
 
-        // Get the body element from question document
-        $questionBody = $questionDoc->getElementsByTagName('body')->item(0);
+        // Ensure both documents have proper namespace declarations
+        $this->ensureOleNamespaces($mergedDoc);
+        $this->ensureOleNamespaces($answerDoc);
+
+        // Get body elements
+        $mergedBody = $mergedDoc->getElementsByTagName('body')->item(0);
+        $answerBody = $answerDoc->getElementsByTagName('body')->item(0);
 
         // Add page break
-        $pageBreakElement = $questionDoc->createElementNS(
+        $this->addPageBreak($mergedDoc, $mergedBody);
+
+        // Add answer section title
+        $this->addAnswerSectionTitle($mergedDoc, $mergedBody);
+
+        // Import answer content with special handling for OLE objects
+        if ($answerBody) {
+            foreach ($answerBody->childNodes as $answerElement) {
+                if ($answerElement->nodeType === XML_ELEMENT_NODE) {
+                    // Special handling for elements containing OLE objects
+                    if ($this->containsOleObject($answerElement)) {
+                        \Log::info("Importing paragraph with OLE object");
+                        $importedElement = $this->importOleElement($mergedDoc, $answerElement);
+                    } else {
+                        $importedElement = $mergedDoc->importNode($answerElement, true);
+                    }
+                    $mergedBody->appendChild($importedElement);
+                }
+            }
+        }
+
+        // Save the merged document with proper formatting
+        $xmlString = $mergedDoc->saveXML();
+
+        // Ensure proper XML declaration and formatting for Word
+        if (strpos($xmlString, '<?xml') === false) {
+            $xmlString = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' . "\n" . $xmlString;
+        }
+
+        // Final validation and fix for OLE object references
+        $xmlString = $this->validateAndFixOleReferences($xmlString);
+
+        file_put_contents($mergedDocPath, $xmlString);
+    }
+
+    /**
+     * Validate and fix OLE object references in the final XML
+     */
+    private function validateAndFixOleReferences($xmlString)
+    {
+        // Ensure OLE object tags have proper structure
+        $olePatterns = [
+            // Fix object elements that might be missing required attributes
+            '/<(w:object[^>]*?)>/' => '<$1>',
+            // Ensure oleObject elements have proper namespace
+            '/<oleObject/' => '<o:oleObject',
+            '/<\/oleObject>/' => '</o:oleObject>',
+            // Fix any namespace issues with shapes
+            '/<shape/' => '<v:shape',
+            '/<\/shape>/' => '</v:shape>',
+        ];
+
+        foreach ($olePatterns as $pattern => $replacement) {
+            $xmlString = preg_replace($pattern, $replacement, $xmlString);
+        }
+
+        // Validate that all OLE object references are properly formed
+        if (preg_match_all('/<o:oleObject[^>]*>/i', $xmlString, $matches)) {
+            \Log::info("Found " . count($matches[0]) . " OLE objects in final document");
+        }
+
+        return $xmlString;
+    }
+
+    /**
+     * Check if an element contains OLE objects
+     */
+    private function containsOleObject($element)
+    {
+        // Check if element contains OLE object tags
+        $oleTagPatterns = [
+            'object',
+            'oleObject',
+            'embed',
+            'package',
+            'OLEObject',
+            'w:object',
+            'o:OLEObject',
+            'v:shape',
+            'w:pict'
+        ];
+
+        $xmlString = $element->ownerDocument->saveXML($element);
+
+        foreach ($oleTagPatterns as $pattern) {
+            if (stripos($xmlString, $pattern) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Import OLE element with proper namespace preservation
+     */
+    private function importOleElement($targetDoc, $sourceElement)
+    {
+        // Create a temporary document to handle namespaces properly
+        $tempDoc = new \DOMDocument();
+        $tempDoc->preserveWhiteSpace = true;
+        $tempDoc->formatOutput = false;
+
+        // Import the source document's root element to get all namespaces
+        $sourceDoc = $sourceElement->ownerDocument;
+        $sourceRoot = $sourceDoc->documentElement;
+
+        // Create a temporary root with all namespace declarations
+        $tempRoot = $tempDoc->createElementNS(
+            $sourceRoot->namespaceURI ?: 'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
+            $sourceRoot->nodeName
+        );
+        $tempDoc->appendChild($tempRoot);
+
+        // Copy all namespace declarations from source document
+        if ($sourceRoot) {
+            foreach ($sourceRoot->attributes as $attr) {
+                if (strpos($attr->name, 'xmlns') === 0) {
+                    $tempRoot->setAttributeNode($tempDoc->importNode($attr, true));
+                }
+            }
+        }
+
+        // Add common OLE namespaces if they don't exist
+        $oleNamespaces = [
+            'xmlns:w' => 'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
+            'xmlns:o' => 'urn:schemas-microsoft-com:office:office',
+            'xmlns:v' => 'urn:schemas-microsoft-com:vml',
+            'xmlns:r' => 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
+        ];
+
+        foreach ($oleNamespaces as $prefix => $uri) {
+            if (!$tempRoot->hasAttribute($prefix)) {
+                $tempRoot->setAttribute($prefix, $uri);
+            }
+        }
+
+        // Copy the actual element
+        $importedElement = $tempDoc->importNode($sourceElement, true);
+        $tempRoot->appendChild($importedElement);
+
+        // Import the properly namespaced element into target document
+        $finalElement = $targetDoc->importNode($importedElement, true);
+
+        return $finalElement;
+    }
+
+    /**
+     * Ensure OLE namespaces are properly declared in the document
+     */
+    private function ensureOleNamespaces($doc)
+    {
+        $root = $doc->documentElement;
+        if (!$root) {
+            return;
+        }
+
+        $oleNamespaces = [
+            'xmlns:w' => 'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
+            'xmlns:o' => 'urn:schemas-microsoft-com:office:office',
+            'xmlns:v' => 'urn:schemas-microsoft-com:vml',
+            'xmlns:r' => 'http://schemas.openxmlformats.org/officeDocument/2006/relationships',
+            'xmlns:wp' => 'http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing',
+            'xmlns:a' => 'http://schemas.openxmlformats.org/drawingml/2006/main'
+        ];
+
+        foreach ($oleNamespaces as $prefix => $uri) {
+            if (!$root->hasAttribute($prefix)) {
+                $root->setAttribute($prefix, $uri);
+            }
+        }
+    }
+
+    /**
+     * Add page break to document
+     */
+    private function addPageBreak($doc, $body)
+    {
+        $pageBreakElement = $doc->createElementNS(
             'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
             'w:p'
         );
-        $pageBreakRun = $questionDoc->createElementNS(
+        $pageBreakRun = $doc->createElementNS(
             'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
             'w:r'
         );
-        $pageBreakBr = $questionDoc->createElementNS(
+        $pageBreakBr = $doc->createElementNS(
             'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
             'w:br'
         );
         $pageBreakBr->setAttribute('w:type', 'page');
         $pageBreakRun->appendChild($pageBreakBr);
         $pageBreakElement->appendChild($pageBreakRun);
-        $questionBody->appendChild($pageBreakElement);
+        $body->appendChild($pageBreakElement);
+    }
 
-        // Add answer section title
-        $titleElement = $questionDoc->createElementNS(
+    /**
+     * Add answer section title
+     */
+    private function addAnswerSectionTitle($doc, $body)
+    {
+        $titleElement = $doc->createElementNS(
             'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
             'w:p'
         );
-        $titleRun = $questionDoc->createElementNS(
+        $titleRun = $doc->createElementNS(
             'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
             'w:r'
         );
-        $titleRunProps = $questionDoc->createElementNS(
+        $titleRunProps = $doc->createElementNS(
             'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
             'w:rPr'
         );
-        $titleBold = $questionDoc->createElementNS(
+        $titleBold = $doc->createElementNS(
             'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
             'w:b'
         );
-        $titleSize = $questionDoc->createElementNS(
+        $titleSize = $doc->createElementNS(
             'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
             'w:sz'
         );
@@ -397,106 +1402,142 @@ class QuestionsController extends Controller
         $titleRunProps->appendChild($titleSize);
         $titleRun->appendChild($titleRunProps);
 
-        $titleText = $questionDoc->createElementNS(
+        $titleText = $doc->createElementNS(
             'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
             'w:t',
             'ANSWER SECTION'
         );
         $titleRun->appendChild($titleText);
         $titleElement->appendChild($titleRun);
-        $questionBody->appendChild($titleElement);
-
-        // Get all content from answer document body
-        $answerBody = $answerDoc->getElementsByTagName('body')->item(0);
-        $answerElements = $answerBody->childNodes;
-
-        // Import and append answer content
-        foreach ($answerElements as $element) {
-            if ($element->nodeType === XML_ELEMENT_NODE) {
-                $importedElement = $questionDoc->importNode($element, true);
-                $questionBody->appendChild($importedElement);
-            }
-        }
-
-        return $questionDoc->saveXML();
+        $body->appendChild($titleElement);
     }
 
     /**
-     * Merge media files (images, OLE objects, embeddings)
+     * Update content types to include all media and OLE object types from answer document
      */
-    private function mergeMediaFiles($answerDir, $mergedDir)
+    private function updateContentTypes($answerDir, $mergedDir, $fileRenameMap = [])
     {
-        $answerMediaDir = $answerDir . '/word/media';
-        $mergedMediaDir = $mergedDir . '/word/media';
+        $answerTypesPath = $answerDir . '/[Content_Types].xml';
+        $mergedTypesPath = $mergedDir . '/[Content_Types].xml';
 
-        if (is_dir($answerMediaDir)) {
-            if (!is_dir($mergedMediaDir)) {
-                mkdir($mergedMediaDir, 0755, true);
+        if (!file_exists($answerTypesPath) || !file_exists($mergedTypesPath)) {
+            return;
+        }
+
+        $answerTypes = new \DOMDocument();
+        $answerTypes->load($answerTypesPath);
+
+        $mergedTypes = new \DOMDocument();
+        $mergedTypes->load($mergedTypesPath);
+
+        $mergedTypesRoot = $mergedTypes->getElementsByTagName('Types')->item(0);
+
+        // Get existing content types to avoid duplicates
+        $existingTypes = [];
+        $existingOverrides = [];
+
+        foreach ($mergedTypes->getElementsByTagName('Default') as $default) {
+            $existingTypes[$default->getAttribute('Extension')] = $default->getAttribute('ContentType');
+        }
+
+        foreach ($mergedTypes->getElementsByTagName('Override') as $override) {
+            $existingOverrides[] = $override->getAttribute('PartName');
+        }
+
+        // Add new default types from answer document
+        foreach ($answerTypes->getElementsByTagName('Default') as $default) {
+            $extension = $default->getAttribute('Extension');
+            $contentType = $default->getAttribute('ContentType');
+
+            if (!isset($existingTypes[$extension])) {
+                $newDefault = $mergedTypes->createElement('Default');
+                $newDefault->setAttribute('Extension', $extension);
+                $newDefault->setAttribute('ContentType', $contentType);
+                $mergedTypesRoot->appendChild($newDefault);
+                $existingTypes[$extension] = $contentType;
             }
+        }
 
-            // Copy all media files from answer document
-            $files = scandir($answerMediaDir);
-            foreach ($files as $file) {
-                if ($file !== '.' && $file !== '..') {
-                    $sourcePath = $answerMediaDir . '/' . $file;
-                    $destPath = $mergedMediaDir . '/' . $file;
+        // Add new override types from answer document
+        foreach ($answerTypes->getElementsByTagName('Override') as $override) {
+            $partName = $override->getAttribute('PartName');
+            $contentType = $override->getAttribute('ContentType');
 
-                    // Rename if file already exists
-                    $counter = 1;
-                    $originalDestPath = $destPath;
-                    while (file_exists($destPath)) {
-                        $pathInfo = pathinfo($originalDestPath);
-                        $destPath = $pathInfo['dirname'] . '/' . $pathInfo['filename'] . '_' . $counter . '.' . $pathInfo['extension'];
-                        $counter++;
+            // Update part name if it references renamed files
+            $updatedPartName = $this->updatePartNameForRenamedFiles($partName, $answerDir, $mergedDir, $fileRenameMap);
+
+            if (!in_array($updatedPartName, $existingOverrides)) {
+                $newOverride = $mergedTypes->createElement('Override');
+                $newOverride->setAttribute('PartName', $updatedPartName);
+                $newOverride->setAttribute('ContentType', $contentType);
+                $mergedTypesRoot->appendChild($newOverride);
+                $existingOverrides[] = $updatedPartName;
+            }
+        }
+
+        file_put_contents($mergedTypesPath, $mergedTypes->saveXML());
+    }
+
+    /**
+     * Update part names in content types for renamed files
+     */
+    private function updatePartNameForRenamedFiles($partName, $answerDir, $mergedDir, $fileRenameMap = [])
+    {
+        // Extract the file name from the part name
+        $fileName = basename($partName);
+
+        // Check if this file was renamed using our rename map
+        if (isset($fileRenameMap[$fileName])) {
+            $newFileName = $fileRenameMap[$fileName];
+            return dirname($partName) . '/' . $newFileName;
+        }
+
+        // Handle media files
+        if (strpos($partName, '/word/media/') !== false) {
+            $mediaDir = $mergedDir . '/word/media';
+
+            if (is_dir($mediaDir) && !file_exists($mediaDir . '/' . $fileName)) {
+                // Look for renamed version
+                $files = scandir($mediaDir);
+                foreach ($files as $file) {
+                    if (strpos($file, pathinfo($fileName, PATHINFO_FILENAME) . '_ans_') === 0) {
+                        return '/word/media/' . $file;
                     }
-
-                    copy($sourcePath, $destPath);
                 }
             }
         }
 
-        // Also copy embeddings directory if it exists (for OLE objects)
-        $answerEmbeddingsDir = $answerDir . '/word/embeddings';
-        $mergedEmbeddingsDir = $mergedDir . '/word/embeddings';
+        // Handle embeddings
+        if (strpos($partName, '/word/embeddings/') !== false) {
+            $embeddingsDir = $mergedDir . '/word/embeddings';
 
-        if (is_dir($answerEmbeddingsDir)) {
-            if (!is_dir($mergedEmbeddingsDir)) {
-                mkdir($mergedEmbeddingsDir, 0755, true);
+            if (is_dir($embeddingsDir) && !file_exists($embeddingsDir . '/' . $fileName)) {
+                $files = scandir($embeddingsDir);
+                foreach ($files as $file) {
+                    if (strpos($file, pathinfo($fileName, PATHINFO_FILENAME) . '_ans_') === 0) {
+                        return '/word/embeddings/' . $file;
+                    }
+                }
             }
-            $this->copyDirectory($answerEmbeddingsDir, $mergedEmbeddingsDir);
         }
+
+        // Handle object files
+        if (strpos($partName, '/word/object') !== false || strpos($partName, '/word/oleObject') !== false) {
+            $wordDir = $mergedDir . '/word';
+
+            if (!file_exists($wordDir . '/' . $fileName)) {
+                $files = scandir($wordDir);
+                foreach ($files as $file) {
+                    if (strpos($file, pathinfo($fileName, PATHINFO_FILENAME) . '_ans_') === 0) {
+                        return '/word/' . $file;
+                    }
+                }
+            }
+        }
+
+        return $partName;
     }
 
-    /**
-     * Update relationships to include answer document references
-     */
-    private function updateRelationships($answerDir, $mergedDir)
-    {
-        $answerRelsPath = $answerDir . '/word/_rels/document.xml.rels';
-        $mergedRelsPath = $mergedDir . '/word/_rels/document.xml.rels';
-
-        if (file_exists($answerRelsPath) && file_exists($mergedRelsPath)) {
-            $answerRels = file_get_contents($answerRelsPath);
-            $mergedRels = file_get_contents($mergedRelsPath);
-
-            // Parse and merge relationships
-            $answerDoc = new \DOMDocument();
-            $answerDoc->loadXML($answerRels);
-
-            $mergedDoc = new \DOMDocument();
-            $mergedDoc->loadXML($mergedRels);
-
-            $answerRelationships = $answerDoc->getElementsByTagName('Relationship');
-            $mergedRelationships = $mergedDoc->getElementsByTagName('Relationships')->item(0);
-
-            foreach ($answerRelationships as $rel) {
-                $importedRel = $mergedDoc->importNode($rel, true);
-                $mergedRelationships->appendChild($importedRel);
-            }
-
-            file_put_contents($mergedRelsPath, $mergedDoc->saveXML());
-        }
-    }
 
     /**
      * Create DOCX file from directory
