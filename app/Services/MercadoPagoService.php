@@ -139,6 +139,12 @@ class MercadoPagoService
         // Add credits to user
         $user->increment('credit', $creditAmount);
 
+        // Update credit expiry date - extend if current expiry is earlier than new expiry
+        if (!$user->credit_expires_at || $user->credit_expires_at < $expiryDate) {
+            $user->credit_expires_at = $expiryDate;
+            $user->save();
+        }
+
         // Create credit history record
         CreditHistory::create([
             'user_id' => $user->id,
