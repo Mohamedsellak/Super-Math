@@ -107,6 +107,12 @@
                                 <i class="fas fa-graduation-cap mr-1"></i>Education
                             </th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                <i class="fas fa-book mr-1"></i>Subject
+                            </th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                <i class="fas fa-tags mr-1"></i>Topic
+                            </th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
                                 <i class="fas fa-calendar mr-1"></i>Year
                             </th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
@@ -166,6 +172,18 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200 transition-all duration-200 hover:scale-105">
+                                        <i class="fas fa-book text-xs mr-1"></i>
+                                        {{ $question->topic->subject->name ?? 'N/A' }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-teal-100 text-teal-800 border border-teal-200 transition-all duration-200 hover:scale-105">
+                                        <i class="fas fa-tags text-xs mr-1"></i>
+                                        {{ $question->topic->name ?? 'N/A' }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
                                     <div class="text-sm font-medium text-gray-900">{{ $question->year }}</div>
                                     <div class="text-xs text-gray-500">{{ $question->region }}, {{ $question->uf }}</div>
                                 </td>
@@ -189,12 +207,14 @@
                                 <td class="px-6 py-4">
                                     <div class="flex space-x-2">
                                         <a href="{{ route('admin.questions.show', $question) }}"
-                                           class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg">
-                                            <i class="fas fa-eye text-xs mr-1"></i>View
+                                           class="inline-flex items-center justify-center w-8 h-8 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+                                           title="View Question">
+                                            <i class="fas fa-eye"></i>
                                         </a>
                                         <a href="{{ route('admin.questions.edit', $question) }}"
-                                           class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg">
-                                            <i class="fas fa-edit text-xs mr-1"></i>Edit
+                                           class="inline-flex items-center justify-center w-8 h-8 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+                                           title="Edit Question">
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                         <form action="{{ route('admin.questions.destroy', $question) }}"
                                               method="POST" class="inline"
@@ -202,8 +222,9 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" 
-                                                    class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg">
-                                                <i class="fas fa-trash text-xs mr-1"></i>Delete
+                                                    class="inline-flex items-center justify-center w-8 h-8 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+                                                    title="Delete Question">
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
                                     </div>
@@ -211,7 +232,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-6 py-12 text-center">
+                                <td colspan="9" class="px-6 py-12 text-center">
                                     <div class="flex flex-col items-center">
                                         <i class="fas fa-question-circle text-gray-400 text-6xl mb-4"></i>
                                         <h3 class="text-lg font-medium text-gray-600 mb-2">No questions found</h3>

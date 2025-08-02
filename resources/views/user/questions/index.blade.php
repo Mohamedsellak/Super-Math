@@ -170,6 +170,29 @@
                             </select>
                         </div>
 
+                        <!-- Subject Selector (for loading topics) -->
+                        <div>
+                            <label for="filter-subject" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-book mr-2"></i>Select Subject
+                            </label>
+                            <select id="filter-subject" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">Choose subject to load topics</option>
+                                @foreach($questions->pluck('topic.subject.name')->unique()->filter() as $subject)
+                                    <option value="{{ $subject }}">{{ $subject }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Topic Filter -->
+                        <div>
+                            <label for="filter-topic" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-tags mr-2"></i>Filter by Topic
+                            </label>
+                            <select id="filter-topic" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent" disabled>
+                                <option value="">Select a subject first</option>
+                            </select>
+                        </div>
+
                         <!-- Difficulty Filter -->
                         <div>
                             <label for="filter-difficulty" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -449,7 +472,7 @@
                 </div>
 
                 <!-- Question Metadata -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
                     <div class="flex items-center space-x-2">
                         <i class="fas fa-graduation-cap text-gray-600"></i>
                         <span class="text-sm text-gray-600">Education:</span>
@@ -462,6 +485,20 @@
                         <span class="text-sm text-gray-600">Type:</span>
                         <span class="px-3 py-1 ${typeClass} rounded-full text-sm font-medium badge-animate">
                             ${question.question_type || 'Not specified'}
+                        </span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-book text-gray-600"></i>
+                        <span class="text-sm text-gray-600">Subject:</span>
+                        <span class="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm font-medium badge-animate">
+                            ${question.topic && question.topic.subject ? question.topic.subject.name : 'Not specified'}
+                        </span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-tags text-gray-600"></i>
+                        <span class="text-sm text-gray-600">Topic:</span>
+                        <span class="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-sm font-medium badge-animate">
+                            ${question.topic ? question.topic.name : 'Not specified'}
                         </span>
                     </div>
                     <div class="flex items-center space-x-2">
@@ -612,6 +649,7 @@
         const searchTerm = document.getElementById('search-input').value.toLowerCase();
         const educationFilter = document.getElementById('filter-education').value;
         const typeFilter = document.getElementById('filter-type').value;
+        const topicFilter = document.getElementById('filter-topic').value;
         const difficultyFilter = document.getElementById('filter-difficulty').value;
 
         filteredQuestions = questionsData.filter(question => {
@@ -621,9 +659,10 @@
 
             const matchesEducation = !educationFilter || question.education_level === educationFilter;
             const matchesType = !typeFilter || question.question_type === typeFilter;
+            const matchesTopic = !topicFilter || (question.topic && question.topic.name === topicFilter);
             const matchesDifficulty = !difficultyFilter || question.difficulty === difficultyFilter;
 
-            return matchesSearch && matchesEducation && matchesType && matchesDifficulty;
+            return matchesSearch && matchesEducation && matchesType && matchesTopic && matchesDifficulty;
         });
 
         currentIndex = 0;
@@ -636,9 +675,65 @@
         document.getElementById('search-input').value = '';
         document.getElementById('filter-education').value = '';
         document.getElementById('filter-type').value = '';
+        document.getElementById('filter-subject').value = '';
+        document.getElementById('filter-topic').value = '';
+        document.getElementById('filter-topic').disabled = true;
+        document.getElementById('filter-topic').innerHTML = '<option value="">Select a subject first</option>';
         document.getElementById('filter-difficulty').value = '';
         filterQuestions();
     });
+
+    // Subject/Topic dynamic loading
+    document.getElementById('filter-subject').addEventListener('change', function() {
+        const subjectName = this.value;
+        const topicSelect = document.getElementById('filter-topic');
+        
+        // Reset topic select
+        topicSelect.innerHTML = '<option value="">Loading topics...</option>';
+        topicSelect.disabled = true;
+        
+        if (subjectName) {
+            // Find the subject ID from the questionsData
+            const subjectQuestion = questionsData.find(q => q.topic && q.topic.subject && q.topic.subject.name === subjectName);
+            
+            if (subjectQuestion && subjectQuestion.topic && subjectQuestion.topic.subject) {
+                const subjectId = subjectQuestion.topic.subject.id;
+                
+                // Fetch topics for selected subject
+                fetch(`{{ url('dashboard/subjects') }}/${subjectId}/topics`)
+                    .then(response => response.json())
+                    .then(topics => {
+                        topicSelect.innerHTML = '<option value="">All Topics</option>';
+                        
+                        topics.forEach(topic => {
+                            const option = document.createElement('option');
+                            option.value = topic.name;
+                            option.textContent = topic.name;
+                            topicSelect.appendChild(option);
+                        });
+                        
+                        topicSelect.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching topics:', error);
+                        topicSelect.innerHTML = '<option value="">Error loading topics</option>';
+                        topicSelect.disabled = false;
+                    });
+            } else {
+                topicSelect.innerHTML = '<option value="">No topics found</option>';
+                topicSelect.disabled = false;
+            }
+        } else {
+            topicSelect.innerHTML = '<option value="">Select a subject first</option>';
+            topicSelect.disabled = true;
+        }
+        
+        // Clear topic filter when subject changes (but don't filter yet)
+        topicSelect.value = '';
+    });
+
+    // Topic filter change event
+    document.getElementById('filter-topic').addEventListener('change', filterQuestions);
 
     document.getElementById('selectAll').addEventListener('click', () => {
         filteredQuestions.forEach(question => selectedQuestions.add(question.id));

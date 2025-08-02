@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Topic;
 
 class Question extends Model
 {
@@ -15,6 +15,7 @@ class Question extends Model
         'difficulty',
         'question_type',
         'education_level',
+        'topic_id',
         'institution',
         'source',
         'year',
@@ -24,13 +25,9 @@ class Question extends Model
         'answer_doc',
     ];
 
-
-    /**
-     * Check if the question has an image
-     */
-    public function hasImage()
-    {
-        return !empty($this->image) && Storage::disk('public')->exists($this->image);
+    public function topic(){
+        return $this->belongsTo(Topic::class);
     }
+
 }
 

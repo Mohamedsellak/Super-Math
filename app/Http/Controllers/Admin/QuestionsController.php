@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Question;
+use App\Models\Subject;
+use App\Models\Topic;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
@@ -17,7 +19,7 @@ class QuestionsController extends Controller
     public function index()
     {
         return view('admin.questions.index', [
-            'questions' => Question::Paginate(10)->sortByDesc('created_at'),
+            'questions' => Question::with(['topic.subject'])->paginate(10)->sortByDesc('created_at'),
         ]);
     }
 
@@ -26,7 +28,8 @@ class QuestionsController extends Controller
      */
     public function create()
     {
-        return view('admin.questions.create');
+        $subjects = Subject::all();
+        return view('admin.questions.create', compact('subjects'));
     }
 
     /**
@@ -42,6 +45,7 @@ class QuestionsController extends Controller
             'difficulty' => ['required', Rule::in(['easy', 'medium', 'hard'])],
             'question_type' => ['required', Rule::in(['Multiple Choice', 'True/False', 'Open Ended', 'Fill in the Blank'])],
             'education_level' => ['required', Rule::in(['Elementary', 'Middle School', 'High School', 'University'])],
+            'topic_id' => 'required|exists:topics,id',
             'institution' => 'required|string|max:255',
             'source' => 'required|string|max:255',
             'year' => 'required|integer|min:1900|max:' . date('Y'),
@@ -72,6 +76,7 @@ class QuestionsController extends Controller
             'difficulty' => $validated['difficulty'],
             'question_type' => $validated['question_type'],
             'education_level' => $validated['education_level'],
+            'topic_id' => $validated['topic_id'],
             'institution' => $validated['institution'],
             'source' => $validated['source'],
             'year' => $validated['year'],
@@ -91,6 +96,7 @@ class QuestionsController extends Controller
      */
     public function show(Question $question)
     {
+        $question->load(['topic.subject']);
         return view('admin.questions.show', [
             'question' => $question,
         ]);
@@ -101,8 +107,11 @@ class QuestionsController extends Controller
      */
     public function edit(Question $question)
     {
+        $subjects = Subject::all();
+        $question->load(['topic.subject']);
         return view('admin.questions.edit', [
             'question' => $question,
+            'subjects' => $subjects,
         ]);
     }
 
@@ -119,6 +128,7 @@ class QuestionsController extends Controller
             'difficulty' => ['required', Rule::in(['easy', 'medium', 'hard'])],
             'question_type' => ['required', Rule::in(['Multiple Choice', 'True/False', 'Open Ended', 'Fill in the Blank'])],
             'education_level' => ['required', Rule::in(['Elementary', 'Middle School', 'High School', 'University'])],
+            'topic_id' => 'required|exists:topics,id',
             'institution' => 'required|string|max:255',
             'source' => 'required|string|max:255',
             'year' => 'required|integer|min:1900|max:' . date('Y'),
@@ -177,6 +187,7 @@ class QuestionsController extends Controller
             'difficulty' => $validated['difficulty'],
             'question_type' => $validated['question_type'],
             'education_level' => $validated['education_level'],
+            'topic_id' => $validated['topic_id'],
             'institution' => $validated['institution'],
             'source' => $validated['source'],
             'year' => $validated['year'],
@@ -218,7 +229,7 @@ class QuestionsController extends Controller
     }
 
     /**
-     * Download the merged document file using simplified approach to preserve MathType equations
+     * Download the question and answer documents as a ZIP file
      */
     public function downloadDocument(Question $question)
     {
@@ -234,21 +245,40 @@ class QuestionsController extends Controller
             $questionDocPath = Storage::disk('local')->path($question->doc);
             $answerDocPath = Storage::disk('local')->path($question->answer_doc);
 
-            // Use the new DocxMergeService to preserve MathType equations
-            $docxMerger = new \App\Services\DocxMergeService();
-            $mergedPath = $docxMerger->merge(
-                [$questionDocPath, $answerDocPath],
-                'question_' . $question->id . '_merged_' . time() . '.docx'
-            );
+            // Create temporary ZIP file
+            $zipFileName = 'question_' . $question->id . '_documents_' . time() . '.zip';
+            $tempZipPath = storage_path('app/temp/' . $zipFileName);
 
-            $fileName = 'question_' . $question->id . '_complete_document.docx';
+            // Ensure temp directory exists
+            if (!file_exists(storage_path('app/temp'))) {
+                mkdir(storage_path('app/temp'), 0755, true);
+            }
+
+            // Create ZIP archive
+            $zip = new \ZipArchive();
+            if ($zip->open($tempZipPath, \ZipArchive::CREATE) !== TRUE) {
+                throw new \Exception('Cannot create ZIP file');
+            }
+
+            // Add question document to ZIP
+            $questionFileName = 'Question.docx';
+            $zip->addFile($questionDocPath, $questionFileName);
+
+            // Add answer document to ZIP
+            $answerFileName = 'Answer.docx';
+            $zip->addFile($answerDocPath, $answerFileName);
+
+            // Close ZIP file
+            $zip->close();
+
+            $downloadFileName = 'question_' . $question->id . '_documents.zip';
 
             // Return download response and delete temp file after download
-            return response()->download($mergedPath, $fileName)->deleteFileAfterSend(true);
+            return response()->download($tempZipPath, $downloadFileName)->deleteFileAfterSend(true);
 
         } catch (\Exception $e) {
-            Log::error('Document merge error: ' . $e->getMessage());
-            abort(500, 'Error merging documents: ' . $e->getMessage());
+            Log::error('Document ZIP creation error: ' . $e->getMessage());
+            abort(500, 'Error creating ZIP file: ' . $e->getMessage());
         }
     }
 }

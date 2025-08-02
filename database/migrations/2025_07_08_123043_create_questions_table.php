@@ -20,6 +20,7 @@ return new class extends Migration
             $table->enum('difficulty', ['easy', 'medium', 'hard']);
             $table->enum('question_type', ['Multiple Choice', 'True/False', 'Open Ended', 'Fill in the Blank']);
             $table->enum('education_level', ['Elementary', 'Middle School', 'High School', 'University']);
+            $table->foreignId('topic_id')->constrained()->onDelete('cascade');
             $table->string('institution');
             $table->string('source');
             $table->year('year');

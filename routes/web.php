@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\QuestionsController;
+use App\Http\Controllers\Admin\SubjectController;
+use App\Http\Controllers\Admin\TopicController;
 
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\UserQuestionsController;
@@ -38,7 +40,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 
-//
+// 
 Route::middleware([AuthMiddleware::class])->group(function () {
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
@@ -58,6 +60,9 @@ Route::middleware([AuthMiddleware::class])->group(function () {
 
         Route::get('/questions', [UserQuestionsController::class, 'index'])->name('questions.index');
         Route::post('/questions/download', [UserQuestionsController::class, 'download'])->name('questions.download');
+
+        // API endpoint for getting topics by subject (for user filtering)
+        Route::get('/subjects/{subject}/topics', [UserQuestionsController::class, 'getTopics'])->name('subjects.topics');
 
         // Credit Routes
         Route::get('/credits', [CreditController::class, 'index'])->name('credits.index');
@@ -84,9 +89,14 @@ Route::prefix('Dashboard')->name('admin.')->middleware([AuthMiddleware::class, A
     // Questions Management Routes
     Route::get('/questions/{question}/download-document', [QuestionsController::class, 'downloadDocument'])->name('questions.download-document');
     Route::resource('questions', QuestionsController::class);
+
+    
+    // Subject Management Routes
+    Route::resource('subjects', SubjectController::class);
+    
+    // Topic Management Routes
+    Route::resource('topics', TopicController::class);
 });
 
-
-
-// // Temporary route to create admin user (remove in production)
-// Route::get('/create-admin', [AuthController::class, 'createAdmin']);
+// Subject Management Routes - API endpoint for getting topics
+Route::get('/subjects/{subject}/topics', [SubjectController::class, 'getTopics'])->name('subjects.topics');

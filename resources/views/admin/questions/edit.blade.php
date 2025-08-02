@@ -187,6 +187,40 @@
                                 <option value="University" {{ old('education_level', $question->education_level) == 'University' ? 'selected' : '' }}>🏛️ University Level</option>
                             </select>
                         </div>
+
+                        <div class="space-y-3 md:col-span-2 xl:col-span-1">
+                            <label for="subject_id" class="flex items-center text-sm font-bold text-gray-800 uppercase tracking-wide">
+                                <div class="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-book text-white text-sm"></i>
+                                </div>
+                                Subject *
+                            </label>
+                            <select name="subject_id" id="subject_id"
+                                    class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-gray-300 bg-white shadow-sm font-medium" required>
+                                <option value="">Choose subject</option>
+                                @foreach($subjects as $subject)
+                                    <option value="{{ $subject->id }}" {{ old('subject_id', $question->topic->subject_id ?? null) == $subject->id ? 'selected' : '' }}>
+                                        {{ $subject->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-3 md:col-span-2 xl:col-span-1">
+                            <label for="topic_id" class="flex items-center text-sm font-bold text-gray-800 uppercase tracking-wide">
+                                <div class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-tags text-white text-sm"></i>
+                                </div>
+                                Topic *
+                            </label>
+                            <select name="topic_id" id="topic_id"
+                                    class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-gray-300 bg-white shadow-sm font-medium" required>
+                                <option value="">Choose topic</option>
+                                @if(isset($question->topic))
+                                    <option value="{{ $question->topic->id }}" selected>{{ $question->topic->name }}</option>
+                                @endif
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -544,6 +578,53 @@ document.addEventListener('DOMContentLoaded', function() {
         ufField.addEventListener('input', function() {
             this.value = this.value.toUpperCase();
         });
+    }
+
+    // Subject/Topic dynamic loading
+    const subjectSelect = document.getElementById('subject_id');
+    const topicSelect = document.getElementById('topic_id');
+
+    if (subjectSelect && topicSelect) {
+        subjectSelect.addEventListener('change', function() {
+            const subjectId = this.value;
+            const currentTopicId = {{ old('topic_id', $question->topic_id ?? 'null') }};
+            
+            // Reset topic select
+            topicSelect.innerHTML = '<option value="">Loading topics...</option>';
+            topicSelect.disabled = true;
+
+            if (subjectId) {
+                // Fetch topics for selected subject
+                fetch(`{{ url('Dashboard/subjects') }}/${subjectId}/topics`)
+                    .then(response => response.json())
+                    .then(topics => {
+                        topicSelect.innerHTML = '<option value="">Choose topic</option>';
+                        
+                        topics.forEach(topic => {
+                            const option = document.createElement('option');
+                            option.value = topic.id;
+                            option.textContent = topic.name;
+                            option.selected = currentTopicId == topic.id;
+                            topicSelect.appendChild(option);
+                        });
+                        
+                        topicSelect.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching topics:', error);
+                        topicSelect.innerHTML = '<option value="">Error loading topics</option>';
+                        topicSelect.disabled = false;
+                    });
+            } else {
+                topicSelect.innerHTML = '<option value="">First select a subject</option>';
+                topicSelect.disabled = true;
+            }
+        });
+
+        // Trigger change event if subject is pre-selected (for edit mode or validation errors)
+        if (subjectSelect.value) {
+            subjectSelect.dispatchEvent(new Event('change'));
+        }
     }
 });
 </script>

@@ -213,6 +213,32 @@
                     </div>
                 </div>
 
+                <!-- Subject & Topic Information Card -->
+                <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
+                        <h3 class="text-lg font-bold text-white flex items-center">
+                            <i class="fas fa-book-open mr-2"></i>
+                            Subject & Topic
+                        </h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                            <span class="text-sm font-medium text-gray-600">Subject</span>
+                            <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-lg font-bold text-sm">
+                                <i class="fas fa-book text-xs mr-1"></i>
+                                {{ $question->topic->subject->name ?? 'N/A' }}
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                            <span class="text-sm font-medium text-gray-600">Topic</span>
+                            <span class="px-3 py-1 bg-teal-100 text-teal-800 rounded-lg font-bold text-sm">
+                                <i class="fas fa-tags text-xs mr-1"></i>
+                                {{ $question->topic->name ?? 'N/A' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Source Information Card -->
                 <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
                     <div class="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-4">

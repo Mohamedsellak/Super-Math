@@ -150,7 +150,7 @@ class MercadoPagoService
             'user_id' => $user->id,
             'amount' => '+' . $creditAmount,
             'action' => 'Payment',
-            'description' => "Purchased {$creditAmount} credits via MercadoPago. Valid until {$expiryDate->format('Y-m-d')}. Payment ID: {$paymentId}",
+            'description' => "Purchased {$creditAmount} credits. Valid until {$expiryDate->format('Y-m-d')}. Payment ID: {$paymentId}",
         ]);
     }
 }
