@@ -1,8 +1,7 @@
 @extends('layouts.admin')
 
 @push('head')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/a                                    <span class="transition-all duration-200">Create Topic</span>
-                                </div>ss" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 @endpush
 
 @section('title', 'Create Topic')
@@ -44,14 +43,14 @@
                 <div class="p-8">
                     <form action="{{ route('admin.topics.store') }}" method="POST" class="space-y-6">
                         @csrf
-                        
+
                         <div>
                             <label for="subject_id" class="block text-sm font-semibold text-gray-900 mb-3">
                                 <i class="fas fa-graduation-cap text-green-600 mr-2"></i>
                                 Subject <span class="text-red-500">*</span>
                             </label>
                             <div class="relative">
-                                <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-200 bg-white @error('subject_id') border-red-300 focus:ring-red-500 focus:border-red-500 @enderror" 
+                                <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-200 bg-white @error('subject_id') border-red-300 focus:ring-red-500 focus:border-red-500 @enderror"
                                         id="subject_id" name="subject_id" required>
                                     <option value="">Select a subject</option>
                                     @foreach($subjects as $subject)
@@ -86,9 +85,9 @@
                                 Topic Name <span class="text-red-500">*</span>
                             </label>
                             <div class="relative">
-                                <input type="text" 
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-200 @error('name') border-red-300 focus:ring-red-500 focus:border-red-500 @enderror" 
-                                       id="name" name="name" value="{{ old('name') }}" required 
+                                <input type="text"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-200 @error('name') border-red-300 focus:ring-red-500 focus:border-red-500 @enderror"
+                                       id="name" name="name" value="{{ old('name') }}" required
                                        placeholder="Enter topic name (e.g., Algebra, Geometry, Calculus)">
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,27 +112,27 @@
                         <!-- Form Actions -->
                         <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-gray-200">
                             <!-- Cancel Button -->
-                            <a href="{{ route('admin.topics.index') }}" 
+                            <a href="{{ route('admin.topics.index') }}"
                                class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 text-gray-700 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 shadow-md hover:shadow-lg border border-gray-300 group">
                                 <svg class="w-5 h-5 mr-2 transition-transform duration-200 group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                                 </svg>
                                 <span class="transition-all duration-200">Cancel</span>
                             </a>
-                            
+
                             <!-- Create Button -->
-                            <button type="submit" 
+                            <button type="submit"
                                     class="w-full sm:w-auto inline-flex items-center justify-center px-10 py-3.5 bg-gradient-to-r from-green-600 via-green-700 to-emerald-700 hover:from-green-700 hover:via-green-800 hover:to-emerald-800 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 shadow-lg hover:shadow-2xl ring-2 ring-green-500 ring-opacity-20 hover:ring-opacity-40 group relative overflow-hidden">
                                 <!-- Button Background Effect -->
                                 <div class="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                
+
                                 <!-- Button Content -->
                                 <div class="relative flex items-center">
                                     <svg class="w-5 h-5 mr-2 transition-transform duration-200 group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                     </svg>
                                     <span class="transition-all duration-200">Create Topic</span>
-                                    
+
                                     <!-- Loading Spinner (hidden by default) -->
                                     <svg class="w-5 h-5 ml-2 opacity-0 group-hover:opacity-100 animate-spin transition-opacity duration-200" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

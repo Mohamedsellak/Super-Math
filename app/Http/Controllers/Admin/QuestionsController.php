@@ -219,7 +219,7 @@ class QuestionsController extends Controller
         if ($question->answer_doc) {
             Storage::disk('local')->delete($question->answer_doc);
         }
-        
+
         // Delete the question
         $question->delete();
 

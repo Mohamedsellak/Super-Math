@@ -588,18 +588,18 @@ document.addEventListener('DOMContentLoaded', function() {
         subjectSelect.addEventListener('change', function() {
             const subjectId = this.value;
             const currentTopicId = {{ old('topic_id', $question->topic_id ?? 'null') }};
-            
+
             // Reset topic select
             topicSelect.innerHTML = '<option value="">Loading topics...</option>';
             topicSelect.disabled = true;
 
             if (subjectId) {
                 // Fetch topics for selected subject
-                fetch(`{{ url('Dashboard/subjects') }}/${subjectId}/topics`)
+                fetch(`{{ url('subjects') }}/${subjectId}/topics`)
                     .then(response => response.json())
                     .then(topics => {
                         topicSelect.innerHTML = '<option value="">Choose topic</option>';
-                        
+
                         topics.forEach(topic => {
                             const option = document.createElement('option');
                             option.value = topic.id;
@@ -607,7 +607,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             option.selected = currentTopicId == topic.id;
                             topicSelect.appendChild(option);
                         });
-                        
+
                         topicSelect.disabled = false;
                     })
                     .catch(error => {

@@ -37,10 +37,12 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// API endpoint for getting topics by subject
+Route::get('/subjects/{subject}/topics', [UserQuestionsController::class, 'getTopics'])->name('subjects.topics');
 
 
 
-// 
+//
 Route::middleware([AuthMiddleware::class])->group(function () {
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
@@ -61,8 +63,6 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/questions', [UserQuestionsController::class, 'index'])->name('questions.index');
         Route::post('/questions/download', [UserQuestionsController::class, 'download'])->name('questions.download');
 
-        // API endpoint for getting topics by subject (for user filtering)
-        Route::get('/subjects/{subject}/topics', [UserQuestionsController::class, 'getTopics'])->name('subjects.topics');
 
         // Credit Routes
         Route::get('/credits', [CreditController::class, 'index'])->name('credits.index');
@@ -90,10 +90,10 @@ Route::prefix('Dashboard')->name('admin.')->middleware([AuthMiddleware::class, A
     Route::get('/questions/{question}/download-document', [QuestionsController::class, 'downloadDocument'])->name('questions.download-document');
     Route::resource('questions', QuestionsController::class);
 
-    
+
     // Subject Management Routes
     Route::resource('subjects', SubjectController::class);
-    
+
     // Topic Management Routes
     Route::resource('topics', TopicController::class);
 });

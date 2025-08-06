@@ -687,31 +687,31 @@
     document.getElementById('filter-subject').addEventListener('change', function() {
         const subjectName = this.value;
         const topicSelect = document.getElementById('filter-topic');
-        
+
         // Reset topic select
         topicSelect.innerHTML = '<option value="">Loading topics...</option>';
         topicSelect.disabled = true;
-        
+
         if (subjectName) {
             // Find the subject ID from the questionsData
             const subjectQuestion = questionsData.find(q => q.topic && q.topic.subject && q.topic.subject.name === subjectName);
-            
+
             if (subjectQuestion && subjectQuestion.topic && subjectQuestion.topic.subject) {
                 const subjectId = subjectQuestion.topic.subject.id;
-                
+
                 // Fetch topics for selected subject
-                fetch(`{{ url('dashboard/subjects') }}/${subjectId}/topics`)
+                fetch(`{{ url('subjects') }}/${subjectId}/topics`)
                     .then(response => response.json())
                     .then(topics => {
                         topicSelect.innerHTML = '<option value="">All Topics</option>';
-                        
+
                         topics.forEach(topic => {
                             const option = document.createElement('option');
                             option.value = topic.name;
                             option.textContent = topic.name;
                             topicSelect.appendChild(option);
                         });
-                        
+
                         topicSelect.disabled = false;
                     })
                     .catch(error => {
@@ -727,7 +727,7 @@
             topicSelect.innerHTML = '<option value="">Select a subject first</option>';
             topicSelect.disabled = true;
         }
-        
+
         // Clear topic filter when subject changes (but don't filter yet)
         topicSelect.value = '';
     });
