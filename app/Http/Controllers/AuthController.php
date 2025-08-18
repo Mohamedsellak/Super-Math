@@ -94,7 +94,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return to_route('user.dashboard')->with('success', 'Registration successful! Welcome to SuperMath!');
+        return to_route('user.dashboard')->with('success', 'Registration successful! Welcome to Edufacilita!');
     }
 
     /**
@@ -181,7 +181,7 @@ class AuthController extends Controller
     //         'email' => 'admin@supermath.com',
     //         'password' => Hash::make('password'),
     //         'phone' => '+1234567890',
-    //         'institution' => 'SuperMath',
+    //         'institution' => 'Edufacilita',
     //         'role' => 'admin',
     //     ]);
 

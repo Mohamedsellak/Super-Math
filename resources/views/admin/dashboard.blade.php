@@ -24,12 +24,16 @@
                     Admin Dashboard
                 </h1>
             </div>
-            <p class="text-gray-600 text-lg font-medium ml-16">Complete overview of your Super Math platform performance</p>
+            <p class="text-gray-600 text-lg font-medium ml-16">Real-time overview of platform performance</p>
         </div>
         <div class="flex items-center space-x-4">
             <div class="hidden lg:flex items-center space-x-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-200">
                 <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                 <span class="text-sm font-medium text-gray-600">System Online</span>
+            </div>
+            <div class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-sm text-white">
+                <i class="fas fa-users text-sm"></i>
+                <span class="text-sm font-medium">Active: {{ $activeUsers }}</span>
             </div>
             <div class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-sm text-white">
                 <i class="fas fa-clock text-sm"></i>
@@ -42,7 +46,7 @@
     <!-- Enhanced Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
     <!-- Total Users -->
-    <div class="group bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+    <a href="{{ route('admin.users.index') }}" class="group bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         <div class="flex items-center justify-between">
             <div class="flex items-center space-x-4">
                 <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
@@ -50,19 +54,21 @@
                 </div>
                 <div>
                     <p class="text-xs font-bold text-gray-600 uppercase tracking-wide">Total Users</p>
-                    <p class="text-2xl font-black text-gray-900">{{ \App\Models\User::count() }}</p>
+                    <p class="text-2xl font-black text-gray-900">{{ $totalUsers }}</p>
+                    @if(!is_null($userGrowthPercent))
                     <div class="flex items-center space-x-1 mt-1">
-                        <i class="fas fa-arrow-up text-green-500 text-xs"></i>
-                        <span class="text-xs font-semibold text-green-600">+12.5%</span>
+                        <i class="fas fa-arrow-{{ $userGrowthPercent >= 0 ? 'up text-green-500' : 'down text-red-500' }} text-xs"></i>
+                        <span class="text-xs font-semibold {{ $userGrowthPercent >= 0 ? 'text-green-600' : 'text-red-600' }}">{{ $userGrowthPercent >= 0 ? '+' : ''}}{{ $userGrowthPercent }}%</span>
                         <span class="text-xs text-gray-500">vs last month</span>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
-    </div>
+    </a>
 
     <!-- Total Questions -->
-    <div class="group bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+    <a href="{{ route('admin.questions.index') }}" class="group bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         <div class="flex items-center justify-between">
             <div class="flex items-center space-x-4">
                 <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
@@ -70,18 +76,21 @@
                 </div>
                 <div>
                     <p class="text-xs font-bold text-gray-600 uppercase tracking-wide">Total Questions</p>
-                    <p class="text-2xl font-black text-gray-900">{{ \App\Models\Question::count() }}</p>
+                    <p class="text-2xl font-black text-gray-900">{{ $totalQuestions }}</p>
                     <div class="flex items-center space-x-1 mt-1">
-                        <i class="fas fa-arrow-up text-green-500 text-xs"></i>
-                        <span class="text-xs font-semibold text-green-600">+8.3%</span>
-                        <span class="text-xs text-gray-500">vs last month</span>
+                        <i class="fas fa-database text-blue-500 text-xs"></i>
+                        <span class="text-xs font-semibold text-blue-600">Easy {{ $easyCount }}</span>
+                        <span class="text-xs text-gray-400">/</span>
+                        <span class="text-xs font-semibold text-yellow-600">Med {{ $mediumCount }}</span>
+                        <span class="text-xs text-gray-400">/</span>
+                        <span class="text-xs font-semibold text-red-600">Hard {{ $hardCount }}</span>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </a>
 
-    <!-- Active Sessions -->
+    <!-- Active Sessions approximation -->
     <div class="group bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         <div class="flex items-center justify-between">
             <div class="flex items-center space-x-4">
@@ -89,12 +98,11 @@
                     <i class="fas fa-bolt text-white text-lg"></i>
                 </div>
                 <div>
-                    <p class="text-xs font-bold text-gray-600 uppercase tracking-wide">Active Sessions</p>
-                    <p class="text-2xl font-black text-gray-900">147</p>
+                    <p class="text-xs font-bold text-gray-600 uppercase tracking-wide">Active Users (15m)</p>
+                    <p class="text-2xl font-black text-gray-900">{{ $activeUsers }}</p>
                     <div class="flex items-center space-x-1 mt-1">
-                        <i class="fas fa-arrow-up text-green-500 text-xs"></i>
-                        <span class="text-xs font-semibold text-green-600">+23.1%</span>
-                        <span class="text-xs text-gray-500">vs yesterday</span>
+                        <i class="fas fa-user-clock text-indigo-500 text-xs"></i>
+                        <span class="text-xs font-semibold text-indigo-600">live snapshot</span>
                     </div>
                 </div>
             </div>
@@ -102,7 +110,7 @@
     </div>
 
     <!-- Total Revenue -->
-    {{-- <div class="group bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+    <div class="group bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         <div class="flex items-center justify-between">
             <div class="flex items-center space-x-4">
                 <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
@@ -110,17 +118,18 @@
                 </div>
                 <div>
                     <p class="text-xs font-bold text-gray-600 uppercase tracking-wide">Total Revenue</p>
-                    <p class="text-2xl font-black text-gray-900">${{ number_format(\App\Models\CreditHistory::where('action', 'purchase')->sum('amount'), 2) }}</p>
+                    <p class="text-2xl font-black text-gray-900">${{ number_format($totalRevenue, 2) }}</p>
+                    @if(!is_null($revenueGrowthPercent))
                     <div class="flex items-center space-x-1 mt-1">
-                        <i class="fas fa-arrow-up text-green-500 text-xs"></i>
-                        <span class="text-xs font-semibold text-green-600">+15.7%</span>
+                        <i class="fas fa-arrow-{{ $revenueGrowthPercent >= 0 ? 'up text-green-500' : 'down text-red-500' }} text-xs"></i>
+                        <span class="text-xs font-semibold {{ $revenueGrowthPercent >= 0 ? 'text-green-600' : 'text-red-600' }}">{{ $revenueGrowthPercent >= 0 ? '+' : ''}}{{ $revenueGrowthPercent }}%</span>
                         <span class="text-xs text-gray-500">vs last month</span>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
-    </div>     --}}
-
+    </div>
 </div>
 
     <!-- Secondary Stats Row -->
@@ -132,7 +141,7 @@
                 <i class="fas fa-signal text-green-600 text-sm"></i>
             </div>
             <p class="text-xs font-semibold text-gray-600 uppercase">Easy</p>
-            <p class="text-lg font-black text-gray-900">{{ \App\Models\Question::where('difficulty', 'easy')->count() }}</p>
+            <p class="text-lg font-black text-gray-900">{{ $easyCount }}</p>
         </div>
     </div>
 
@@ -142,7 +151,7 @@
                 <i class="fas fa-signal text-yellow-600 text-sm"></i>
             </div>
             <p class="text-xs font-semibold text-gray-600 uppercase">Medium</p>
-            <p class="text-lg font-black text-gray-900">{{ \App\Models\Question::where('difficulty', 'medium')->count() }}</p>
+            <p class="text-lg font-black text-gray-900">{{ $mediumCount }}</p>
         </div>
     </div>
 
@@ -152,7 +161,7 @@
                 <i class="fas fa-signal text-red-600 text-sm"></i>
             </div>
             <p class="text-xs font-semibold text-gray-600 uppercase">Hard</p>
-            <p class="text-lg font-black text-gray-900">{{ \App\Models\Question::where('difficulty', 'hard')->count() }}</p>
+            <p class="text-lg font-black text-gray-900">{{ $hardCount }}</p>
         </div>
     </div>
 
@@ -161,8 +170,8 @@
             <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <i class="fas fa-graduation-cap text-blue-600 text-sm"></i>
             </div>
-            <p class="text-xs font-semibold text-gray-600 uppercase">Universities</p>
-            <p class="text-lg font-black text-gray-900">{{ \App\Models\Question::distinct('institution')->count() }}</p>
+            <p class="text-xs font-semibold text-gray-600 uppercase">Institutions</p>
+            <p class="text-lg font-black text-gray-900">{{ $institutionsCount }}</p>
         </div>
     </div>
 
@@ -172,19 +181,19 @@
                 <i class="fas fa-map-marker-alt text-purple-600 text-sm"></i>
             </div>
             <p class="text-xs font-semibold text-gray-600 uppercase">Regions</p>
-            <p class="text-lg font-black text-gray-900">{{ \App\Models\Question::distinct('region')->count() }}</p>
+            <p class="text-lg font-black text-gray-900">{{ $regionsCount }}</p>
         </div>
     </div>
 
-    {{-- <div class="bg-white rounded-xl shadow-md p-3 border border-gray-100">
+    <a href="{{ route('admin.questions.create') }}" class="bg-white rounded-xl shadow-md p-3 border border-gray-100 hover:shadow-lg transition">
         <div class="text-center">
             <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                <i class="fas fa-credit-card text-indigo-600 text-sm"></i>
+                <i class="fas fa-plus text-indigo-600 text-sm"></i>
             </div>
-            <p class="text-xs font-semibold text-gray-600 uppercase">Purchases</p>
-            <p class="text-lg font-black text-gray-900">{{ \App\Models\CreditHistory::where('action', 'purchase')->count() }}</p>
+            <p class="text-xs font-semibold text-gray-600 uppercase">New Question</p>
+            <p class="text-lg font-black text-gray-900">Add</p>
         </div>
-    </div>     --}}
+    </a>
 </div>
 
     <!-- Main Content Grid -->
@@ -194,7 +203,7 @@
         <div class="flex items-center justify-between mb-4">
             <div>
                 <h3 class="text-lg font-bold text-gray-900">User Growth Analytics</h3>
-                <p class="text-gray-600 text-sm">Monthly user registration trends</p>
+                <p class="text-gray-600 text-sm">Monthly user registration trends (last 6 months)</p>
             </div>
             <div class="flex items-center space-x-2">
                 <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
@@ -226,7 +235,7 @@
         <div class="flex items-center justify-between mb-4">
             <div>
                 <h3 class="text-lg font-bold text-gray-900">Recent Questions</h3>
-                <p class="text-gray-600 text-sm">Latest questions added to the platform</p>
+                <p class="text-gray-600 text-sm">Latest 5 questions added</p>
             </div>
             <a href="{{ route('admin.questions.index') }}" class="text-blue-600 hover:text-blue-700 font-semibold text-sm flex items-center space-x-1">
                 <span>View All</span>
@@ -234,7 +243,7 @@
             </a>
         </div>
         <div class="space-y-3">
-            @forelse(\App\Models\Question::latest()->take(5)->get() as $question)
+            @forelse($recentQuestions as $question)
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                 <div class="flex items-center space-x-3">
                     <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
@@ -316,14 +325,18 @@
                     <i class="fas fa-list mr-3 group-hover:scale-110 transition-transform duration-300"></i>
                     <span class="font-semibold">Manage Questions</span>
                 </a>
-                <button class="group flex items-center justify-center px-4 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                    <i class="fas fa-chart-bar mr-3 group-hover:scale-110 transition-transform duration-300"></i>
-                    <span class="font-semibold">View Analytics</span>
-                </button>
-                <button class="group flex items-center justify-center px-4 py-3 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-xl hover:from-orange-700 hover:to-orange-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                    <i class="fas fa-cog mr-3 group-hover:rotate-180 transition-transform duration-300"></i>
-                    <span class="font-semibold">System Settings</span>
-                </button>
+                <a href="{{ route('admin.users.index') }}" class="group flex items-center justify-center px-4 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                    <i class="fas fa-users-cog mr-3 group-hover:scale-110 transition-transform duration-300"></i>
+                    <span class="font-semibold">Manage Users</span>
+                </a>
+                <a href="{{ route('admin.subjects.index') }}" class="group flex items-center justify-center px-4 py-3 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-xl hover:from-orange-700 hover:to-orange-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                    <i class="fas fa-book mr-3 group-hover:rotate-180 transition-transform duration-300"></i>
+                    <span class="font-semibold">Manage Subjects</span>
+                </a>
+                <a href="{{ route('admin.topics.index') }}" class="group flex items-center justify-center px-4 py-3 bg-gradient-to-r from-pink-600 to-pink-700 text-white rounded-xl hover:from-pink-700 hover:to-pink-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                    <i class="fas fa-stream mr-3 group-hover:rotate-180 transition-transform duration-300"></i>
+                    <span class="font-semibold">Manage Topics</span>
+                </a>
             </div>
         </div>        </div>
     </div>
@@ -352,10 +365,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const userGrowthChart = new Chart(userGrowthCtx, {
         type: 'line',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+            labels: @json($userGrowthLabels),
             datasets: [{
                 label: 'New Users',
-                data: [120, 190, 300, 500, 450, 600, 750],
+                data: @json($userGrowthData),
                 borderColor: '#3B82F6',
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',
                 borderWidth: 3,
@@ -371,34 +384,20 @@ document.addEventListener('DOMContentLoaded', function() {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: {
-                    display: false
-                }
+                legend: { display: false }
             },
             scales: {
                 y: {
                     beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)'
-                    },
-                    ticks: {
-                        color: '#6B7280'
-                    }
+                    grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                    ticks: { color: '#6B7280' }
                 },
                 x: {
-                    grid: {
-                        display: false
-                    },
-                    ticks: {
-                        color: '#6B7280'
-                    }
+                    grid: { display: false },
+                    ticks: { color: '#6B7280' }
                 }
             },
-            elements: {
-                point: {
-                    hoverRadius: 8
-                }
-            }
+            elements: { point: { hoverRadius: 8 } }
         }
     });
 
@@ -409,16 +408,8 @@ document.addEventListener('DOMContentLoaded', function() {
         data: {
             labels: ['Easy', 'Medium', 'Hard'],
             datasets: [{
-                data: [
-                    {{ \App\Models\Question::where('difficulty', 'easy')->count() }},
-                    {{ \App\Models\Question::where('difficulty', 'medium')->count() }},
-                    {{ \App\Models\Question::where('difficulty', 'hard')->count() }}
-                ],
-                backgroundColor: [
-                    '#10B981',
-                    '#F59E0B',
-                    '#EF4444'
-                ],
+                data: [{{ $easyCount }}, {{ $mediumCount }}, {{ $hardCount }}],
+                backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
                 borderWidth: 0,
                 cutout: '60%'
             }]
@@ -429,28 +420,10 @@ document.addEventListener('DOMContentLoaded', function() {
             plugins: {
                 legend: {
                     position: 'bottom',
-                    labels: {
-                        padding: 20,
-                        usePointStyle: true,
-                        font: {
-                            weight: 'bold'
-                        }
-                    }
+                    labels: { padding: 20, usePointStyle: true, font: { weight: 'bold' } }
                 }
             }
         }
-    });
-
-    // Add hover animations to cards
-    const cards = document.querySelectorAll('.group');
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-4px) scale(1.02)';
-        });
-
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
-        });
     });
 });
 </script>

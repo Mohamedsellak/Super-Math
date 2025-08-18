@@ -310,7 +310,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
                         <!-- Image Upload (Optional) -->
                         <div class="bg-white rounded-2xl p-6 border-2 border-dashed border-gray-200 hover:border-blue-300 transition-all duration-300 hover:bg-blue-50">
                             <div class="text-center space-y-4">
@@ -512,7 +512,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (subjectId) {
                 // Fetch topics for selected subject
-                fetch(`{{ url('Dashboard/subjects') }}/${subjectId}/topics`)
+                fetch(`{{ url('subjects') }}/${subjectId}/topics`)
                     .then(response => response.json())
                     .then(topics => {
                         topicSelect.innerHTML = '<option value="">Choose topic</option>';

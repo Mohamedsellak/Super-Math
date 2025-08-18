@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dashboard - SuperMath</title>
+    <title>Dashboard - Edufacilita</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -46,7 +46,7 @@
                     </div>
                     <!-- Platform Name -->
                     <div>
-                        <h1 class="text-2xl font-black text-gray-800 tracking-tight">SuperMath</h1>
+                        <h1 class="text-2xl font-black text-gray-800 tracking-tight">Edufacilita</h1>
                         <div class="text-xs text-gray-500 font-medium tracking-wider uppercase mt-1">
                             Admin Dashboard
                         </div>
@@ -195,7 +195,7 @@
                     </div>
                     <!-- Platform Name -->
                     <div>
-                        <h1 class="text-xl font-black text-gray-800 tracking-tight">SuperMath</h1>
+                        <h1 class="text-xl font-black text-gray-800 tracking-tight">Edufacilita</h1>
                         <div class="text-xs text-gray-500 font-medium tracking-wider uppercase mt-1">
                             Admin Dashboard
                         </div>
@@ -306,7 +306,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h2 class="text-lg font-bold text-gray-900">SuperMath</h2>
+                                <h2 class="text-lg font-bold text-gray-900">Edufacilita</h2>
                             </div>
                         </div>
 

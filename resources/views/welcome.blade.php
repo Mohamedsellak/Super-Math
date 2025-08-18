@@ -9,7 +9,7 @@
     <meta property="og:title" content="MathQuest - Revolutionary Math Teaching Platform">
     <meta property="og:description" content="Transform your classroom with 50,000+ AI-curated math questions and intelligent teaching tools.">
     <meta property="og:type" content="website">
-    <title>SuperMath - Revolutionary Math Teaching Platform</title>
+    <title>Edufacilita - Revolutionary Math Teaching Platform</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -32,7 +32,7 @@
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold text-gray-900">SuperMath</h1>
+                        <h1 class="text-xl font-bold text-gray-900">Edufacilita</h1>
                         <p class="text-xs text-gray-500">Math Teaching Platform</p>
                     </div>
                 </div>
@@ -43,14 +43,19 @@
                     <a href="#how-it-works" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">How It Works</a>
                     <a href="#pricing" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Pricing</a>
                     <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Login</a>
-                    <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Start Free Trial</a>
+                    <a href="{{ route('register') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Start Free Trial</a>
                 </div>
 
                 <!-- Mobile menu button -->
                 <div class="lg:hidden">
                     <button class="text-gray-700 hover:text-blue-600 p-2" id="mobile-menu-button">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <!-- Hamburger icon -->
+                        <svg class="w-6 h-6 block" id="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                        <!-- Close icon -->
+                        <svg class="w-6 h-6 hidden" id="close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 </div>
@@ -64,7 +69,7 @@
                 <a href="#how-it-works" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-lg">How It Works</a>
                 <a href="#pricing" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-lg">Pricing</a>
                 <a href="{{ route('login') }}" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-lg">Login</a>
-                <a href="#" class="block px-3 py-2 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg text-center">Start Free Trial</a>
+                <a href="{{ route('register') }}" class="block px-3 py-2 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg text-center">Start Free Trial</a>
             </div>
         </div>
     </nav>
@@ -112,7 +117,7 @@
 
                     <!-- Enhanced CTA Buttons -->
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
-                        <a href="#" class="group relative inline-flex items-center justify-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl text-base font-bold transition-all duration-300 shadow-lg hover:shadow-xl">
+                        <a href="{{ route('register') }}" class="group relative inline-flex items-center justify-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl text-base font-bold transition-all duration-300 shadow-lg hover:shadow-xl">
                             <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
                             <svg class="w-5 h-5 mr-3 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
@@ -511,8 +516,8 @@
             <div class="text-center">
                 <div class="bg-white rounded-3xl p-8 shadow-2xl border border-gray-100 inline-block">
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">Ready to transform your teaching?</h3>
-                    <p class="text-gray-600 mb-6">Join thousands of educators worldwide who trust SuperMath</p>
-                    <a href="#" class="inline-flex items-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl">
+                    <p class="text-gray-600 mb-6">Join thousands of educators worldwide who trust Edufacilita</p>
+                    <a href="{{ route('register') }}" class="inline-flex items-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
@@ -548,7 +553,7 @@
                 </h2>
 
                 <p class="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                    Start using SuperMath in minutes with our streamlined onboarding process
+                    Start using Edufacilita in minutes with our streamlined onboarding process
                 </p>
             </div>
 
@@ -661,10 +666,10 @@
             <div class="text-center mt-16">
                 <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-3xl p-8 border border-gray-100">
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">Ready to get started?</h3>
-                    <p class="text-gray-600 mb-8 max-w-md mx-auto">Join thousands of educators who are already transforming their teaching with SuperMath</p>
+                    <p class="text-gray-600 mb-8 max-w-md mx-auto">Join thousands of educators who are already transforming their teaching with Edufacilita</p>
 
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <a href="#" class="inline-flex items-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl">
+                        <a href="{{ route('register') }}" class="inline-flex items-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                             </svg>
@@ -789,9 +794,9 @@
                             </li>
                         </ul>
 
-                        <button class="w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white py-4 rounded-2xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl">
+                        <a href="{{ route('register') }}" class="w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white py-4 rounded-2xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl block text-center">
                             Start Free Trial
-                        </button>
+                        </a>
                     </div>
                 </div>
 
@@ -859,10 +864,10 @@
                             </li>
                         </ul>
 
-                        <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-2xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl relative overflow-hidden">
+                        <a href="{{ route('register') }}" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-2xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl relative overflow-hidden block text-center">
                             <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
                             <span class="relative">Start Free Trial</span>
-                        </button>
+                        </a>
                     </div>
                 </div>
 
@@ -986,7 +991,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                             </svg>
                         </div>
-                        <h3 class="text-lg font-bold">SuperMath</h3>
+                        <h3 class="text-lg font-bold">Edufacilita</h3>
                     </div>
                     <p class="text-gray-300 text-sm leading-relaxed mb-4">
                         Enabling educators to deliver powerful, effective math instruction with beautifully crafted resources.
@@ -1017,7 +1022,7 @@
                         <li><a href="#features" class="text-gray-300 hover:text-white transition-colors text-sm">Features</a></li>
                         <li><a href="#pricing" class="text-gray-300 hover:text-white transition-colors text-sm">Pricing</a></li>
                         <li><a href="#" class="text-gray-300 hover:text-white transition-colors text-sm">API</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors text-sm">Free Trial</a></li>
+                        <li><a href="{{ route('register') }}" class="text-gray-300 hover:text-white transition-colors text-sm">Free Trial</a></li>
                     </ul>
                 </div>
 
@@ -1047,7 +1052,7 @@
             <!-- Bottom Bar -->
             <div class="border-t border-gray-800 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center">
                 <p class="text-gray-400 text-sm">
-                    © 2025 SuperMath. All rights reserved.
+                    © 2025 Edufacilita. All rights reserved.
                 </p>
                 <div class="flex items-center space-x-4 mt-2 md:mt-0">
                     <span class="text-gray-400 text-sm">Made with ❤️ for educators</span>
@@ -1061,6 +1066,63 @@
         :type="session('success') ? 'success' : (session('error') ? 'error' : '')"
         :message="session('success') ?: session('error')"
     />
+
+    <!-- Mobile Menu JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIcon = document.getElementById('menu-icon');
+            const closeIcon = document.getElementById('close-icon');
+            
+            if (mobileMenuButton && mobileMenu && menuIcon && closeIcon) {
+                mobileMenuButton.addEventListener('click', function() {
+                    const isMenuHidden = mobileMenu.classList.contains('hidden');
+                    
+                    // Toggle menu visibility
+                    mobileMenu.classList.toggle('hidden');
+                    
+                    // Toggle icons
+                    if (isMenuHidden) {
+                        menuIcon.classList.add('hidden');
+                        menuIcon.classList.remove('block');
+                        closeIcon.classList.remove('hidden');
+                        closeIcon.classList.add('block');
+                    } else {
+                        menuIcon.classList.remove('hidden');
+                        menuIcon.classList.add('block');
+                        closeIcon.classList.add('hidden');
+                        closeIcon.classList.remove('block');
+                    }
+                });
+
+                // Close mobile menu when clicking on a link
+                const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+                mobileMenuLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileMenu.classList.add('hidden');
+                        // Reset icons
+                        menuIcon.classList.remove('hidden');
+                        menuIcon.classList.add('block');
+                        closeIcon.classList.add('hidden');
+                        closeIcon.classList.remove('block');
+                    });
+                });
+
+                // Close mobile menu when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
+                        mobileMenu.classList.add('hidden');
+                        // Reset icons
+                        menuIcon.classList.remove('hidden');
+                        menuIcon.classList.add('block');
+                        closeIcon.classList.add('hidden');
+                        closeIcon.classList.remove('block');
+                    }
+                });
+            }
+        });
+    </script>
 
 </body>
 </html>

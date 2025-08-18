@@ -58,7 +58,7 @@ class MercadoPagoService
 
         // Only add back URLs if not in local development or if we have a proper URL
         if (!app()->environment('local') || env('NGROK_URL') || !config('services.mercadopago.sandbox')) {
-            $baseUrl = env('NGROK_URL') ?: config('app.url');
+            $baseUrl = config('app.url');
             $preference['back_urls'] = [
                 'success' => $baseUrl . '/dashboard/credits/payment/success',
                 'failure' => $baseUrl . '/dashboard/credits/payment/failure',

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Dashboard - SuperMath</title>
+    <title>Dashboard - Edufacilita</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -143,7 +143,7 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <h2 class="text-lg font-bold text-gray-900">SuperMath</h2>
+                                    <h2 class="text-lg font-bold text-gray-900">Edufacilita</h2>
                                     <div class="text-xs text-amber-600 font-medium">{{ auth()->user()->credit ?? 0 }} Credits</div>
                                 </div>
                             </div>
@@ -163,7 +163,7 @@
                                 @elseif(request()->routeIs('settings.*'))
                                     Settings
                                 @else
-                                    SuperMath
+                                    Edufacilita
                                 @endif
                             </h1>
                         </div>
@@ -396,7 +396,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h2 class="text-xl font-bold text-gray-900">SuperMath</h2>
+                                <h2 class="text-xl font-bold text-gray-900">Edufacilita</h2>
                                 <p class="text-sm font-medium text-purple-600">User Portal</p>
                             </div>
                         </div>

@@ -1,6 +1,12 @@
 @extends('layouts.user')
 
 @push('head')
+<!-- Prevent indexing and caching -->
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
 <!-- MathJax Configuration -->
 <script>
     window.MathJax = {
@@ -20,9 +26,12 @@
         }
     };
 </script>
+
 <script type="text/javascript" id="MathJax-script" async
         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 </script>
+
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <style>
     .credit-warning {
@@ -50,6 +59,65 @@
     }
     .badge-animate:hover {
         transform: scale(1.05);
+    }
+    
+    /* Prevent text selection and copying */
+    .no-select {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .question-content {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        pointer-events: auto;
+    }
+    
+    /* Disable drag for images */
+    .question-content img {
+        -webkit-user-drag: none;
+        -khtml-user-drag: none;
+        -moz-user-drag: none;
+        -o-user-drag: none;
+        user-drag: none;
+        pointer-events: none;
+    }
+    
+    /* Blur effect when trying to inspect */
+    .protected-content {
+        position: relative;
+    }
+    
+    .protected-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+    
+    /* Hide scrollbars to prevent content inspection */
+    .question-content::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .question-content {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
     }
 </style>
 @endpush
@@ -208,13 +276,15 @@
 
                         <!-- Action Buttons -->
                         <div class="space-y-3 pt-4">
-                            <button type="button" id="applyFilters"
-                                    class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition-all duration-200 transform hover:scale-105">
-                                <i class="fas fa-filter mr-2"></i>Apply Filters
-                            </button>
+                            <div class="text-center">
+                                <p class="text-sm text-gray-500 mb-2">
+                                    <i class="fas fa-magic mr-1"></i>
+                                    Filters apply automatically
+                                </p>
+                            </div>
                             <button type="button" id="clearFilters"
                                     class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-semibold transition-all duration-200">
-                                <i class="fas fa-times mr-2"></i>Clear All
+                                <i class="fas fa-times mr-2"></i>Clear All Filters
                             </button>
                         </div>
 
@@ -401,7 +471,7 @@
 
         // Image HTML if exists
         const imageHtml = question.image ? `
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6 question-content">
                 <div class="flex items-center mb-4">
                     <div class="bg-purple-100 p-2 rounded-lg mr-3">
                         <i class="fas fa-image text-purple-600"></i>
@@ -409,8 +479,8 @@
                     <label class="text-lg font-bold text-gray-800">Visual Content</label>
                 </div>
                 <div class="flex justify-center">
-                    <div class="rounded-2xl overflow-hidden shadow-lg border border-gray-200 max-w-lg">
-                        <img src="/storage/${question.image}" alt="Question Image" class="w-full h-auto">
+                    <div class="rounded-2xl overflow-hidden shadow-lg border border-gray-200 max-w-lg no-select">
+                        <img src="/storage/${question.image}" alt="Question Image" class="w-full h-auto no-select" draggable="false" oncontextmenu="return false;">
                     </div>
                 </div>
             </div>
@@ -418,7 +488,7 @@
 
         // Options HTML
         const optionsHtml = question.options ? `
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6 question-content">
                 <div class="flex items-center mb-4">
                     <div class="bg-orange-100 p-2 rounded-lg mr-3">
                         <i class="fas fa-list-ul text-orange-600"></i>
@@ -426,7 +496,7 @@
                     <label class="text-lg font-bold text-gray-800">Answer Options</label>
                 </div>
                 <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                    <div class="mathjax-content text-gray-700 leading-relaxed space-y-2">${question.options.replace(/\n/g, '<br>')}</div>
+                    <div class="mathjax-content text-gray-700 leading-relaxed space-y-2 no-select">${question.options.replace(/\n/g, '<br>')}</div>
                 </div>
             </div>
         ` : '';
@@ -450,7 +520,7 @@
         `;
 
         return `
-            <div class="question-card bg-white rounded-2xl shadow-lg border border-gray-100 p-6 question-card-enter"
+            <div class="question-card bg-white rounded-2xl shadow-lg border border-gray-100 p-6 question-card-enter no-select protected-content"
                  data-question-id="${question.id}" data-index="${index}">
                 <!-- Question Header -->
                 <div class="flex items-start justify-between mb-6">
@@ -512,7 +582,7 @@
 
                 <div class="space-y-6">
                     <!-- Question Text -->
-                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 question-content">
                         <div class="flex items-center mb-4">
                             <div class="bg-indigo-100 p-2 rounded-lg mr-3">
                                 <i class="fas fa-question text-indigo-600"></i>
@@ -520,7 +590,7 @@
                             <label class="text-lg font-bold text-gray-800">Question</label>
                         </div>
                         <div class="prose prose-lg max-w-none">
-                            <div class="mathjax-content text-gray-700 leading-relaxed">${question.question ? question.question.replace(/\n/g, '<br>') : 'Question content not available'}</div>
+                            <div class="mathjax-content text-gray-700 leading-relaxed no-select">${question.question ? question.question.replace(/\n/g, '<br>') : 'Question content not available'}</div>
                         </div>
                     </div>
 
@@ -670,7 +740,6 @@
     }
 
     // Event listeners
-    document.getElementById('applyFilters').addEventListener('click', filterQuestions);
     document.getElementById('clearFilters').addEventListener('click', () => {
         document.getElementById('search-input').value = '';
         document.getElementById('filter-education').value = '';
@@ -682,6 +751,11 @@
         document.getElementById('filter-difficulty').value = '';
         filterQuestions();
     });
+
+    // Add real-time filtering on all filter inputs
+    document.getElementById('filter-education').addEventListener('change', filterQuestions);
+    document.getElementById('filter-type').addEventListener('change', filterQuestions);
+    document.getElementById('filter-difficulty').addEventListener('change', filterQuestions);
 
     // Subject/Topic dynamic loading
     document.getElementById('filter-subject').addEventListener('change', function() {
@@ -766,12 +840,205 @@
         }
     });
 
-    // Search on input
+    // Search on input (real-time filtering)
     document.getElementById('search-input').addEventListener('input', filterQuestions);
+
+    // Handle download form submission
+    document.getElementById('downloadForm').addEventListener('submit', function(e) {
+        // Refresh the page after 5 seconds
+        setTimeout(function() {
+            window.location.reload();
+        }, 5000);
+    });
 
     // Initialize
     updateDisplay();
     updateSelectionUI();
+
+    // Prevent copying and content protection
+    function preventCopying() {
+        // Disable right-click context menu
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Disable common keyboard shortcuts for copying/selecting
+        document.addEventListener('keydown', function(e) {
+            // Disable Ctrl+A (Select All)
+            if (e.ctrlKey && e.key === 'a') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Disable Ctrl+C (Copy)
+            if (e.ctrlKey && e.key === 'c') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Disable Ctrl+X (Cut)
+            if (e.ctrlKey && e.key === 'x') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Disable Ctrl+V (Paste) - though not needed for copying, good security practice
+            if (e.ctrlKey && e.key === 'v') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Disable Ctrl+S (Save)
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Disable Ctrl+P (Print)
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Disable F12 (Developer Tools)
+            if (e.key === 'F12') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Disable Ctrl+Shift+I (Developer Tools)
+            if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Disable Ctrl+Shift+C (Element Selector)
+            if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Disable Ctrl+U (View Source)
+            if (e.ctrlKey && e.key === 'u') {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Disable text selection on mouse events
+        document.addEventListener('selectstart', function(e) {
+            if (e.target.closest('.question-content') || e.target.closest('.no-select')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Disable drag and drop
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.closest('.question-content')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Clear selection if any exists
+        document.addEventListener('mouseup', function() {
+            if (window.getSelection) {
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    const container = range.commonAncestorContainer;
+                    if (container.nodeType === Node.TEXT_NODE) {
+                        container = container.parentNode;
+                    }
+                    if (container.closest && container.closest('.question-content')) {
+                        selection.removeAllRanges();
+                    }
+                }
+            }
+        });
+
+        // Prevent print screen and other screenshot methods
+        document.addEventListener('keyup', function(e) {
+            if (e.key === 'PrintScreen') {
+                navigator.clipboard.writeText('');
+                alert('Screenshots are not allowed for question content protection.');
+            }
+        });
+
+        // Clear clipboard periodically to prevent copied content from being accessible
+        setInterval(function() {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText('').catch(function() {
+                    // Ignore errors if clipboard API is not available
+                });
+            }
+        }, 1000);
+
+        // Disable image saving
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Add blur effect when dev tools might be open
+        let devtools = {open: false};
+        setInterval(function() {
+            if (window.outerHeight - window.innerHeight > 200 || window.outerWidth - window.innerWidth > 200) {
+                if (!devtools.open) {
+                    devtools.open = true;
+                    document.body.style.filter = 'blur(5px)';
+                    setTimeout(function() {
+                        alert('Developer tools detected. Please close them to continue viewing content.');
+                        location.reload();
+                    }, 500);
+                }
+            } else {
+                devtools.open = false;
+                document.body.style.filter = 'none';
+            }
+        }, 500);
+
+        // Disable common developer shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Disable Ctrl+Shift+K (Console)
+            if (e.ctrlKey && e.shiftKey && e.key === 'K') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Disable Ctrl+Shift+J (Console)
+            if (e.ctrlKey && e.shiftKey && e.key === 'J') {
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+
+    // Initialize copy protection
+    preventCopying();
+
+    // Additional protection - disable console commands
+    (function() {
+        try {
+            const devtools = /./;
+            devtools.toString = function() {
+                this.opened = true;
+            };
+            
+            const loop = setInterval(function() {
+                if (devtools.opened) {
+                    clearInterval(loop);
+                    document.body.innerHTML = '<div style="text-align: center; padding: 50px; font-size: 24px; color: red;">Developer tools detected. Access denied for security reasons.</div>';
+                }
+            }, 100);
+        } catch (e) {
+            // Ignore errors
+        }
+    })();
 </script>
 @endpush
 

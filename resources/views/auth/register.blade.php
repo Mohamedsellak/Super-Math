@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Inscription - SuperMath</title>
+    <title>Inscription - Edufacilita</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -24,7 +24,7 @@
                 </div>
                 <div class="flex flex-col items-center mt-4 space-y-1">
                     <span class="text-2xl font-extrabold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                        SuperMath
+                        Edufacilita
                     </span>
                     <span class="text-sm font-medium text-gray-600">Plateforme d'apprentissage mathématique</span>
                 </div>
@@ -38,7 +38,7 @@
                         Inscription
                     </h2>
                     <p class="text-sm text-gray-600">
-                        Créez votre compte pour accéder à SuperMath
+                        Créez votre compte pour accéder à Edufacilita
                     </p>
                 </div>
 

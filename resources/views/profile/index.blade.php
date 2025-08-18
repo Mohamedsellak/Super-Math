@@ -1,6 +1,6 @@
 @extends(Auth::user()->role === 'admin' ? 'layouts.admin' : 'layouts.user')
 
-@section('title', 'Profile - SuperMath')
+@section('title', 'Profile - Edufacilita')
 
 @section('content')
 
