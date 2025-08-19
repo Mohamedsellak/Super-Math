@@ -126,7 +126,7 @@ class UserQuestionsController extends Controller
     }
 
     /**
-     * Download multiple documents as individual ZIP files containing question and answer pairs
+     * Download multiple documents with simple Q/R file naming structure
      */
     public function downloadMultipleDocuments(array $questionIds)
     {
@@ -151,7 +151,7 @@ class UserQuestionsController extends Controller
                 throw new \Exception('Cannot create master ZIP file');
             }
 
-            // Add each question as a separate folder containing Question.docx and Answer.docx
+            // Add each question with simple Q/R naming structure
             $questionNumber = 1;
             foreach ($questions as $question) {
                 if ($question->doc && Storage::disk('local')->exists($question->doc) &&
@@ -160,14 +160,13 @@ class UserQuestionsController extends Controller
                     $questionDocPath = Storage::disk('local')->path($question->doc);
                     $answerDocPath = Storage::disk('local')->path($question->answer_doc);
 
-                    // Create folder name for this question
-                    $folderName = 'Question_' . $questionNumber . '_ID_' . $question->id;
+                    // Add question document with Q naming
+                    $questionFileName = 'Q' . $questionNumber . '.doc';
+                    $masterZip->addFile($questionDocPath, $questionFileName);
 
-                    // Add question document to master ZIP
-                    $masterZip->addFile($questionDocPath, $folderName . '/Question.docx');
-
-                    // Add answer document to master ZIP
-                    $masterZip->addFile($answerDocPath, $folderName . '/Answer.docx');
+                    // Add answer document with R naming
+                    $answerFileName = 'R' . $questionNumber . '.doc';
+                    $masterZip->addFile($answerDocPath, $answerFileName);
 
                     $questionNumber++;
                 }
