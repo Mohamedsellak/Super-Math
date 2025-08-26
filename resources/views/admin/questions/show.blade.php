@@ -118,7 +118,7 @@
                             </div>
                             <div class="bg-white rounded-xl p-6 shadow-sm border border-blue-100">
                                 <div class="prose prose-lg max-w-none">
-                                    <div class="mathjax-content text-gray-800 leading-relaxed text-lg">{!! nl2br($question->question) !!}</div>
+                                    <div class="mathjax-content text-gray-800 leading-relaxed text-lg">{!! $question->question !!}</div>
                                 </div>
                             </div>
                         </div>
@@ -157,7 +157,7 @@
                                 </div>
                             </div>
                             <div class="bg-white rounded-xl p-6 shadow-sm border border-orange-100">
-                                <div class="mathjax-content text-gray-800 leading-relaxed text-lg space-y-3">{!! nl2br($question->options) !!}</div>
+                                <div class="mathjax-content text-gray-800 leading-relaxed text-lg space-y-3">{!! $question->options !!}</div>
                             </div>
                         </div>
 
@@ -173,7 +173,7 @@
                                 </div>
                             </div>
                             <div class="bg-white rounded-xl p-6 shadow-sm border border-emerald-100">
-                                <div class="mathjax-content text-emerald-800 font-bold text-xl leading-relaxed">{!! nl2br($question->answer) !!}</div>
+                                <div class="mathjax-content text-emerald-800 font-bold text-xl leading-relaxed">{!! $question->answer !!}</div>
                             </div>
                         </div>
                     </div>

@@ -229,6 +229,51 @@ class QuestionsController extends Controller
     }
 
     /**
+     * Handle CKEditor image upload for rich text content
+     */
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'upload' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        try {
+            if ($request->hasFile('upload')) {
+                $file = $request->file('upload');
+                
+                // Generate unique filename
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                
+                // Create the directory if it doesn't exist
+                $directory = storage_path('app/public/questions/editor_images');
+                if (!file_exists($directory)) {
+                    mkdir($directory, 0755, true);
+                }
+                
+                // Save the file
+                $path = $file->storeAs('questions/editor_images', $filename, 'public');
+                $url = asset('storage/' . $path);
+
+                return response()->json([
+                    'success' => true,
+                    'url' => $url
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'error' => 'No file uploaded'
+            ], 400);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Upload failed: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Download the question and answer documents as a ZIP file
      */
     public function downloadDocument(Question $question)

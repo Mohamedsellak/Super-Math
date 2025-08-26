@@ -2,6 +2,27 @@
 
 @push('head')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    .ck-content img {
+        max-width: 100px !important;
+        height: auto !important;
+    }
+    .question-preview {
+        max-height: 60px;
+        overflow: hidden;
+        position: relative;
+    }
+    .question-preview::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 30px;
+        height: 20px;
+        background: linear-gradient(to right, transparent, white);
+    }
+</style>
 @endpush
 
 @section('content')
@@ -132,8 +153,8 @@
                                             <i class="fas fa-question text-blue-600"></i>
                                         </div>
                                         <div>
-                                            <div class="text-sm font-medium text-gray-900 leading-5">
-                                                {{ Str::limit($question->question, 60) }}
+                                            <div class="text-sm font-medium text-gray-900 leading-5 question-preview">
+                                                {!! Str::limit(strip_tags($question->question, '<b><i><strong><em>'), 100) !!}
                                             </div>
                                             <div class="text-sm text-gray-500 mt-1">
                                                 <i class="fas fa-building text-xs mr-1"></i>{{ $question->institution }}
@@ -265,4 +286,28 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Configure MathJax
+    window.MathJax = {
+        tex: {
+            inlineMath: [['\\(', '\\)'], ['$', '$']],
+            displayMath: [['\\[', '\\]'], ['$$', '$$']],
+            processEscapes: true,
+            processEnvironments: true
+        },
+        options: {
+            skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+        }
+    };
+
+    // Process MathJax when page loads
+    if (window.MathJax && window.MathJax.typesetPromise) {
+        MathJax.typesetPromise().then(() => {
+            console.log('MathJax initial typeset complete');
+        }).catch((err) => console.log('MathJax typeset failed: ' + err.message));
+    }
+});
+</script>
 @endsection

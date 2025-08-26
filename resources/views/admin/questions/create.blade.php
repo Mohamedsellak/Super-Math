@@ -1,7 +1,19 @@
 @extends('layouts.admin')
 
 @push('head')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- CKEditor 5 -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+<!-- MathJax so authors see formulas while editing (optional preview) -->
+<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- Simple CSS to make images smaller -->
+<style>
+    .ck-content img {
+        max-width: 350px !important;
+        height: auto !important;
+    }
+</style>
 @endpush
 
 @section('content')
@@ -79,8 +91,8 @@
                                 Question Text *
                             </label>
                             <textarea name="question" id="question" rows="5"
-                                      class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 resize-y hover:border-gray-300 bg-white shadow-sm"
-                                      placeholder="Enter the complete question text with proper formatting..." required>{{ old('question') }}</textarea>
+                                      class="rich-text w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 resize-y hover:border-gray-300 bg-white shadow-sm"
+                                      placeholder="Enter the complete question text with proper formatting..." data-required="true">{{ old('question') }}</textarea>
                         </div>
 
                         <!-- Options -->
@@ -92,8 +104,8 @@
                                 Answer Options *
                             </label>
                             <textarea name="options" id="options" rows="5"
-                                      class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 resize-y hover:border-gray-300 bg-white shadow-sm"
-                                      placeholder="Enter all possible answer options (A, B, C, D)..." required>{{ old('options') }}</textarea>
+                                      class="rich-text w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 resize-y hover:border-gray-300 bg-white shadow-sm"
+                                      placeholder="Enter all possible answer options (A, B, C, D)..." data-required="true">{{ old('options') }}</textarea>
                             <div class="flex items-center space-x-2 text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
                                 <i class="fas fa-lightbulb text-blue-500"></i>
                                 <span>Provide clear and distinct answer options for multiple choice questions</span>
@@ -109,8 +121,8 @@
                                 Correct Answer *
                             </label>
                             <textarea name="answer" id="answer" rows="4"
-                                      class="w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 resize-y hover:border-gray-300 bg-white shadow-sm"
-                                      placeholder="Enter the complete correct answer with explanation..." required>{{ old('answer') }}</textarea>
+                                      class="rich-text w-full border-2 border-gray-200 rounded-xl p-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 resize-y hover:border-gray-300 bg-white shadow-sm"
+                                      placeholder="Enter the complete correct answer with explanation..." data-required="true">{{ old('answer') }}</textarea>
                             <div class="flex items-center space-x-2 text-sm text-emerald-700 bg-emerald-50 p-3 rounded-lg">
                                 <i class="fas fa-shield-check text-emerald-500"></i>
                                 <span>Provide the definitive correct answer for this question</span>
@@ -542,6 +554,87 @@ document.addEventListener('DOMContentLoaded', function() {
         if (subjectSelect.value) {
             subjectSelect.dispatchEvent(new Event('change'));
         }
+    }
+
+    // File Upload Adapter Plugin (saves files to server instead of base64)
+    function FileUploadAdapterPlugin(editor){
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+            return {
+                upload: () => {
+                    return loader.file.then(file => {
+                        return new Promise((resolve, reject) => {
+                            const formData = new FormData();
+                            formData.append('upload', file);
+                            formData.append('_token', document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}');
+
+                            fetch('{{ route("admin.upload.image") }}', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(response => response.json())
+                            .then(result => {
+                                if (result.success) {
+                                    resolve({
+                                        default: result.url
+                                    });
+                                } else {
+                                    reject(result.error || 'Upload failed');
+                                }
+                            })
+                            .catch(error => {
+                                reject('Upload failed: ' + error.message);
+                            });
+                        });
+                    });
+                }
+            };
+        };
+    }
+
+    const editorsInstances = {}; // store editors for validation
+    const requiredEditors = ['#question', '#options', '#answer'];
+
+    function initRichEditor(selector){
+        const el = document.querySelector(selector);
+        if(!el) return;
+        if(el.hasAttribute('required')) el.removeAttribute('required');
+        ClassicEditor.create(el, {
+            extraPlugins: [ FileUploadAdapterPlugin ],
+            toolbar: { items: [ 'heading','|','bold','italic','link','bulletedList','numberedList','blockQuote','|','insertTable','imageUpload','undo','redo' ] }
+        }).then(editor => {
+            editorsInstances[selector] = editor;
+            let timeout;
+            editor.model.document.on('change:data', () => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => { if(window.MathJax){ MathJax.typesetPromise && MathJax.typesetPromise(); } }, 400);
+            });
+        }).catch(err => console.error('CKEditor init error', err));
+    }
+
+    initRichEditor('#question');
+    initRichEditor('#options');
+    initRichEditor('#answer');
+
+    // Add custom validation for rich editors to existing form submit event
+    if(form){
+        form.addEventListener('submit', function(e){
+            // Check rich editor validation first
+            for(const sel of requiredEditors){
+                const ed = editorsInstances[sel];
+                if(!ed) continue;
+                const plain = ed.getData().replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ').trim();
+                if(plain === ''){
+                    e.preventDefault();
+                    isSubmitting = false;
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+                    submitBtn.innerHTML = '<i class="fas fa-plus group-hover:rotate-180 transition-transform duration-300"></i><span>Create Question</span>';
+                    alert('Please fill the ' + sel.replace('#','') + ' field.');
+                    ed.editing.view.focus();
+                    return false;
+                }
+            }
+        });
     }
 });
 </script>
