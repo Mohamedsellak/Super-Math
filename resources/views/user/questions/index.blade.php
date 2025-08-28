@@ -126,20 +126,12 @@
 
 <!-- Background with gradient -->
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-    <div class="container mx-auto px-4 py-6 max-w-7xl">
-        <!-- Header Section -->
-        <div class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-2">
-                <i class="fas fa-brain text-blue-600 mr-3"></i>
-                Question Bank
-            </h1>
-            <p class="text-gray-600 text-lg">Browse and select questions for your exam preparation</p>
-        </div>
+    <div class="container mx-auto px-4 py-4 max-w-full">
 
         <!-- Stats Dashboard -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <!-- Total Questions -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+            <div class="bg-white rounded-2xl shadow-lg p-4 border border-gray-100">
                 <div class="flex items-center">
                     <div class="bg-blue-100 p-3 rounded-xl mr-4">
                         <i class="fas fa-list text-blue-600 text-xl"></i>
@@ -152,7 +144,7 @@
             </div>
 
             <!-- Selected Questions -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+            <div class="bg-white rounded-2xl shadow-lg p-4 border border-gray-100">
                 <div class="flex items-center">
                     <div class="bg-green-100 p-3 rounded-xl mr-4">
                         <i class="fas fa-check-circle text-green-600 text-xl"></i>
@@ -165,7 +157,7 @@
             </div>
 
             <!-- Credits Required -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+            <div class="bg-white rounded-2xl shadow-lg p-4 border border-gray-100">
                 <div class="flex items-center">
                     <div class="bg-yellow-100 p-3 rounded-xl mr-4">
                         <i class="fas fa-coins text-yellow-600 text-xl"></i>
@@ -178,7 +170,7 @@
             </div>
 
             <!-- Available Credits -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+            <div class="bg-white rounded-2xl shadow-lg p-4 border border-gray-100">
                 <div class="flex items-center">
                     <div class="bg-purple-100 p-3 rounded-xl mr-4">
                         <i class="fas fa-wallet text-purple-600 text-xl"></i>
@@ -192,11 +184,11 @@
         </div>
 
         <!-- Main Content Layout -->
-        <div class="flex flex-col xl:flex-row gap-8">
+        <div class="flex flex-col xl:flex-row gap-6">
             <!-- Sidebar: Filter and Search -->
             <div class="w-full xl:w-80 flex-shrink-0 order-2 xl:order-1">
-                <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-8">
-                    <div class="flex items-center mb-6">
+                <div class="bg-white rounded-2xl shadow-lg p-4 sticky top-8">
+                    <div class="flex items-center mb-4">
                         <i class="fas fa-filter text-indigo-600 text-xl mr-3"></i>
                         <h3 class="text-xl font-bold text-gray-800">Filter & Search</h3>
                     </div>
@@ -308,113 +300,164 @@
 
             <!-- Main Question Area -->
             <div class="flex-1 order-1 xl:order-2">
-                <!-- Navigation Controls -->
-                <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
-                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                        <!-- Music Player Style Navigation -->
-                        <div class="flex justify-center items-center space-x-1">
-                            <!-- First Button -->
-                            <button type="button" id="firstBtn"
-                                    class="bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-600 p-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md"
-                                    title="First Question">
-                                <i class="fas fa-backward-step text-lg"></i>
-                            </button>
+                <div class="flex flex-col xl:flex-row gap-6">
+                    <!-- Question Content -->
+                    <div class="flex-1">
+                        <!-- Navigation Controls -->
+                        <div class="bg-white rounded-2xl shadow-lg p-4 mb-4">
+                            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                                <!-- Music Player Style Navigation -->
+                                <div class="flex justify-center items-center space-x-1">
+                                    <!-- First Button -->
+                                    <button type="button" id="firstBtn"
+                                            class="bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-600 p-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md"
+                                            title="First Question">
+                                        <i class="fas fa-backward-step text-lg"></i>
+                                    </button>
 
-                            <!-- Previous Button -->
-                            <button type="button" id="prevBtn"
-                                    class="bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-600 p-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md ml-1"
-                                    title="Previous Question">
-                                <i class="fas fa-caret-left text-lg"></i>
-                            </button>
+                                    <!-- Previous Button -->
+                                    <button type="button" id="prevBtn"
+                                            class="bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-600 p-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md ml-1"
+                                            title="Previous Question">
+                                        <i class="fas fa-caret-left text-lg"></i>
+                                    </button>
 
-                            <!-- Question ID Selector -->
-                            <div class="mx-6 flex items-center bg-gray-50 rounded-full px-4 py-2 border border-gray-200">
-                                <label for="gotoInput" class="text-sm font-medium text-gray-600 mr-2">Q:</label>
-                                <input type="number" id="gotoInput" min="1"
-                                       class="w-16 bg-transparent text-center text-lg font-bold text-gray-800 focus:outline-none focus:ring-0 border-0 p-0"
-                                       placeholder="1">
-                                <span class="text-gray-400 mx-1">/</span>
-                                <span id="totalQuestionsNav" class="text-gray-600 font-medium">{{ count($questions) }}</span>
-                                <button type="button" id="gotoBtn"
-                                        class="ml-2 text-blue-600 hover:text-blue-800 transition-colors"
-                                        title="Go to Question">
-                                    <i class="fas fa-arrow-right"></i>
+                                    <!-- Question ID Selector -->
+                                    <div class="mx-6 flex items-center bg-gray-50 rounded-full px-4 py-2 border border-gray-200">
+                                        <label for="gotoInput" class="text-sm font-medium text-gray-600 mr-2">Q:</label>
+                                        <input type="number" id="gotoInput" min="1"
+                                               class="w-16 bg-transparent text-center text-lg font-bold text-gray-800 focus:outline-none focus:ring-0 border-0 p-0"
+                                               placeholder="1">
+                                        <span class="text-gray-400 mx-1">/</span>
+                                        <span id="totalQuestionsNav" class="text-gray-600 font-medium">{{ count($questions) }}</span>
+                                        <button type="button" id="gotoBtn"
+                                                class="ml-2 text-blue-600 hover:text-blue-800 transition-colors"
+                                                title="Go to Question">
+                                            <i class="fas fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+
+                                    <!-- Next Button -->
+                                    <button type="button" id="nextBtn"
+                                            class="bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-600 p-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md mr-1"
+                                            title="Next Question">
+                                        <i class="fas fa-caret-right text-lg"></i>
+                                    </button>
+
+                                    <!-- Last Button -->
+                                    <button type="button" id="lastBtn"
+                                            class="bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-600 p-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md"
+                                            title="Last Question">
+                                        <i class="fas fa-forward-step text-lg"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Current Question Info -->
+                                <div class="text-center lg:text-right">
+                                    <p class="text-sm text-gray-600">Question <span id="currentQuestionIndex">1</span> of <span id="totalVisible">{{ count($questions) }}</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question Cards Container -->
+                        <div id="questionContainer">
+                            <!-- Questions will be rendered here by JavaScript -->
+                        </div>
+
+                        <!-- No Questions Found -->
+                        <div id="noQuestionsFound" class="hidden text-center py-12">
+                            <div class="bg-white rounded-2xl shadow-lg p-8">
+                                <i class="fas fa-search text-gray-400 text-6xl mb-4"></i>
+                                <h3 class="text-xl font-semibold text-gray-600 mb-2">No Questions Found</h3>
+                                <p class="text-gray-500">Try adjusting your search criteria or filters.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Sidebar: Independent Sections -->
+                    <div class="w-full xl:w-80 flex-shrink-0">
+                        <div class="space-y-4 sticky top-8">
+                            <!-- Answer Section -->
+                            <div class="bg-white rounded-2xl shadow-lg p-4 border border-gray-100">
+                                <div class="flex items-center mb-4">
+                                    <i class="fas fa-lock text-yellow-600 text-xl mr-3"></i>
+                                    <h3 class="text-xl font-bold text-gray-800">Answer Preview</h3>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-4 border border-yellow-200">
+                                        <div class="flex items-center text-yellow-700 mb-3">
+                                            <i class="fas fa-eye-slash mr-2"></i>
+                                            <span class="font-medium text-sm">Answers are protected</span>
+                                        </div>
+                                        <p class="text-gray-600 text-sm">All correct answers and explanations are hidden until you download the questions.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Document Section -->
+                            <div class="bg-white rounded-2xl shadow-lg p-4 border border-gray-100">
+                                <div class="flex items-center mb-6">
+                                    <i class="fas fa-file-alt text-red-600 text-xl mr-3"></i>
+                                    <h3 class="text-xl font-bold text-gray-800">Additional Materials</h3>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="bg-gradient-to-r from-red-50 to-pink-50 rounded-xl p-4 border border-red-200">
+                                        <div class="flex items-center text-red-700 mb-3">
+                                            <i class="fas fa-file-pdf mr-2"></i>
+                                            <span class="font-medium text-sm">Supporting documents</span>
+                                        </div>
+                                        <p class="text-gray-600 text-sm">Some questions include additional documents, diagrams, or reference materials.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Download Section -->
+                            <div class="bg-white rounded-2xl shadow-lg p-4 border border-gray-100">
+                                <div class="flex items-center mb-4">
+                                    <i class="fas fa-download text-green-600 text-xl mr-3"></i>
+                                    <h3 class="text-xl font-bold text-gray-800">Download Manager</h3>
+                                </div>
+                                
+                                <!-- Credit Warning -->
+                                <div id="creditWarning-sidebar" class="hidden mb-4 bg-red-50 border border-red-200 rounded-xl p-4">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-exclamation-triangle text-red-500 text-lg mr-3"></i>
+                                        <div>
+                                            <h4 class="font-semibold text-red-800 text-sm">Insufficient Credits</h4>
+                                            <p class="text-red-600 text-xs">You need <span id="creditShortage-sidebar">0</span> more credits.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Selection Summary -->
+                                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200 mb-4">
+                                    <div class="space-y-2">
+                                        <div class="flex items-center text-sm">
+                                            <i class="fas fa-list-check text-blue-600 mr-2"></i>
+                                            <span class="font-semibold text-gray-800">
+                                                <span id="selectedCount-sidebar">0</span> Questions Selected
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center text-xs text-gray-600">
+                                            <i class="fas fa-info-circle mr-2"></i>
+                                            <span>Total: <span id="totalCreditsNeeded-sidebar" class="font-semibold">0</span> credits needed</span>
+                                        </div>
+                                        <div class="flex items-center text-xs text-gray-600">
+                                            <i class="fas fa-wallet mr-2"></i>
+                                            <span>Available: <span id="availableCredits-sidebar" class="font-semibold">{{ auth()->user()->credit ?? 0 }}</span> credits</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Download Button -->
+                                <button type="button" id="downloadBtn-sidebar"
+                                        class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-200 transform hover:scale-105 disabled:transform-none"
+                                        disabled>
+                                    <i class="fas fa-download mr-2"></i>
+                                    Download Selected Questions
                                 </button>
                             </div>
-
-                            <!-- Next Button -->
-                            <button type="button" id="nextBtn"
-                                    class="bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-600 p-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md mr-1"
-                                    title="Next Question">
-                                <i class="fas fa-caret-right text-lg"></i>
-                            </button>
-
-                            <!-- Last Button -->
-                            <button type="button" id="lastBtn"
-                                    class="bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-600 p-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md"
-                                    title="Last Question">
-                                <i class="fas fa-forward-step text-lg"></i>
-                            </button>
                         </div>
-
-                        <!-- Current Question Info -->
-                        <div class="text-center lg:text-right">
-                            <p class="text-sm text-gray-600">Question <span id="currentQuestionIndex">1</span> of <span id="totalVisible">{{ count($questions) }}</span></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Question Cards Container -->
-                <div id="questionContainer">
-                    <!-- Questions will be rendered here by JavaScript -->
-                </div>
-
-                <!-- No Questions Found -->
-                <div id="noQuestionsFound" class="hidden text-center py-12">
-                    <div class="bg-white rounded-2xl shadow-lg p-8">
-                        <i class="fas fa-search text-gray-400 text-6xl mb-4"></i>
-                        <h3 class="text-xl font-semibold text-gray-600 mb-2">No Questions Found</h3>
-                        <p class="text-gray-500">Try adjusting your search criteria or filters.</p>
-                    </div>
-                </div>
-
-                <!-- Download Section -->
-                <div class="bg-white rounded-2xl shadow-lg p-6 mt-6">
-                    <!-- Credit Warning -->
-                    <div id="creditWarning" class="hidden mb-6 bg-red-50 border border-red-200 rounded-xl p-4 credit-warning">
-                        <div class="flex items-center">
-                            <i class="fas fa-exclamation-triangle text-red-500 text-xl mr-3"></i>
-                            <div>
-                                <h4 class="font-semibold text-red-800">Insufficient Credits</h4>
-                                <p class="text-red-600 text-sm">You need <span id="creditShortage">0</span> more credits to download the selected questions.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Selection Summary -->
-                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                        <div class="space-y-2">
-                            <div class="flex items-center text-lg">
-                                <i class="fas fa-list-check text-blue-600 mr-3"></i>
-                                <span class="font-semibold text-gray-800">
-                                    <span id="selectedCountText">0</span> Questions Selected
-                                </span>
-                            </div>
-                            <div class="flex items-center text-sm text-gray-600">
-                                <i class="fas fa-info-circle mr-2"></i>
-                                <span>1 credit per question • Total: <span id="totalCreditsNeeded" class="font-semibold">0</span> credits</span>
-                            </div>
-                        </div>
-
-                        <form id="downloadForm" method="POST" action="{{ route('user.questions.download') }}">
-                            @csrf
-                            <input type="hidden" name="selected_questions" id="selectedQuestionIds">
-                            <button type="submit" id="downloadBtn" disabled
-                                    class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white px-8 py-3 rounded-xl font-semibold shadow-lg transition-all duration-200 transform hover:scale-105 disabled:transform-none">
-                                <i class="fas fa-download mr-2"></i>
-                                Download Selected Questions
-                            </button>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -435,18 +478,16 @@
     const questionContainer = document.getElementById('questionContainer');
     const noQuestionsFound = document.getElementById('noQuestionsFound');
     const selectedCount = document.getElementById('selectedCount');
-    const selectedCountText = document.getElementById('selectedCountText');
     const creditsNeeded = document.getElementById('creditsNeeded');
-    const totalCreditsNeeded = document.getElementById('totalCreditsNeeded');
     const availableCredits = document.getElementById('availableCredits');
-    const creditWarning = document.getElementById('creditWarning');
-    const creditShortage = document.getElementById('creditShortage');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const selectedQuestionIds = document.getElementById('selectedQuestionIds');
     const currentQuestionIndex = document.getElementById('currentQuestionIndex');
     const totalVisible = document.getElementById('totalVisible');
     const totalQuestionsNav = document.getElementById('totalQuestionsNav');
     const gotoInput = document.getElementById('gotoInput');
+
+    // Sidebar elements
+    let selectedCountSidebar, totalCreditsNeededSidebar, availableCreditsSidebar;
+    let creditWarningSidebar, creditShortageSidebar, downloadBtnSidebar;
 
     // Difficulty color mapping
     const difficultyColors = {
@@ -500,24 +541,6 @@
                 </div>
             </div>
         ` : '';
-
-        // Answer section - only show warning
-        const answerHtml = `
-            <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 shadow-sm border border-yellow-200 mb-6">
-                <div class="flex items-center mb-4">
-                    <div class="bg-yellow-100 p-2 rounded-lg mr-3">
-                        <i class="fas fa-lock text-yellow-600"></i>
-                    </div>
-                    <label class="text-lg font-bold text-gray-800">Correct Answer</label>
-                </div>
-                <div class="bg-white rounded-xl p-4 border border-yellow-200 shadow-sm">
-                    <div class="flex items-center text-yellow-700">
-                        <i class="fas fa-download mr-2"></i>
-                        <span class="font-medium">Download this question to view the correct answer</span>
-                    </div>
-                </div>
-            </div>
-        `;
 
         return `
             <div class="question-card bg-white rounded-2xl shadow-lg border border-gray-100 p-6 question-card-enter no-select protected-content"
@@ -580,6 +603,7 @@
                     </div>
                 </div>
 
+                <!-- Question Content -->
                 <div class="space-y-6">
                     <!-- Question Text -->
                     <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 question-content">
@@ -599,30 +623,6 @@
 
                     <!-- Options Section -->
                     ${optionsHtml}
-
-                    <!-- Answer Section -->
-                    ${answerHtml}
-
-                    <!-- Document Section if exists -->
-                    ${question.doc ? `
-                        <div class="bg-white rounded-xl border border-gray-200 shadow-sm">
-                            <div class="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                                <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                                    <i class="fas fa-file-alt text-red-600 mr-2"></i>
-                                    Document Available
-                                </h3>
-                            </div>
-                            <div class="p-4">
-                                <div class="bg-white rounded-xl p-4 shadow-sm border border-amber-100">
-                                    <p class="text-gray-600 mb-4">Additional document available for this question</p>
-                                    <div class="flex items-center text-amber-600">
-                                        <i class="fas fa-download mr-2"></i>
-                                        <span class="font-medium">Download question to access document</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ` : ''}
                 </div>
             </div>
         `;
@@ -665,6 +665,24 @@
         if (checkbox) {
             checkbox.addEventListener('change', handleCheckboxChange);
         }
+
+        // Get sidebar elements and add event listeners (independent sidebar)
+        updateSidebarElements();
+    }
+
+    // Update sidebar elements
+    function updateSidebarElements() {
+        selectedCountSidebar = document.getElementById('selectedCount-sidebar');
+        totalCreditsNeededSidebar = document.getElementById('totalCreditsNeeded-sidebar');
+        availableCreditsSidebar = document.getElementById('availableCredits-sidebar');
+        creditWarningSidebar = document.getElementById('creditWarning-sidebar');
+        creditShortageSidebar = document.getElementById('creditShortage-sidebar');
+        downloadBtnSidebar = document.getElementById('downloadBtn-sidebar');
+
+        if (downloadBtnSidebar && !downloadBtnSidebar.hasAttribute('data-listener-added')) {
+            downloadBtnSidebar.addEventListener('click', handleSidebarDownload);
+            downloadBtnSidebar.setAttribute('data-listener-added', 'true');
+        }
     }
 
     // Handle checkbox change
@@ -680,29 +698,84 @@
         updateSelectionUI();
     }
 
+    // Handle sidebar download
+    function handleSidebarDownload(e) {
+        if (selectedQuestions.size === 0) {
+            alert('Please select at least one question to download.');
+            return;
+        }
+
+        const totalCredits = selectedQuestions.size;
+        if (userCredits < totalCredits) {
+            alert(`Insufficient credits! You need ${totalCredits} credits but only have ${userCredits}.`);
+            return;
+        }
+
+        if (confirm(`Download ${selectedQuestions.size} selected questions? (${totalCredits} credits will be deducted)`)) {
+            // Create and submit a form dynamically
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ route("user.questions.download") }}';
+            
+            // Add CSRF token
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = '{{ csrf_token() }}';
+            form.appendChild(csrfToken);
+            
+            // Add selected questions
+            const questionsInput = document.createElement('input');
+            questionsInput.type = 'hidden';
+            questionsInput.name = 'selected_questions';
+            questionsInput.value = JSON.stringify([...selectedQuestions]);
+            form.appendChild(questionsInput);
+            
+            document.body.appendChild(form);
+            form.submit();
+
+            // Show loading message
+            e.target.disabled = true;
+            e.target.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+
+            // Refresh page after 5 seconds
+            setTimeout(function() {
+                window.location.reload();
+            }, 5000);
+        }
+    }
+
     // Update selection UI
     function updateSelectionUI() {
         const count = selectedQuestions.size;
         const credits = count;
 
+        // Update stats dashboard
         selectedCount.textContent = count;
-        selectedCountText.textContent = count;
         creditsNeeded.textContent = credits;
-        totalCreditsNeeded.textContent = credits;
 
-        // Update download button
-        downloadBtn.disabled = count === 0;
+        // Update sidebar elements if they exist
+        if (selectedCountSidebar) {
+            selectedCountSidebar.textContent = count;
+        }
+        if (totalCreditsNeededSidebar) {
+            totalCreditsNeededSidebar.textContent = credits;
+        }
+        if (downloadBtnSidebar) {
+            downloadBtnSidebar.disabled = count === 0;
+        }
 
-        // Update hidden input
-        selectedQuestionIds.value = JSON.stringify([...selectedQuestions]);
-
-        // Show/hide credit warning
-        if (credits > userCredits && count > 0) {
-            creditWarning.classList.remove('hidden');
-            creditShortage.textContent = credits - userCredits;
-            downloadBtn.disabled = true;
-        } else {
-            creditWarning.classList.add('hidden');
+        // Show/hide credit warning (sidebar)
+        if (creditWarningSidebar && creditShortageSidebar) {
+            if (credits > userCredits && count > 0) {
+                creditWarningSidebar.classList.remove('hidden');
+                creditShortageSidebar.textContent = credits - userCredits;
+                if (downloadBtnSidebar) {
+                    downloadBtnSidebar.disabled = true;
+                }
+            } else {
+                creditWarningSidebar.classList.add('hidden');
+            }
         }
     }
 
@@ -843,17 +916,10 @@
     // Search on input (real-time filtering)
     document.getElementById('search-input').addEventListener('input', filterQuestions);
 
-    // Handle download form submission
-    document.getElementById('downloadForm').addEventListener('submit', function(e) {
-        // Refresh the page after 5 seconds
-        setTimeout(function() {
-            window.location.reload();
-        }, 5000);
-    });
-
     // Initialize
     updateDisplay();
     updateSelectionUI();
+    updateSidebarElements(); // Initialize sidebar elements
 
     // Prevent copying and content protection
     function preventCopying() {

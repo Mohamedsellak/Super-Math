@@ -16,7 +16,7 @@ return new class extends Migration
             $table->text('question');
             $table->string('image')->nullable(); // image path
             $table->text('options'); // the possible options (stored as text)
-            $table->string('answer'); // the correct answer
+            $table->text('answer'); // the correct answer
             $table->enum('difficulty', ['easy', 'medium', 'hard']);
             $table->enum('question_type', ['Multiple Choice', 'True/False', 'Open Ended', 'Fill in the Blank']);
             $table->enum('education_level', ['Elementary', 'Middle School', 'High School', 'University']);
